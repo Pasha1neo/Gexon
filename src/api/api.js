@@ -1,12 +1,16 @@
 import * as axios from 'axios'
 const instance = axios.create({
-    baseURL: `http://localhost:3000/api`,
+    baseURL: `http://localhost:5000/api/`,
 })
 export const SignAPI = {
-    singin(login, password) {
-        return instance.post('/signin', {login, password})
+    signup(email, password) {
+        console.log(email, password)
+        return instance.post('auth/signup', {email, password})
     },
-    signup(login, password) {
-        return instance.post('/signup', {login, password})
+    singin(email, password) {
+        return instance.post('auth/signin', {email, password})
+    },
+    auth(email, password) {
+        return instance.get('auth', {})
     },
 }

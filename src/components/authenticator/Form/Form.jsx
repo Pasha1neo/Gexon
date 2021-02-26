@@ -4,8 +4,8 @@ import SignIn from '../signin/SignIn'
 import s from '../Authenticator.module.css'
 import {useState} from 'react'
 
-const Form = ({setModalActive, ...props}) => {
-    const [choice, setChoice] = useState(0)
+const Form = (props) => {
+    const [choice, setChoice] = useState(false)
     const signin = () => {
         setChoice(false)
     }

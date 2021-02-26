@@ -4,6 +4,7 @@ import registrationReducer from './registrationReducer'
 import thunkMiddleware from 'redux-thunk'
 import {reducer as formReducer} from 'redux-form'
 import {composeWithDevTools} from 'redux-devtools-extension'
+
 let reducers = combineReducers({
     auth: authReducer,
     registration: registrationReducer,

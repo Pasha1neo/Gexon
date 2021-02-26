@@ -1,6 +1,7 @@
 import Authenticator from './Authenticator'
 import {login, logout, registration} from '../../redux/authReducer'
 import {connect} from 'react-redux'
+
 const mapDispatchToProps = (dispatch) => {
     return {
         login: (email, password) => {
@@ -9,8 +10,8 @@ const mapDispatchToProps = (dispatch) => {
         logout: () => {
             dispatch(logout())
         },
-        registration: (login, password) => {
-            dispatch(registration(login, password))
+        registration: (email, password) => {
+            dispatch(registration(email, password))
         },
     }
 }

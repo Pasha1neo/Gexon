@@ -11,8 +11,8 @@ const SignInForm = (props) => {
             <Field
                 component={'input'}
                 className={s.input}
-                type={'text'}
-                name={'nickname'}
+                type={'email'}
+                name={'email'}
                 placeholder={'Введите почту'}
                 onFocus={handleSelect}
             />
@@ -38,8 +38,8 @@ const SignInReduxForm = reduxForm({
     form: 'signin',
 })(SignInForm)
 const SignIn = ({closeModal, login}) => {
-    const onSubmit = ({nickname, password, rememberMe}) => {
-        login(nickname, password)
+    const onSubmit = ({email, password, rememberMe}) => {
+        login(email, password)
         closeModal()
     }
     return <SignInReduxForm onSubmit={onSubmit} />

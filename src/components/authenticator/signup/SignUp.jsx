@@ -17,7 +17,7 @@ const SignUpForm = (props) => {
             />
             <Field
                 className={s.signUpIn}
-                type={'text'}
+                type={'email'}
                 name={'email'}
                 placeholder={'Введите почту'}
                 component={'input'}
@@ -61,8 +61,8 @@ const SignUpReduxForm = reduxForm({
 })(SignUpForm)
 
 const SignUp = ({closeModal, registration}) => {
-    const onSubmit = (formData) => {
-        registration(formData.login, formData.password)
+    const onSubmit = ({email, password, password_2, accessAgreement}) => {
+        registration(email, password)
         closeModal()
     }
     return <SignUpReduxForm onSubmit={onSubmit} />
