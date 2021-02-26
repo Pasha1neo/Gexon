@@ -11,8 +11,8 @@ const SignInForm = (props) => {
             <Field
                 component={'input'}
                 className={s.input}
-                type={'email'}
-                name={'email'}
+                type={'text'}
+                name={'nickname'}
                 placeholder={'Введите почту'}
                 onFocus={handleSelect}
             />
@@ -25,12 +25,7 @@ const SignInForm = (props) => {
                 onFocus={handleSelect}
             />
             <div className={s.rememberContainer}>
-                <Field
-                    component={'input'}
-                    type={'checkbox'}
-                    id={'checkbox'}
-                    name={'rememberMe'}
-                />
+                <Field component={'input'} type={'checkbox'} id={'checkbox'} name={'rememberMe'} />
 
                 <label htmlFor={'checkbox'}>Запомнить</label>
                 <a>Забыли пароль?</a>
@@ -43,8 +38,8 @@ const SignInReduxForm = reduxForm({
     form: 'signin',
 })(SignInForm)
 const SignIn = ({closeModal, login}) => {
-    const onSubmit = ({email, password, rememberMe}) => {
-        login(email, password)
+    const onSubmit = ({nickname, password, rememberMe}) => {
+        login(nickname, password)
         closeModal()
     }
     return <SignInReduxForm onSubmit={onSubmit} />

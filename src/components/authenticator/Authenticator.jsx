@@ -15,28 +15,21 @@ const Authenticator = ({isAuth, ...props}) => {
         <div>
             {isAuth ? (
                 <div className={s.userContainer}>
-                    <img
-                        className={s.avatar}
-                        src={props.avatar ? props.avatar : defAvatar}
-                    />
+                    <img className={s.avatar} src={props.avatar ? props.avatar : defAvatar} />
                     <span className={s.nickname}>{props.nickname}</span>
                     <button className={s.logout} onClick={props.logout}>
                         Выйти
                     </button>
                 </div>
             ) : (
-                <img
-                    className={s.button}
-                    src='img/login.png'
-                    alt='Логин'
-                    onClick={openModal}
-                />
+                <img className={s.button} src='img/login.png' alt='Логин' onClick={openModal} />
             )}
             {modalActive ? (
                 <Form
                     closeModal={closeModal}
                     login={props.login}
                     modalActive={modalActive}
+                    registration={props.registration}
                 />
             ) : null}
         </div>

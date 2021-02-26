@@ -20,22 +20,18 @@ const Form = ({setModalActive, ...props}) => {
                 </span>
                 <div className={s.choice}>
                     <div
-                        className={
-                            choice ? s.choiceIn : `${s.choiceIn} ${s.active}`
-                        }
+                        className={choice ? s.choiceIn : `${s.choiceIn} ${s.active}`}
                         onClick={signin}>
                         Авторизация
                     </div>
                     <div
-                        className={
-                            choice ? `${s.choiceUp} ${s.active}` : s.choiceUp
-                        }
+                        className={choice ? `${s.choiceUp} ${s.active}` : s.choiceUp}
                         onClick={signup}>
                         Регистрация
                     </div>
                 </div>
                 {choice ? (
-                    <SignUp closeModal={props.closeModal} />
+                    <SignUp closeModal={props.closeModal} registration={props.registration} />
                 ) : (
                     <SignIn closeModal={props.closeModal} login={props.login} />
                 )}

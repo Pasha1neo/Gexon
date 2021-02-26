@@ -1,7 +1,9 @@
+import {SignAPI} from '../api/api'
+
 const SETUSERDATA = 'SETUSERDATA'
 let initialState = {
-    userId: null,
-    email: null,
+    // userId: null,
+    // email: null,
     nickname: null,
     isAuth: false,
     avatar: '',
@@ -18,21 +20,26 @@ const authReducer = (state = initialState, action) => {
     }
 }
 
-export const login = (email, password) => (dispatch) => {
-    if (email === 'pasha1neo@mail.ru' && password === 'sD4NnpA3zXD2L9k') {
-        dispatch(auth(email))
+export const login = (nickname, password) => async (dispatch) => {
+    const response = await SignAPI.singin(nickname, password)
+    if (response.data.resultCode === 0) {
+        dispatch(auth(nickname))
     }
 }
-
-export const auth = (email) => (dispatch) => {
-    dispatch(setAuthUserData('1', email, 'pasha1neo', true))
+export const registration = (nickname, password) => async (dispatch) => {
+    const response = await SignAPI.signup(nickname, password)
+    if (response.data.resultCode === 0) {
+        dispatch(auth(nickname))
+    }
 }
-
-export const setAuthUserData = (userId, email, nickname, isAuth) => ({
+export const auth = (nickname) => (dispatch) => {
+    dispatch(setAuthUserData(nickname, true))
+}
+export const setAuthUserData = (nickname, isAuth) => ({
     type: SETUSERDATA,
-    payload: {userId, email, nickname, isAuth},
+    payload: {nickname, isAuth},
 })
 export const logout = () => (dispatch) => {
-    dispatch(setAuthUserData(null, null, null, false))
+    dispatch(setAuthUserData(null, false))
 }
 export default authReducer

@@ -6,7 +6,7 @@ const SignUpForm = (props) => {
         e.target.select()
     }
     return (
-        <form className={s.signupForm}>
+        <form onSubmit={props.handleSubmit} className={s.signupForm}>
             <Field
                 className={s.signUpIn}
                 type={'text'}
@@ -51,9 +51,7 @@ const SignUpForm = (props) => {
                     Я соглашаюсь с <a>условиями</a>
                 </label>
             </div>
-            <button className={`${s.enterup} ${s.enter}`}>
-                Зарегистрироваться
-            </button>
+            <button className={`${s.enterup} ${s.enter}`}>Зарегистрироваться</button>
         </form>
     )
 }
@@ -62,8 +60,9 @@ const SignUpReduxForm = reduxForm({
     form: 'signup',
 })(SignUpForm)
 
-const SignUp = ({closeModal}) => {
+const SignUp = ({closeModal, registration}) => {
     const onSubmit = (formData) => {
+        registration(formData.login, formData.password)
         closeModal()
     }
     return <SignUpReduxForm onSubmit={onSubmit} />
