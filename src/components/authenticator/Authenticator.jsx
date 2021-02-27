@@ -19,7 +19,7 @@ const Authenticator = ({isAuth, ...props}) => {
             {isAuth ? (
                 <div className={s.userContainer}>
                     <img className={s.avatar} src={props.avatar ? props.avatar : avatar} />
-                    <span className={s.nickname}>{props.nickname}</span>
+                    <span className={s.nickname}>{props.email}</span>
                     <button className={s.logout} onClick={props.logout}>
                         Выйти
                     </button>

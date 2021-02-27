@@ -16,11 +16,9 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth,
-    nickname: state.auth.nickname,
     userId: state.auth.userId,
     email: state.auth.email,
-    avatar: state.auth.avatar,
+    isAuth: state.auth.isAuth,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Authenticator)
