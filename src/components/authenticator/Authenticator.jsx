@@ -4,7 +4,7 @@ import Form from './Form/Form'
 import avatar from '../../assets/img/avatar.png'
 import login from '../../assets/img/login.png'
 
-const Authenticator = ({isAuth, ...props}) => {
+const Authenticator = (props) => {
     const [modalActive, setModalActive] = useState(false)
 
     const openModal = () => {
@@ -16,10 +16,10 @@ const Authenticator = ({isAuth, ...props}) => {
 
     return (
         <div>
-            {isAuth ? (
+            {props.isAuth ? (
                 <div className={s.userContainer}>
                     <img className={s.avatar} src={props.avatar ? props.avatar : avatar} />
-                    <span className={s.nickname}>{props.email}</span>
+                    <span className={s.nickname}>{props.loginName}</span>
                     <button className={s.logout} onClick={props.logout}>
                         Выйти
                     </button>

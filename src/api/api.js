@@ -3,11 +3,11 @@ const instance = axios.create({
     baseURL: `http://localhost:5000/api/`,
 })
 export const SignAPI = {
-    async signup(email, password) {
-        return await instance.post('auth/signup', {email, password})
+    async signup(login, email, password) {
+        return await instance.post('auth/signup', {login, email, password})
     },
-    async singin(email, password) {
-        const response = await instance.post('auth/signin', {email, password})
+    async singin(login, password, rememberMe) {
+        const response = await instance.post('auth/signin', {login, password, rememberMe})
         return response.data
     },
     async auth(token) {

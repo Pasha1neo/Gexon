@@ -46,7 +46,7 @@
     background-size: 100%;
 }
 .signupAcceptContainer input[type='checkbox']:checked + label::before {
-    background-image: url(check.png);
+    background-image: url('../../../assets/img/check.png');
 }
 .enterup {
     border-radius: 30px;

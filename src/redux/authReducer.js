@@ -2,6 +2,7 @@ import {SignAPI} from '../api/api'
 import {initializedSuccess, isLocalToken} from './appReducer'
 const SETUSERDATA = 'SETUSERDATA'
 let initialState = {
+    login: null,
     userId: null,
     email: null,
     isAuth: false,
@@ -21,24 +22,34 @@ export const setToken = (token) => localStorage.setItem('token', token)
 export const getToken = () => localStorage.getItem('token')
 export const removeToken = () => localStorage.removeItem('token')
 
-export const registration = (email, password) => (dispatch) => {
-    const response = SignAPI.signup(email, password)
-    if (response.data.resultcode === 200) {
-        alert('успешная регистрация')
+export const registration = (login, email, password, password_2) => (dispatch) => {
+    try {
+        if (password !== password_2) {
+            alert('пароли не совпадают')
+        }
+        const response = SignAPI.signup(login, email, password)
+        if (response.data.resultcode === 200) {
+            alert('успешная регистрация')
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
-export const login = (email, password) => async (dispatch) => {
+export const login = (login, password, rememberMe) => async (dispatch) => {
+    console.log(login, password, rememberMe)
     try {
-        const {resultcode, token, user} = await SignAPI.singin(email, password)
+        const {resultcode, token, user} = await SignAPI.singin(login, password, rememberMe)
         if (resultcode === 200) {
             setToken(token)
-            dispatch(setAuthUserData(user, true))
+            dispatch(setAuthUserData({...user, isAuth: true}))
         }
-    } catch (error) {}
+    } catch (error) {
+        console.log(error)
+    }
 }
 export const logout = () => (dispatch) => {
     removeToken()
-    dispatch(setAuthUserData({id: null, email: null}, false))
+    dispatch(setAuthUserData({login: null, userId: null, email: null, isAuth: false}))
 }
 
 export const auth = () => async (dispatch) => {
@@ -47,19 +58,21 @@ export const auth = () => async (dispatch) => {
         const {user, token, resultcode} = await SignAPI.auth(localToken)
         if (resultcode === 200) {
             setToken(token)
-            dispatch(setAuthUserData(user, true))
+            dispatch(setAuthUserData({...user, isAuth: true}))
             dispatch(isLocalToken(!!localToken))
             dispatch(initializedSuccess())
         } else {
             // необходимо сделать обработку ошибки о аутентификации
             removeToken()
         }
-    } catch (error) {}
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-export const setAuthUserData = ({id, email}, isAuth) => ({
+export const setAuthUserData = ({login, id, email, isAuth}) => ({
     type: SETUSERDATA,
-    payload: {id, email, isAuth},
+    payload: {login, userId: id, email, isAuth},
 })
 
 export default authReducer

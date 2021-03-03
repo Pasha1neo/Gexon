@@ -1,0 +1,59 @@
+.chat {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.form {
+    background-color: green;
+    display: flex;
+    width: 500px;
+}
+.textarea {
+    width: 400px;
+    height: 70px;
+    border: 2px solid #72add6;
+    text-decoration: none;
+    outline: none;
+}
+.textarea:focus {
+    border: 2px solid #718ad7;
+}
+.textarea::-webkit-resizer {
+    display: none;
+}
+.send {
+    border: none;
+    background-color: #61acde;
+    color: white;
+    width: 100px;
+}
+.send:hover {
+    background-color: #416aaf;
+}
+.messages {
+    overflow: auto;
+    background-color: white;
+    display: flex;
+    height: 700px;
+    width: 500px;
+    flex-direction: column;
+    align-items: center;
+}
+.message {
+    float: left;
+    display: flex;
+    height: auto;
+    width: fit-content;
+    min-width: 200px;
+    max-width: 440px;
+    background-color: #9bb9f0;
+    color: black;
+    padding: 10px;
+    border-radius: 7px;
+    margin: 0px 0px 7px 0px;
+}
+.messageText {
+    overflow-wrap: break-word;
+    max-width: 380px;
+    white-space: pre-line;
+}

@@ -3,18 +3,14 @@ import s from './SignIp.module.css'
 /*сделать что бы оно нажималось на пробел когда ты выделяешь его
 TAB */
 const SignInForm = (props) => {
-    const handleSelect = (e) => {
-        e.target.select()
-    }
     return (
         <form onSubmit={props.handleSubmit} className={s.signinForm}>
             <Field
                 component={'input'}
                 className={s.input}
-                type={'email'}
-                name={'email'}
+                type={'text'}
+                name={'loginName'}
                 placeholder={'Введите почту'}
-                onFocus={handleSelect}
             />
             <Field
                 component={'input'}
@@ -22,7 +18,6 @@ const SignInForm = (props) => {
                 type={'password'}
                 name={'password'}
                 placeholder={'Введите пароль'}
-                onFocus={handleSelect}
             />
             <div className={s.rememberContainer}>
                 <Field component={'input'} type={'checkbox'} id={'checkbox'} name={'rememberMe'} />
@@ -38,8 +33,8 @@ const SignInReduxForm = reduxForm({
     form: 'signin',
 })(SignInForm)
 const SignIn = ({closeModal, login}) => {
-    const onSubmit = ({email, password, rememberMe}) => {
-        login(email, password)
+    const onSubmit = ({loginName, password, rememberMe}) => {
+        login(loginName, password, rememberMe)
         closeModal()
     }
     return <SignInReduxForm onSubmit={onSubmit} />

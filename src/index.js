@@ -1,12 +1,3 @@
 import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
-import App from './App'
-
-import store from './redux/reduxStore'
-
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')
-)
+import Pasha1neoApp from './App'
+ReactDOM.render(<Pasha1neoApp />, document.getElementById('root'))

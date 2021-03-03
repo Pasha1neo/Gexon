@@ -4,20 +4,19 @@ import {connect} from 'react-redux'
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (email, password) => {
-            dispatch(login(email, password))
+        registration: (login, email, password, password_2) => {
+            dispatch(registration(login, email, password, password_2))
+        },
+        login: (loginName, password, rememberMe) => {
+            dispatch(login(loginName, password, rememberMe))
         },
         logout: () => {
             dispatch(logout())
         },
-        registration: (email, password) => {
-            dispatch(registration(email, password))
-        },
     }
 }
 const mapStateToProps = (state) => ({
-    userId: state.auth.userId,
-    email: state.auth.email,
+    loginName: state.auth.login,
     isAuth: state.auth.isAuth,
 })
 

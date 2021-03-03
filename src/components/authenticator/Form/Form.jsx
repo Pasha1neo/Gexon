@@ -1,4 +1,4 @@
-import Modal from '../../other/modal/Modal'
+import Modal from '../../util/modal/Modal'
 import SignUp from '../signup/SignUp'
 import SignIn from '../signin/SignIn'
 import s from '../Authenticator.module.css'

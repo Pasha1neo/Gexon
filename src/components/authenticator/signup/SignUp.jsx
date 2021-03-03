@@ -2,9 +2,6 @@ import {Field, reduxForm} from 'redux-form'
 import s from './SignUp.module.css'
 
 const SignUpForm = (props) => {
-    const handleSelect = (e) => {
-        e.target.select()
-    }
     return (
         <form onSubmit={props.handleSubmit} className={s.signupForm}>
             <Field
@@ -13,7 +10,6 @@ const SignUpForm = (props) => {
                 name={'login'}
                 placeholder={'Введите логин'}
                 component={'input'}
-                onFocus={handleSelect}
             />
             <Field
                 className={s.signUpIn}
@@ -21,7 +17,6 @@ const SignUpForm = (props) => {
                 name={'email'}
                 placeholder={'Введите почту'}
                 component={'input'}
-                onFocus={handleSelect}
             />
             <Field
                 className={s.signUpIn}
@@ -29,7 +24,6 @@ const SignUpForm = (props) => {
                 name={'password'}
                 placeholder={'Введите пароль'}
                 component={'input'}
-                onFocus={handleSelect}
             />
             <Field
                 className={s.signUpIn}
@@ -37,20 +31,18 @@ const SignUpForm = (props) => {
                 name={'password_2'}
                 placeholder={'Введите пароль ещё раз'}
                 component={'input'}
-                onFocus={handleSelect}
             />
-            <div className={s.signupAcceptContainer}>
+            {/* <div className={s.signupAcceptContainer}>
                 <Field
                     type={'checkbox'}
                     id={'checkbox'}
                     name={'accessAgreement'}
                     component={'input'}
-                    onFocus={handleSelect}
                 />
                 <label htmlFor={'checkbox'}>
                     Я соглашаюсь с <a>условиями</a>
                 </label>
-            </div>
+            </div> */}
             <button className={`${s.enterup} ${s.enter}`}>Зарегистрироваться</button>
         </form>
     )
@@ -61,8 +53,8 @@ const SignUpReduxForm = reduxForm({
 })(SignUpForm)
 
 const SignUp = ({closeModal, registration}) => {
-    const onSubmit = ({email, password, password_2, accessAgreement}) => {
-        registration(email, password)
+    const onSubmit = ({login, email, password, password_2}) => {
+        registration(login, email, password, password_2)
         closeModal()
     }
     return <SignUpReduxForm onSubmit={onSubmit} />
