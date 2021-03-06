@@ -22,6 +22,6 @@ export default chatReducer
 
 export const sendMessage = (message) => ({
     type: 'SENDMESSAGE',
-    message: {message, login: 'pasha1neo'},
+    message,
 })
 export const getMessages = () => ({type: 'GETMESSAGES'})

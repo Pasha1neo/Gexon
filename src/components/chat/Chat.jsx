@@ -1,5 +1,5 @@
 import s from './chat.module.css'
-import {Field, reduxForm} from 'redux-form'
+import {Field, reduxForm, reset} from 'redux-form'
 import {PureComponent, useEffect, useRef} from 'react'
 
 const Message = ({login, message}) => {
@@ -46,9 +46,13 @@ const ChatReduxForm = reduxForm({
     form: 'chatForm',
 })(ChatForm)
 
-const Chat = ({sendMessage, ...props}) => {
-    const onSubmit = ({message}) => {
-        sendMessage(message)
+const Chat = ({sendMessage, login, ...props}) => {
+    const onSubmit = (formValues, dispatch) => {
+        sendMessage({
+            message: formValues.message,
+            login: login,
+        })
+        dispatch(reset('chatForm'))
     }
     return <ChatReduxForm {...props} onSubmit={onSubmit} />
 }
