@@ -1,6 +1,4 @@
 import s from './chat.module.css'
-import socket from '../../redux/sagas/sockets'
-
 import {Field, reduxForm} from 'redux-form'
 import {PureComponent, useEffect, useRef} from 'react'
 
@@ -19,20 +17,9 @@ const Message = ({login, message}) => {
 }
 
 class ChatForm extends PureComponent {
-    // componentDidMount() {
-    // this.uploads()
-    // socket.on('message', (message) => {
-    //     this.props.addMessage(message)
-    // })
-    // }
-    // uploads() {
-    // socket.emit('upload_message', (data) => {
-    //     this.props.uploadMessages(data)
-    // })
-    // }
-    // componentWillUnmount() {
-    // socket.off('message')
-    // }
+    componentDidMount() {
+        this.props.getMessages()
+    }
     render() {
         const messagesElements = this.props.messageData.map((m) => {
             return <Message key={m.mid} login={m.login} message={m.message} />
@@ -59,16 +46,11 @@ const ChatReduxForm = reduxForm({
     form: 'chatForm',
 })(ChatForm)
 
-const Chat = ({login, userId, message, ...props}) => {
-    const sendMessage = ({message}) => {
-        // socket.emit('message', {
-        //     login,
-        //     userId,
-        //     message,
-        // })
+const Chat = ({sendMessage, ...props}) => {
+    const onSubmit = ({message}) => {
+        sendMessage(message)
     }
-
-    return <ChatReduxForm {...props} onSubmit={sendMessage} />
+    return <ChatReduxForm {...props} onSubmit={onSubmit} />
 }
 
 export default Chat

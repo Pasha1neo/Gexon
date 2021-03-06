@@ -1,39 +1,27 @@
-const ADDMESSAGE = 'ADDMESSAGE'
-const UPLOADMESSAGEDATA = 'UPLOADMESSAGEDATA'
 let initialState = {
     messageData: [],
 }
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
-        case ADDMESSAGE:
+        case 'GETMESSAGE':
             return {
                 ...state,
                 messageData: [...state.messageData, action.payload],
             }
-        case UPLOADMESSAGEDATA:
+        case 'GETMESSAGESDATA':
             return {
                 ...state,
-                messageData: action.data,
+                messageData: action.payload,
             }
         default:
             return state
     }
 }
 
-export const addMessage = (message) => (dispatch) => {
-    dispatch(setMessageData(message))
-}
-export const uploadMessages = (data) => (dispatch) => {
-    dispatch(uploadMessageData(data))
-}
-export const setMessageData = (payload) => ({
-    type: ADDMESSAGE,
-    payload,
-})
-
-export const uploadMessageData = (data) => ({
-    type: UPLOADMESSAGEDATA,
-    data,
-})
-
 export default chatReducer
+
+export const sendMessage = (message) => ({
+    type: 'SENDMESSAGE',
+    message: {message, login: 'pasha1neo'},
+})
+export const getMessages = () => ({type: 'GETMESSAGES'})
