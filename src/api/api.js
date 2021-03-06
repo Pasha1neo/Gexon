@@ -1,6 +1,6 @@
 import * as axios from 'axios'
 const instance = axios.create({
-    baseURL: `http://project-adaptive-server.herokuapp.com/api/`,
+    baseURL: `https://project-adaptive-server.herokuapp.com/api/`,
 })
 export const SignAPI = {
     async signup(login, email, password) {
