@@ -12,12 +12,17 @@
     width: 250px;
     margin-left: 20px;
 }
-.link {
+.links {
     display: flex;
     justify-content: space-evenly;
     width: 680px;
     height: 40px;
 }
+.link {
+    font-size: 18px;
+    text-decoration: none;
+    color: #0652dd;
+}
 .active {
-    color: gold;
+    color: #f79f1f;
 }

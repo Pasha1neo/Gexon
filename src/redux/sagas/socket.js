@@ -1,6 +1,6 @@
 import {eventChannel} from '@redux-saga/core'
-import {take, put, call, fork, takeEvery} from 'redux-saga/effects'
-import io from 'socket.io-client'
+import {take, put, call, fork, takeEvery, all} from 'redux-saga/effects'
+const io = require('socket.io-client')
 
 function* getMessage(socket) {
     return new eventChannel((emitter) => {
@@ -31,6 +31,39 @@ function* workerSendMessage(socket) {
     }
 }
 
+function* disconnect(socket) {
+    socket.off('message')
+}
+function* connection(socket) {
+    while (true) {
+        const [connectsOn, connectsOFF] = yield all([
+            call(connectOn, socket),
+            call(connectOff, socket),
+        ])
+        yield put(yield take(connectsOFF))
+        yield put(yield take(connectsOn))
+    }
+}
+function* connectOn(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('connect', () => {
+            emitter({
+                type: 'CONNECTIONTRUE',
+            })
+        })
+        return () => {}
+    })
+}
+function* connectOff(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('connect_error', (error) => {
+            emitter({
+                type: 'CONNECTIONFALSE',
+            })
+        })
+        return () => {}
+    })
+}
 function* getMessagesData(socket) {
     return new eventChannel((emit) => {
         socket.emit('upload_message', (data) => {
@@ -47,15 +80,11 @@ function* workerGetMessagesData(socket) {
     const action = yield take(data)
     yield put(action)
 }
-function* disconnect(socket) {
-    socket.off('message')
-}
 
 export function* socket() {
     try {
         const socket = io()
-        yield fork(watcherConnect, socket)
-        yield fork(watcherConnectOff, socket)
+        yield fork(connection, socket)
         yield call(workerGetMessagesData, socket)
         yield fork(workerGetMessage, socket)
         yield fork(workerSendMessage, socket)
@@ -63,40 +92,4 @@ export function* socket() {
     } catch (error) {
         console.log(error)
     }
-}
-
-function* watcherConnect(socket) {
-    const connect = yield call(connectOn, socket)
-    while (true) {
-        let connection = yield take(connect)
-        yield put(connection)
-    }
-}
-function* connectOn(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('connect', () => {
-            emitter({
-                type: 'CONNECTIONTRUE',
-            })
-        })
-        return () => {}
-    })
-}
-function* watcherConnectOff(socket) {
-    const connect = yield call(connectOff, socket)
-    while (true) {
-        let connection = yield take(connect)
-        yield put(connection)
-    }
-}
-
-function* connectOff(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('connect_error', (error) => {
-            emitter({
-                type: 'CONNECTIONFALSE',
-            })
-        })
-        return () => {}
-    })
 }

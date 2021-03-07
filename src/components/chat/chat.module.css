@@ -1,8 +1,22 @@
 .chat {
-    position: relative;
     display: flex;
     align-items: center;
     flex-direction: column;
+}
+.content {
+    position: relative;
+    height: 100%;
+}
+.connection {
+    flex-direction: column;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .form {
     display: flex;
@@ -34,7 +48,7 @@
     overflow: auto;
     background-color: white;
     display: flex;
-    height: 700px;
+    height: 400px;
     width: 500px;
     flex-direction: column;
     align-items: center;
@@ -57,27 +71,17 @@
     max-width: 380px;
     white-space: pre-line;
 }
-.connection {
-    position: absolute;
-    z-index: 1;
-    width: 500px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 .ldsFacebook {
     display: inline-block;
     position: relative;
-    width: 80px;
+    width: 70px;
     height: 80px;
 }
 .ldsFacebook div {
     display: inline-block;
     position: absolute;
     left: 8px;
-    width: 16px;
+    width: 5px;
     background: #fff;
     animation: ldsFacebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
@@ -91,16 +95,20 @@
 }
 .ldsFacebook div:nth-child(3) {
     left: 56px;
-    animation-delay: 0;
+    animation-delay: 0s;
 }
 @keyframes ldsFacebook {
     0% {
-        top: 8px;
-        height: 64px;
+        top: 4px;
+        background-color: #26de81;
+        height: 24px;
     }
-    50%,
+    50% {
+        background-color: #fed330;
+    }
     100% {
-        top: 24px;
-        height: 32px;
+        background-color: #fc5c65;
+        top: 12px;
+        height: 8px;
     }
 }

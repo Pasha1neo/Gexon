@@ -28,10 +28,11 @@ class ChatForm extends PureComponent {
             return <Message key={m.mid} login={m.login} message={m.message} />
         })
         return (
-            <div>
-                <div className={s.chat}>
+            <div className={s.chat}>
+                <div className={s.content}>
                     {!this.props.connection && (
                         <div className={s.connection}>
+                            <div>Нету связи с сервером проверьте соединение...</div>
                             <div className={s.ldsFacebook}>
                                 <div></div>
                                 <div></div>

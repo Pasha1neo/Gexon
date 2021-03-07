@@ -66,7 +66,7 @@ export const auth = () => async (dispatch) => {
             removeToken()
         }
     } catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 

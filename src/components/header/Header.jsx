@@ -9,11 +9,11 @@ const Header = () => {
             <NavLink to='/' activeClassName={s.active}>
                 <img className={s.logo} src={logo} alt='Логотип' />
             </NavLink>
-            <div className={s.link}>
-                <NavLink to='/chat' activeClassName={s.active}>
+            <div className={s.links}>
+                <NavLink className={s.link} to='/chat' activeClassName={s.active}>
                     Чат
                 </NavLink>
-                <NavLink to='/profile' activeClassName={s.active}>
+                <NavLink className={s.link} to='/profile' activeClassName={s.active}>
                     Профиль
                 </NavLink>
             </div>
