@@ -1,21 +1,17 @@
 import {eventChannel} from '@redux-saga/core'
-import {take, put, call, fork, takeEvery} from 'redux-saga/effects'
+import {take, put, call, fork} from 'redux-saga/effects'
 import io from 'socket.io-client'
 
 function connect() {
-    return io('https://project-adaptive-server.herokuapp.com')
+    return io()
 }
 function* workerGetMessage(socket) {
     const message = yield call(getMessage, socket)
     while (true) {
-        /*
-			посмотреть https://ru.redux-saga.js.org/soderzhanie/advanced/futureactions
-		*/
         let action = yield take(message)
         yield put(action)
     }
 }
-
 function* getMessage(socket) {
     return new eventChannel((emit) => {
         socket.on('message', (message) => {
@@ -43,7 +39,6 @@ function* workerGetMessagesData(socket) {
         yield put(action)
     }
 }
-
 function* getMessagesData(socket) {
     return new eventChannel((emit) => {
         socket.emit('upload_message', (data) => {
@@ -55,7 +50,6 @@ function* getMessagesData(socket) {
         return () => {}
     })
 }
-
 export function* flow() {
     const socket = yield call(connect)
     yield fork(workerGetMessagesData, socket)
