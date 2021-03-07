@@ -20,23 +20,37 @@ class ChatForm extends PureComponent {
     componentDidMount() {
         this.props.getMessages()
     }
+    componentWillUnmount() {
+        this.props.disconnect()
+    }
     render() {
         const messagesElements = this.props.messageData.map((m) => {
             return <Message key={m.mid} login={m.login} message={m.message} />
         })
         return (
-            <div className={s.chat}>
-                <div className={s.messages}>{messagesElements}</div>
-                <form onSubmit={this.props.handleSubmit} className={s.form}>
-                    <Field
-                        component={'textarea'}
-                        className={s.textarea}
-                        type={'text'}
-                        name={'message'}
-                        placeholder={'Сообщение'}
-                    />
-                    <button className={s.send}>Отправить</button>
-                </form>
+            <div>
+                <div className={s.chat}>
+                    {!this.props.connection && (
+                        <div className={s.connection}>
+                            <div className={s.ldsFacebook}>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    )}
+                    <div className={s.messages}>{messagesElements}</div>
+                    <form onSubmit={this.props.handleSubmit} className={s.form}>
+                        <Field
+                            component={'textarea'}
+                            className={s.textarea}
+                            type={'text'}
+                            name={'message'}
+                            placeholder={'Сообщение'}
+                        />
+                        <button className={s.send}>Отправить</button>
+                    </form>
+                </div>
             </div>
         )
     }

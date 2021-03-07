@@ -1,5 +1,5 @@
 import Authenticator from './Authenticator'
-import {login, logout, registration} from '../../redux/authReducer'
+import {login, logout, registration} from '../../redux/reducers/authReducer'
 import {connect} from 'react-redux'
 
 const mapDispatchToProps = (dispatch) => {

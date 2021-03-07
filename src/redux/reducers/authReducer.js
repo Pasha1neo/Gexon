@@ -1,4 +1,4 @@
-import {SignAPI} from '../api/api'
+import {SignAPI} from '../../api/api'
 import {initializedSuccess, isLocalToken} from './appReducer'
 const SETUSERDATA = 'SETUSERDATA'
 let initialState = {

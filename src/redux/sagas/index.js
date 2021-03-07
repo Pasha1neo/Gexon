@@ -1,6 +1,6 @@
-import {fork} from 'redux-saga/effects'
-import {flow} from './sockets'
+import {fork, call} from 'redux-saga/effects'
+import {socket} from './socket'
 
 export default function* rootSaga() {
-    yield fork(flow)
+    yield call(socket)
 }

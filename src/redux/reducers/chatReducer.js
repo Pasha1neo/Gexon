@@ -1,5 +1,6 @@
 let initialState = {
     messageData: [],
+    connect: true,
 }
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -13,6 +14,16 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
                 messageData: action.payload,
             }
+        case 'CONNECTIONTRUE':
+            return {
+                ...state,
+                connect: true,
+            }
+        case 'CONNECTIONFALSE':
+            return {
+                ...state,
+                connect: false,
+            }
         default:
             return state
     }
@@ -25,3 +36,4 @@ export const sendMessage = (message) => ({
     message,
 })
 export const getMessages = () => ({type: 'GETMESSAGES'})
+export const disconnect = () => ({type: 'DISCONNECT'})
