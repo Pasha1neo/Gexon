@@ -7,6 +7,7 @@ import Connection from '../util/connection/connection'
 
 class ChatForm extends Component {
     componentDidMount() {
+        this.props.connectChat()
         this.props.getMessages()
     }
     componentWillUnmount() {

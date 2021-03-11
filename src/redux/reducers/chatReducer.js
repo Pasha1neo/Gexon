@@ -37,3 +37,4 @@ export const sendMessage = (message) => ({
 })
 export const getMessages = () => ({type: 'GETMESSAGES'})
 export const disconnect = () => ({type: 'DISCONNECT'})
+export const connectChat = () => ({type: 'CHATON'})

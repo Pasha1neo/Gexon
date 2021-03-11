@@ -9,7 +9,7 @@ import {BrowserRouter, Route, withRouter} from 'react-router-dom'
 import store from './redux/reduxStore'
 import {compose} from 'redux'
 
-const App = ({initialized, isToken, initialization}) => {
+const App = ({initialized, isToken, initialization, isAuth}) => {
     useEffect(() => {
         initialization()
     }, [])
@@ -37,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => ({
     initialized: state.app.initialized,
     isToken: state.app.isToken,
+    isAuth: state.auth.isAuth,
 })
 
 const AppContainer = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(App)
