@@ -20,7 +20,6 @@ function* workerGetMessage(socket) {
         yield put(action)
     }
 }
-
 function* sendMessage(socket, message) {
     socket.emit('message', message)
 }
@@ -30,7 +29,6 @@ function* workerSendMessage(socket) {
         yield call(sendMessage, socket, message)
     }
 }
-
 function* disconnect(socket) {
     socket.off('message')
 }
@@ -80,7 +78,6 @@ function* workerGetMessagesData(socket) {
     const action = yield take(data)
     yield put(action)
 }
-
 export function* socket() {
     try {
         const socket = io()
