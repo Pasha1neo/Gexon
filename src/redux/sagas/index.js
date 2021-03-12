@@ -4,5 +4,5 @@ import {socket} from './socket'
 
 export default function* rootSaga() {
     yield call(authentification)
-    yield takeEvery('SOCKETON', socket)
+    yield call(socket)
 }
