@@ -3,6 +3,7 @@ import s from './Authenticator.module.css'
 import Form from './Form/Form'
 import avatar from '../../assets/img/avatar.png'
 import login from '../../assets/img/login.png'
+import Preloader from '../util/preloader/Preloader'
 
 const Authenticator = (props) => {
     const [modalActive, setModalActive] = useState(false)

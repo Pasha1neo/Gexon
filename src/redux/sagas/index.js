@@ -1,6 +1,8 @@
-import {takeEvery} from 'redux-saga/effects'
+import {call, fork, select, take, takeEvery} from 'redux-saga/effects'
+import {authentification} from './app'
 import {socket} from './socket'
 
 export default function* rootSaga() {
-    yield takeEvery('CHATON', socket)
+    yield call(authentification)
+    yield takeEvery('SOCKETON', socket)
 }

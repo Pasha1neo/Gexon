@@ -13,17 +13,18 @@ class ChatForm extends Component {
     componentWillUnmount() {
         this.props.disconnect()
     }
-
+    formSubmite(e) {
+        if (e.keyCode === 13 && !e.shiftKey) {
+            e.preventDefault()
+            this.props.handleSubmit()
+            return false
+        }
+    }
     render() {
         const messagesElements = this.props.messageData.map((m) => {
             return <Message key={m.mid} login={m.login} message={m.message} />
         })
 
-        function formSubmite(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                this.props.handleSubmit()
-            }
-        }
         return (
             <div className={s.chatBody}>
                 <Connection connection={this.props.connection}>
@@ -46,7 +47,7 @@ class ChatForm extends Component {
                                 type={'text'}
                                 name={'message'}
                                 placeholder={'Сообщение'}
-                                onKeyUp={(e) => formSubmite(e)}
+                                onKeyUp={(e) => this.formSubmite(e)}
                             />
                             <button className={s.send}>Отправить</button>
                         </form>

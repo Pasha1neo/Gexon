@@ -1,5 +1,5 @@
 import {eventChannel} from '@redux-saga/core'
-import {take, put, call, fork, takeEvery, all} from 'redux-saga/effects'
+import {take, put, call, fork, takeEvery, all, cancelled, cancel} from 'redux-saga/effects'
 const io = require('socket.io-client')
 
 function* getMessage(socket) {
@@ -28,9 +28,6 @@ function* workerSendMessage(socket) {
         const {message} = yield take('SENDMESSAGE')
         yield call(sendMessage, socket, message)
     }
-}
-function* disconnect(socket) {
-    socket.off('message')
 }
 function* connection(socket) {
     while (true) {
@@ -78,6 +75,9 @@ function* workerGetMessagesData(socket) {
     const action = yield take(data)
     yield put(action)
 }
+function* disconnect(socket) {
+    socket.close()
+}
 export function* socket() {
     try {
         const socket = io()
@@ -85,8 +85,7 @@ export function* socket() {
         yield call(workerGetMessagesData, socket)
         yield fork(workerGetMessage, socket)
         yield fork(workerSendMessage, socket)
-        yield takeEvery('DISCONNECT', disconnect, socket)
     } catch (error) {
-        console.log(error)
+        console.log('error')
     }
 }

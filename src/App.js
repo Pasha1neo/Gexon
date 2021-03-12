@@ -4,16 +4,16 @@ import {connect, Provider} from 'react-redux'
 import ChatContainer from './components/chat/ChatContainer'
 import Header from './components/header/Header'
 import Preloader from './components/util/preloader/Preloader'
-import {initializeApp} from './redux/reducers/appReducer'
 import {BrowserRouter, Route, withRouter} from 'react-router-dom'
 import store from './redux/reduxStore'
 import {compose} from 'redux'
+import {initApp} from './redux/actions/auth'
 
-const App = ({initialized, isToken, initialization, isAuth}) => {
+const App = ({initialized, initApp}) => {
     useEffect(() => {
-        initialization()
+        initApp()
     }, [])
-    if (!initialized && isToken) {
+    if (!initialized) {
         return <Preloader />
     }
     return (
@@ -26,21 +26,13 @@ const App = ({initialized, isToken, initialization, isAuth}) => {
         </div>
     )
 }
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        initialization: () => {
-            dispatch(initializeApp())
-        },
-    }
-}
 const mapStateToProps = (state) => ({
     initialized: state.app.initialized,
     isToken: state.app.isToken,
-    isAuth: state.auth.isAuth,
+    isAuth: state.app.isAuth,
 })
 
-const AppContainer = compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(App)
+const AppContainer = compose(withRouter, connect(mapStateToProps, {initApp}))(App)
 const Pasha1neoApp = () => {
     return (
         <BrowserRouter>

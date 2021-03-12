@@ -1,35 +1,29 @@
-import {auth} from './authReducer'
-
-const INITIALIZEDSUCCESS = 'INITIALIZEDSUCCESS'
-const CHECKTOKEN = 'CHECKTOKEN'
 let initialState = {
+    login: null,
+    userId: null,
+    email: null,
+    isAuth: false,
     initialized: false,
-    isToken: false,
 }
-
 const appReducer = (state = initialState, action) => {
     switch (action.type) {
-        case INITIALIZEDSUCCESS:
+        case 'INITSTART':
+            return {
+                ...state,
+                initialized: false,
+            }
+        case 'INITEND':
             return {
                 ...state,
                 initialized: true,
             }
-        case CHECKTOKEN:
+        case 'SETUSERDATA':
             return {
                 ...state,
-                isToken: action.payload,
+                ...action.payload,
             }
-
         default:
             return state
     }
 }
-
-export const initializedSuccess = () => ({type: INITIALIZEDSUCCESS})
-export const isLocalToken = (isToken) => ({type: CHECKTOKEN, payload: isToken})
-
-export const initializeApp = () => (dispatch) => {
-    dispatch(auth())
-}
-
 export default appReducer
