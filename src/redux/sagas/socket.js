@@ -1,7 +1,12 @@
 import {eventChannel} from '@redux-saga/core'
 import {take, put, call, fork, takeEvery, all, cancelled, cancel} from 'redux-saga/effects'
 const io = require('socket.io-client')
-
+function* testfn() {
+    while (true) {
+        yield take('TESTFN')
+        console.log('test')
+    }
+}
 function* getMessage(socket) {
     return new eventChannel((emitter) => {
         socket.on('message', (message) => {
@@ -75,17 +80,26 @@ function* workerGetMessagesData(socket) {
     const action = yield take(data)
     yield put(action)
 }
-function* disconnect(socket) {
-    socket.close()
+function* SocketDisconnect(socket) {
+    socket.disconnect()
+    yield put({type: 'SOCKETISDISCONNECTED'})
 }
-export function* socket() {
-    try {
-        const socket = io()
-        yield fork(connection, socket)
-        yield call(workerGetMessagesData, socket)
-        yield fork(workerGetMessage, socket)
-        yield fork(workerSendMessage, socket)
-    } catch (error) {
-        console.log('error')
+function* SocketConnect(socket) {
+    socket.connect()
+    const [...socketProcess] = yield all([
+        fork(connection, socket),
+        fork(workerGetMessagesData, socket),
+        fork(workerGetMessage, socket),
+        fork(workerSendMessage, socket),
+    ])
+    while (true) {
+        yield take('SOCKETISDISCONNECTED')
+        yield cancel(socketProcess)
     }
 }
+export function* socket() {
+    const socket = io({autoConnect: false})
+    yield takeEvery('SOCKETON', SocketConnect, socket)
+    yield takeEvery('SOCKETOFF', SocketDisconnect, socket)
+}
+export function* socketConnect() {}

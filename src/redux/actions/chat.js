@@ -3,5 +3,5 @@ export const sendMessage = (message) => ({
     message,
 })
 export const getMessages = () => ({type: 'GETMESSAGES'})
-export const disconnect = () => ({type: 'DISCONNECT'})
+export const disconnect = () => ({type: 'SOCKETOFF'})
 export const connectChat = () => ({type: 'CHATON'})

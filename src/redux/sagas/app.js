@@ -14,7 +14,6 @@ function* registration({login, email, password, password_2}) {
         }
     }
 }
-
 function* login({login, password, rememberMe}) {
     const {resultcode, token, user} = yield call(SignAPI.singin, login, password, rememberMe)
     if (resultcode === 200) {
@@ -27,24 +26,28 @@ function* login({login, password, rememberMe}) {
     }
 }
 function* auth() {
-    yield put({type: 'INITSTART'})
-    const tokens = getToken()
-    const {user, token, resultcode, message} = yield call(SignAPI.auth, tokens)
-    if (resultcode === 200) {
-        setToken(token)
-        yield put({
-            type: 'SETUSERDATA',
-            payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
-        })
-        yield put({type: 'CHECKTOKEN', payload: true})
+    try {
+        yield put({type: 'INITSTART'})
+        const tokens = getToken()
+        const {user, token, resultcode, message} = yield call(SignAPI.auth, tokens)
+        if (resultcode === 200) {
+            setToken(token)
+            yield put({
+                type: 'SETUSERDATA',
+                payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
+            })
+            yield put({type: 'CHECKTOKEN', payload: true})
+            yield put({type: 'INITEND'})
+            yield put({type: 'SOCKETON'})
+        } else if (resultcode === 101) {
+            yield put({type: 'INITEND'})
+            removeToken()
+        }
+    } catch (error) {
+        //сделать здесь оффлайн режим
         yield put({type: 'INITEND'})
-        yield put({type: 'SOCKETON'})
-    } else if (resultcode === 101) {
-        yield put({type: 'INITEND'})
-        console.log(resultcode, message)
         removeToken()
-    } else {
-        console.log('Ошибка чего то')
+        console.log('Ошибка сервера')
     }
 }
 function* logout() {
