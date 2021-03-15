@@ -18,26 +18,32 @@ function* watcherGetUsers(socket) {
     yield put(action)
     yield socket.off('users')
 }
-
-function* getUserConnected(socket) {
+function* checkDublicate(newUser) {
     const state = yield select()
+    const res = state.chat.usersData.find((element) => {
+        if (newUser.key === element.key) {
+            return true
+        }
+    })
+    if (!res) {
+        yield put({
+            type: 'USERCONNECTED',
+            payload: newUser,
+        })
+    } else {
+        const newUsersData = state.chat.usersData.map((elem) =>
+            elem.key === newUser.key ? newUser : elem
+        )
+        yield put({
+            type: 'SETUSERNEWSTATUS',
+            usersData: newUsersData,
+        })
+    }
+}
+function* getUserConnected(socket) {
     return new eventChannel((emitter) => {
         socket.on('user connected', (newUser) => {
-            if (
-                !(
-                    state.chat.usersData.find((element) => {
-                        if (newUser.key === element.key) {
-                            return true
-                        }
-                    }) && true
-                ) ||
-                false
-            ) {
-                emitter({
-                    type: 'USERCONNECTED',
-                    payload: newUser,
-                })
-            }
+            emitter(newUser)
         })
         return () => {}
     })
@@ -45,8 +51,7 @@ function* getUserConnected(socket) {
 function* watcherUserConnected(socket) {
     const user = yield call(getUserConnected, socket)
     while (true) {
-        let action = yield take(user)
-        yield put(action)
+        yield checkDublicate(yield take(user))
     }
 }
 
@@ -59,7 +64,7 @@ function* watcherSetUserStatus(socket) {
             elem.key === userID ? {...elem, ...(elem.value.connected = false)} : elem
         )
         yield put({
-            type: 'SETUSERSTATUSDISCONNECTED',
+            type: 'SETUSERNEWSTATUS',
             usersData: newUsersData,
         })
     }

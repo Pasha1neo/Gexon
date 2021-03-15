@@ -42,7 +42,7 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
                 usersData: [...state.usersData, action.payload],
             }
-        case 'SETUSERSTATUSDISCONNECTED':
+        case 'SETUSERNEWSTATUS':
             return {
                 ...state,
                 usersData: action.usersData,

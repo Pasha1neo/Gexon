@@ -15,18 +15,8 @@ function* SocketDisconnect(socket) {
     socket.disconnect()
     yield put({type: 'SOCKETISDISCONNECTED'})
 }
-function* getSession(socket) {
-    socket.on('session', ({sessionID, userID}) => {
-        socket.auth = {sessionID}
-        localStorage.setItem('sessionID', sessionID)
-        socket.userID = userID
-    })
-    socket.off('session')
-}
-
 //воспользоваться штуками из книги (телефон)!!
 //исправить проблему дублирования АЛЯ сделать доставание ключа из localstorage при перезагрузке что бы он подтверждал одну личность а не думал что это новый человек
-
 function* connection(socket) {
     const [connectsOn, connectsOFF] = yield all([call(connectOn, socket), call(connectOff, socket)])
     while (true) {
@@ -52,6 +42,13 @@ function* connectOff(socket) {
             })
         })
         return () => {}
+    })
+}
+function* getSession(socket) {
+    socket.on('session', ({sessionID, userID}) => {
+        localStorage.setItem('sessionID', sessionID)
+        socket.auth = {sessionID}
+        socket.userID = userID
     })
 }
 function* SocketConnect(socket, {payload}) {
