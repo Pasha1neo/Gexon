@@ -1,6 +1,6 @@
 import s from './message.module.css'
 import {useEffect, useRef} from 'react'
-import Avatar from '../../../assets/img/avatar.png'
+import Avatar from '../../../../assets/img/avatar.png'
 
 const Message = ({login, message}) => {
     return (

@@ -1,7 +1,7 @@
 import './App.css'
-import {useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {connect, Provider} from 'react-redux'
-import ChatContainer from './components/chat/ChatContainer'
+import ChatPage from './components/chatPage/ChatPage'
 import Header from './components/header/Header'
 import Preloader from './components/util/preloader/Preloader'
 import {BrowserRouter, Route, withRouter} from 'react-router-dom'
@@ -21,7 +21,7 @@ const App = ({initialized, initApp}) => {
             <Header />
             <div>
                 <Route exact path='/' render={() => <>Главная страница</>} />
-                <Route path='/chat' render={() => <ChatContainer />} />
+                <Route path='/chat/:id?' render={() => <ChatPage />} />
             </div>
         </div>
     )

@@ -22,7 +22,7 @@ function* login({login, password, rememberMe}) {
             type: 'SETUSERDATA',
             payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
         })
-        yield put({type: 'SOCKETON'})
+        yield put({type: 'SOCKETON', payload: user.login})
     }
 }
 function* auth() {
@@ -38,10 +38,12 @@ function* auth() {
             })
             yield put({type: 'CHECKTOKEN', payload: true})
             yield put({type: 'INITEND'})
-            yield put({type: 'SOCKETON'})
+            yield put({type: 'SOCKETON', payload: user.login})
         } else if (resultcode === 101) {
             yield put({type: 'INITEND'})
             removeToken()
+        } else if (resultcode === 100) {
+            console.log(message)
         }
     } catch (error) {
         //сделать здесь оффлайн режим

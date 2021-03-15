@@ -2,6 +2,13 @@ export const sendMessage = (message) => ({
     type: 'SENDMESSAGE',
     message,
 })
-export const getMessages = () => ({type: 'GETMESSAGES'})
 export const disconnect = () => ({type: 'SOCKETOFF'})
-export const connectChat = () => ({type: 'CHATON'})
+export const selectChat = (id, name, valid) => ({
+    type: 'SELECTCHAT',
+    payload: {id, name, valid},
+})
+
+export const sendPrivateMessage = (data) => ({
+    type: 'SENDPRIVATEMESSAGE',
+    data,
+})

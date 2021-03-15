@@ -1,18 +1,12 @@
 import s from './chat.module.css'
-import {Field, reduxForm, reset} from 'redux-form'
 import {Component} from 'react'
+import {Field} from 'redux-form'
 import Message from './message/Message'
-import Avatar from '../../assets/img/avatar.png'
-import Connection from '../util/connection/connection'
+import Avatar from '../../../assets/img/avatar.png'
+import Connection from '../../util/connection/connection'
+import {reduxForm, reset} from 'redux-form'
 
-class ChatForm extends Component {
-    componentDidMount() {
-        this.props.connectChat()
-        this.props.getMessages()
-    }
-    componentWillUnmount() {
-        this.props.disconnect()
-    }
+class Chat extends Component {
     formSubmite(e) {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
@@ -24,17 +18,15 @@ class ChatForm extends Component {
         const messagesElements = this.props.messageData.map((m) => {
             return <Message key={m.mid} login={m.login} message={m.message} />
         })
-
         return (
-            <div className={s.chatBody}>
+            <>
                 <Connection connection={this.props.connection}>
                     <div className={s.chat}>
                         <div className={s.header}>
                             <img src={Avatar} className={s.avatar} alt='avatar' />
-
                             <div className={s.about}>
-                                <div className={s.companion}>Новиков Паша</div>
-                                <div className={s.total}>Отправил дохуилярд сообщений</div>
+                                <div className={s.companion}>{this.props.chatWith.name}</div>
+                                <div className={s.total}>Много сообщений</div>
                             </div>
                         </div>
                         <div className={s.history} id={'history'}>
@@ -53,24 +45,30 @@ class ChatForm extends Component {
                         </form>
                     </div>
                 </Connection>
-            </div>
+            </>
         )
     }
 }
 
 const ChatReduxForm = reduxForm({
     form: 'chatForm',
-})(ChatForm)
+})(Chat)
 
-const Chat = ({sendMessage, login, ...props}) => {
+const ChatHandler = ({sendMessage, sendPrivateMessage, selectChat, login, ...props}) => {
     const onSubmit = (formValues, dispatch) => {
-        sendMessage({
-            message: formValues.message,
-            login: login,
-        })
+        props.chatWith.valid
+            ? sendPrivateMessage({
+                  content: formValues.message,
+                  from: login,
+                  to: props.chatWith.id,
+              })
+            : sendMessage({
+                  message: formValues.message,
+                  login: login,
+              })
+
         dispatch(reset('chatForm'))
     }
     return <ChatReduxForm {...props} onSubmit={onSubmit} />
 }
-
-export default Chat
+export default ChatHandler
