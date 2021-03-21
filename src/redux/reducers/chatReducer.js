@@ -1,21 +1,23 @@
 let initialState = {
     usersData: [],
-    messageData: [],
+    messagesData: [
+        /* {toUserID: [{mid, message}]} */
+    ],
     connect: true,
     chatWith: {id: 'message', name: 'Общий чат', valid: true},
 }
 //почистить action слова что бы небыло хлама!!!
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'GETMESSAGE':
-            return {
-                ...state,
-                messageData: [...state.messageData, action.payload],
-            }
         case 'GETMESSAGESDATA':
             return {
                 ...state,
-                messageData: action.payload,
+                messagesData: action.payload,
+            }
+        case 'GETMESSAGE':
+            return {
+                ...state,
+                messagesData: [...state.messagesData, action.payload],
             }
         case 'CONNECTIONTRUE':
             return {

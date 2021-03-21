@@ -1,6 +1,6 @@
 import {eventChannel} from '@redux-saga/core'
 import {take, put, call, fork, takeEvery, all, cancelled, cancel, select} from 'redux-saga/effects'
-import {messageModule} from './messageModule'
+import {messagesModule} from './messageModule'
 import {userModule} from './userModule'
 const io = require('socket.io-client')
 export function* socket() {
@@ -15,8 +15,28 @@ function* SocketDisconnect(socket) {
     socket.disconnect()
     yield put({type: 'SOCKETISDISCONNECTED'})
 }
-//воспользоваться штуками из книги (телефон)!!
-//исправить проблему дублирования АЛЯ сделать доставание ключа из localstorage при перезагрузке что бы он подтверждал одну личность а не думал что это новый человек
+function* getSession(socket) {
+    socket.on('session', ({sessionID, userID}) => {
+        localStorage.setItem('sessionID', sessionID)
+        socket.auth = {sessionID}
+        socket.userID = userID
+    })
+}
+function* SocketConnect(socket, {payload}) {
+    const sessionID = localStorage.getItem('sessionID')
+    socket.auth = {sessionID, username: payload}
+    yield socket.connect()
+    yield call(getSession, socket)
+    const [...socketProcess] = yield all([
+        call(connection, socket),
+        call(userModule, socket),
+        call(messagesModule, socket),
+    ])
+    while (true) {
+        yield take('SOCKETISDISCONNECTED')
+        yield cancel(socketProcess)
+    }
+}
 function* connection(socket) {
     const [connectsOn, connectsOFF] = yield all([call(connectOn, socket), call(connectOff, socket)])
     while (true) {
@@ -44,25 +64,5 @@ function* connectOff(socket) {
         return () => {}
     })
 }
-function* getSession(socket) {
-    socket.on('session', ({sessionID, userID}) => {
-        localStorage.setItem('sessionID', sessionID)
-        socket.auth = {sessionID}
-        socket.userID = userID
-    })
-}
-function* SocketConnect(socket, {payload}) {
-    const sessionID = localStorage.getItem('sessionID')
-    socket.auth = {sessionID, username: payload}
-    yield socket.connect()
-    yield call(getSession, socket)
-    const [...socketProcess] = yield all([
-        call(connection, socket),
-        call(userModule, socket),
-        call(messageModule, socket),
-    ])
-    while (true) {
-        yield take('SOCKETISDISCONNECTED')
-        yield cancel(socketProcess)
-    }
-}
+//сделать систему как описано в телефоне
+// исправить штуки (телефон)

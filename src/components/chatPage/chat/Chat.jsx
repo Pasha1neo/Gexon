@@ -15,9 +15,9 @@ class Chat extends Component {
         }
     }
     render() {
-        const messagesElements = this.props.messageData.map((m) => {
-            return <Message key={m.mid} login={m.login} message={m.message} />
-        })
+        // .map((m) => {
+        //     return <Message key={m.key} login={this.props.chatWith.name} message={m.value} />
+        // })
         return (
             <>
                 <Connection connection={this.props.connection}>
@@ -25,12 +25,12 @@ class Chat extends Component {
                         <div className={s.header}>
                             <img src={Avatar} className={s.avatar} alt='avatar' />
                             <div className={s.about}>
-                                <div className={s.companion}>{this.props.chatWith.name}</div>
+                                <div className={s.companion}>{this.props.name}</div>
                                 <div className={s.total}>Много сообщений</div>
                             </div>
                         </div>
                         <div className={s.history} id={'history'}>
-                            {messagesElements}
+                            {/* {messagesElements} */}
                         </div>
                         <form onSubmit={this.props.handleSubmit} className={s.form}>
                             <Field
@@ -54,19 +54,12 @@ const ChatReduxForm = reduxForm({
     form: 'chatForm',
 })(Chat)
 
-const ChatHandler = ({sendMessage, sendPrivateMessage, selectChat, login, ...props}) => {
+const ChatHandler = ({sendMessage, ...props}) => {
     const onSubmit = (formValues, dispatch) => {
-        props.chatWith.valid
-            ? sendPrivateMessage({
-                  content: formValues.message,
-                  from: login,
-                  to: props.chatWith.id,
-              })
-            : sendMessage({
-                  message: formValues.message,
-                  login: login,
-              })
-
+        sendMessage({
+            toUserID: props.id,
+            msg: formValues.message,
+        })
         dispatch(reset('chatForm'))
     }
     return <ChatReduxForm {...props} onSubmit={onSubmit} />
