@@ -1,53 +1,60 @@
 import s from './chat.module.css'
-import {Component} from 'react'
 import {Field} from 'redux-form'
 import Message from './message/Message'
 import Avatar from '../../../assets/img/avatar.png'
 import Connection from '../../util/connection/connection'
 import {reduxForm, reset} from 'redux-form'
+import {useEffect, useRef} from 'react'
 
-class Chat extends Component {
-    formSubmite(e) {
+const Chat = ({dialog, handleSubmit}) => {
+    const history = useRef(null)
+    const scrollToBottom = () => {
+        history.current.scrollIntoView({behavior: 'smooth'})
+    }
+    useEffect(() => {
+        scrollToBottom()
+    }, [dialog.messages])
+    function formSubmite(e) {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
-            this.props.handleSubmit()
+            handleSubmit()
             return false
         }
     }
-    render() {
-        // .map((m) => {
-        //     return <Message key={m.key} login={this.props.chatWith.name} message={m.value} />
-        // })
-        return (
-            <>
-                <Connection connection={this.props.connection}>
-                    <div className={s.chat}>
-                        <div className={s.header}>
-                            <img src={Avatar} className={s.avatar} alt='avatar' />
-                            <div className={s.about}>
-                                <div className={s.companion}>{this.props.name}</div>
-                                <div className={s.total}>Много сообщений</div>
-                            </div>
-                        </div>
-                        <div className={s.history} id={'history'}>
-                            {/* {messagesElements} */}
-                        </div>
-                        <form onSubmit={this.props.handleSubmit} className={s.form}>
-                            <Field
-                                component={'textarea'}
-                                className={s.textarea}
-                                type={'text'}
-                                name={'message'}
-                                placeholder={'Сообщение'}
-                                onKeyUp={(e) => this.formSubmite(e)}
-                            />
-                            <button className={s.send}>Отправить</button>
-                        </form>
+
+    const messagesElements = dialog.messages.map((m) => {
+        return <Message key={m.mid} login={'Pasha1neo'} message={m.message} />
+    })
+    return (
+        <>
+            <div className={s.chat}>
+                <div className={s.header}>
+                    <img src={Avatar} className={s.avatar} alt='avatar' />
+                    <div className={s.about}>
+                        <div className={s.companion}>{'PASHA1NEO'}</div>
+                        <div className={s.total}>Много сообщений</div>
                     </div>
-                </Connection>
-            </>
-        )
-    }
+                </div>
+                <div className={s.history} id={'history'}>
+                    <div>{messagesElements}</div>
+                    <div ref={history} />
+                </div>
+                <form onSubmit={handleSubmit} className={s.form}>
+                    <Field
+                        component={'textarea'}
+                        className={s.textarea}
+                        type={'text'}
+                        name={'message'}
+                        placeholder={'Сообщение'}
+                        onKeyUp={(e) => formSubmite(e)}
+                    />
+                    <button className={s.send}>Отправить</button>
+                </form>
+            </div>
+            {/* <Connection connection={props.connection}>
+            </Connection> */}
+        </>
+    )
 }
 
 const ChatReduxForm = reduxForm({
@@ -57,7 +64,7 @@ const ChatReduxForm = reduxForm({
 const ChatHandler = ({sendMessage, ...props}) => {
     const onSubmit = (formValues, dispatch) => {
         sendMessage({
-            toUserID: props.id,
+            tid: props.dialog.wid,
             msg: formValues.message,
         })
         dispatch(reset('chatForm'))

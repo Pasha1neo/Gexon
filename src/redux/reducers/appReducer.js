@@ -3,24 +3,30 @@ let initialState = {
     userId: null,
     email: null,
     isAuth: false,
-    initialized: false,
+    appReady: false,
+    chatReady: false,
 }
 const appReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'INITSTART':
+        case 'APP:INIT:PROCESS':
             return {
                 ...state,
-                initialized: false,
+                appReady: false,
             }
-        case 'INITEND':
+        case 'APP:INIT:END':
             return {
                 ...state,
-                initialized: true,
+                appReady: true,
             }
-        case 'SETUSERDATA':
+        case 'USER:DATA:SET':
             return {
                 ...state,
                 ...action.payload,
+            }
+        case 'CHATREADY':
+            return {
+                ...state,
+                chatReady: true,
             }
         default:
             return state

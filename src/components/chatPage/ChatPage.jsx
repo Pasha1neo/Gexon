@@ -1,48 +1,41 @@
-import {memo, useEffect} from 'react'
+import s from './chatPage.module.css'
 import {connect} from 'react-redux'
 import {compose} from 'redux'
-import {sendMessage, disconnect, selectChat} from '../../redux/actions/chat'
-import {withAuthRedurect} from '../util/redirectHOC/authRedirect'
-import {useQuery} from '../util/querryId/querryId'
-import {searchDialogsById} from '../util/searchDialogsById/searchDialogsById'
+import {sendMessage, selectChat} from '../../redux/actions/chat'
 import UsersList from './userslist/UsersList'
 import ChatHandler from './chat/Chat'
-import s from './chatPage.module.css'
-import {nameSearchById} from '../util/nameSearchById/nameSearchById'
-import {Redirect} from 'react-router'
+import {withAuthRedurect} from '../util/redirect/authRedirect'
+import _ from 'lodash'
+import {useEffect} from 'react'
+import {withRouter} from 'react-router'
 
-const ChatPage = ({selectChat, usersData, chatWith, ...props}) => {
-    const querryId = useQuery().get('id') || 'message'
+const ChatPage = (props) => {
     useEffect(() => {
-        const room = querryId
-        const {username, valid} = nameSearchById(room, usersData)
-        selectChat(room, username, valid)
-    }, [querryId])
-    useEffect(() => {
-        searchDialogsById(chatWith.id, props.messagesData)
-    }, [chatWith])
+        const {pathname} = props.location
+        const dialogId = pathname.split('/').pop()
+        props.selectChat(dialogId)
+    }, [props.location.pathname])
     return (
         <div className={s.chatBody}>
-            <UsersList usersData={usersData} />
-            {!chatWith.valid && <Redirect to={'/chat'} />}
-            <ChatHandler name={chatWith.name} id={chatWith.id} {...props} />
+            <UsersList users={props.users} />
+            <ChatHandler
+                connect={props.connect}
+                dialog={_.find(props.dialogsData, {wid: props.with})}
+                sendMessage={props.sendMessage}
+            />
         </div>
     )
 }
 
 const mapStateToProps = (state) => ({
-    connection: state.chat.connect,
-    usersData: state.chat.usersData,
-    messagesData: state.chat.messagesData,
-    chatWith: state.chat.chatWith,
+    connect: state.chat.connect,
+    users: state.chat.usersData,
+    dialogsData: state.chat.dialogsData,
+    with: state.chat.wid,
+    chatReady: state.chat.chatReady,
 })
-const mapDispatchToProps = {
-    sendMessage,
-    disconnect,
-    selectChat,
-}
 export default compose(
-    memo,
+    connect(mapStateToProps, {sendMessage, selectChat}),
     withAuthRedurect,
-    connect(mapStateToProps, mapDispatchToProps)
+    withRouter
 )(ChatPage)

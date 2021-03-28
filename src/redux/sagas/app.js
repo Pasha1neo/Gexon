@@ -3,7 +3,38 @@ import {SignAPI} from '../../api/api'
 export const getToken = () => localStorage.getItem('token')
 export const setToken = (token) => localStorage.setItem('token', token)
 export const removeToken = () => localStorage.removeItem('token')
-
+export function* authentification() {
+    yield takeEvery('APP:INIT:START', auth)
+    yield takeEvery('SIGN:UP', registration)
+    yield takeEvery('LOGIN', login)
+    yield takeEvery('LOG:OUT', logout)
+}
+function* auth() {
+    try {
+        yield put({type: 'APP:INIT:PROCESS'})
+        const tokens = getToken()
+        const {user, token, resultcode, message} = yield call(SignAPI.auth, tokens)
+        if (resultcode === 200) {
+            yield setToken(token)
+            yield put({
+                type: 'USER:DATA:SET',
+                payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
+            })
+            yield put({type: 'APP:INIT:END'})
+            yield put({type: 'SOCKET:ON', payload: user.login})
+        } else if (resultcode === 101) {
+            yield put({type: 'APP:INIT:END'})
+            removeToken()
+        } else if (resultcode === 100) {
+            console.log(message)
+        }
+    } catch (error) {
+        //сделать здесь оффлайн режим
+        yield put({type: 'APP:INIT:END'})
+        removeToken()
+        console.log('Ошибка в app саге')
+    }
+}
 function* registration({login, email, password, password_2}) {
     if (password !== password_2) {
         alert('пароли не совпадают')
@@ -19,50 +50,18 @@ function* login({login, password, rememberMe}) {
     if (resultcode === 200) {
         setToken(token)
         yield put({
-            type: 'SETUSERDATA',
+            type: 'USER:DATA:SET',
             payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
         })
-        yield put({type: 'SOCKETON', payload: user.login})
+        yield put({type: 'SOCKET:ON', payload: user.login})
     }
 }
-function* auth() {
-    try {
-        yield put({type: 'INITSTART'})
-        const tokens = getToken()
-        const {user, token, resultcode, message} = yield call(SignAPI.auth, tokens)
-        if (resultcode === 200) {
-            setToken(token)
-            yield put({
-                type: 'SETUSERDATA',
-                payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
-            })
-            yield put({type: 'CHECKTOKEN', payload: true})
-            yield put({type: 'INITEND'})
-            yield put({type: 'SOCKETON', payload: user.login})
-        } else if (resultcode === 101) {
-            yield put({type: 'INITEND'})
-            removeToken()
-        } else if (resultcode === 100) {
-            console.log(message)
-        }
-    } catch (error) {
-        //сделать здесь оффлайн режим
-        yield put({type: 'INITEND'})
-        removeToken()
-        console.log('Ошибка сервера')
-    }
-}
+
 function* logout() {
-    yield put({type: 'SOCKETOFF'})
+    yield put({type: 'SOCKET:OFF'})
     removeToken()
     yield put({
-        type: 'SETUSERDATA',
+        type: 'USER:DATA:SET',
         payload: {login: null, userId: null, email: null, isAuth: false},
     })
-}
-export function* authentification() {
-    yield takeEvery('REGISTRATION', registration)
-    yield takeEvery('LOGIN', login)
-    yield takeEvery('INITAPP', auth)
-    yield takeEvery('LOGOUT', logout)
 }

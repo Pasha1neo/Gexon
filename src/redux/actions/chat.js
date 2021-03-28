@@ -1,12 +1,9 @@
-export const sendMessage = (data) => {
-    return {
-        type: 'SENDMESSAGE',
-        data,
-    }
-}
+export const sendMessage = (data) => ({
+    type: 'MESSAGE:SEND',
+    data,
+})
 
-export const disconnect = () => ({type: 'SOCKETOFF'})
-export const selectChat = (id, name, valid) => ({
-    type: 'SELECTCHAT',
-    payload: {id, name, valid},
+export const selectChat = (id) => ({
+    type: 'DIALOG:SELECT:START',
+    id,
 })

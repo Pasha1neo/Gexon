@@ -1,19 +1,28 @@
 import {eventChannel} from '@redux-saga/core'
 import {take, put, call, fork, takeEvery, all, cancelled, cancel, select} from 'redux-saga/effects'
-import {messagesModule} from './messageModule'
-import {userModule} from './userModule'
+import {messageModule} from './socket/messageModule'
+import {userModule} from './socket/userModule'
+
 const io = require('socket.io-client')
 export function* socket() {
     const socket = io({autoConnect: false})
-    yield takeEvery('SOCKETON', SocketConnect, socket)
-    yield takeEvery('SOCKETOFF', SocketDisconnect, socket)
+    yield takeEvery('SOCKET:OFF', SocketDisconnect, socket)
+    yield takeEvery('SOCKET:ON', SocketConnect, socket)
 }
 function* SocketDisconnect(socket) {
     socket.off('user connected')
     socket.off('user disconnected')
     socket.off('private message')
     socket.disconnect()
-    yield put({type: 'SOCKETISDISCONNECTED'})
+}
+function* SocketConnect(socket, {payload}) {
+    const sessionID = yield localStorage.getItem('sessionID')
+    socket.auth = {sessionID, username: payload}
+    yield socket.connect()
+    yield call(getSession, socket)
+    // yield fork(connection, socket)
+    yield fork(userModule, socket)
+    yield fork(messageModule, socket)
 }
 function* getSession(socket) {
     socket.on('session', ({sessionID, userID}) => {
@@ -21,21 +30,6 @@ function* getSession(socket) {
         socket.auth = {sessionID}
         socket.userID = userID
     })
-}
-function* SocketConnect(socket, {payload}) {
-    const sessionID = localStorage.getItem('sessionID')
-    socket.auth = {sessionID, username: payload}
-    yield socket.connect()
-    yield call(getSession, socket)
-    const [...socketProcess] = yield all([
-        call(connection, socket),
-        call(userModule, socket),
-        call(messagesModule, socket),
-    ])
-    while (true) {
-        yield take('SOCKETISDISCONNECTED')
-        yield cancel(socketProcess)
-    }
 }
 function* connection(socket) {
     const [connectsOn, connectsOFF] = yield all([call(connectOn, socket), call(connectOff, socket)])
@@ -64,5 +58,3 @@ function* connectOff(socket) {
         return () => {}
     })
 }
-//сделать систему как описано в телефоне
-// исправить штуки (телефон)

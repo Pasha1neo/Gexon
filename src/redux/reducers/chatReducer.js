@@ -1,24 +1,48 @@
+import _ from 'lodash'
 let initialState = {
-    usersData: [],
-    messagesData: [
-        /* {toUserID: [{mid, message}]} */
-    ],
     connect: true,
-    chatWith: {id: 'message', name: 'Общий чат', valid: true},
+    usersData: [],
+    dialogsData: [],
+    wid: 'chat',
 }
-//почистить action слова что бы небыло хлама!!!
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'GETMESSAGESDATA':
+        case 'USERS:DATA:GET':
             return {
                 ...state,
-                messagesData: action.payload,
+                usersData: action.payload,
             }
-        case 'GETMESSAGE':
+        case 'USER:CONNECT':
             return {
                 ...state,
-                messagesData: [...state.messagesData, action.payload],
+                usersData: [...state.usersData, action.payload],
             }
+        case 'USER:SET:STATUS':
+            return {
+                ...state,
+                usersData: action.usersData,
+            }
+        case 'MESSAGE:GET:DATA':
+            return {
+                ...state,
+                dialogsData: action.payload,
+            }
+        case 'DIALOG:SELECT:END':
+            return {
+                ...state,
+                wid: action.payload,
+            }
+        case 'DIALOG:CREATE':
+            return {
+                ...state,
+                dialogsData: [...state.dialogsData, action.payload],
+            }
+        case 'MESSAGE:GET': {
+            return {
+                ...state,
+                dialogsData: action.payload,
+            }
+        }
         case 'CONNECTIONTRUE':
             return {
                 ...state,
@@ -29,26 +53,7 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
                 connect: false,
             }
-        case 'SELECTCHAT':
-            return {
-                ...state,
-                chatWith: action.payload,
-            }
-        case 'GETUSERSDATA':
-            return {
-                ...state,
-                usersData: action.payload,
-            }
-        case 'USERCONNECTED':
-            return {
-                ...state,
-                usersData: [...state.usersData, action.payload],
-            }
-        case 'SETUSERNEWSTATUS':
-            return {
-                ...state,
-                usersData: action.usersData,
-            }
+
         default:
             return state
     }
