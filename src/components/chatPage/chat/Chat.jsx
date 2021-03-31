@@ -4,55 +4,65 @@ import Message from './message/Message'
 import Avatar from '../../../assets/img/avatar.png'
 import Connection from '../../util/connection/connection'
 import {reduxForm, reset} from 'redux-form'
-import {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
+import _ from 'lodash'
 
-const Chat = ({dialog, handleSubmit}) => {
+const Chat = (props) => {
     const history = useRef(null)
-    const scrollToBottom = () => {
-        history.current.scrollIntoView({behavior: 'smooth'})
-    }
+
     useEffect(() => {
-        scrollToBottom()
-    }, [dialog.messages])
+        history.current.scrollIntoView({behavior: 'smooth'})
+    }, [props.dialog.messages])
     function formSubmite(e) {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
-            handleSubmit()
+            props.handleSubmit()
             return false
         }
     }
-
-    const messagesElements = dialog.messages.map((m) => {
-        return <Message key={m.mid} login={'Pasha1neo'} message={m.message} />
+    const messagesElements = props.dialog.messages.map((m) => {
+        return (
+            <Message
+                key={m.mid}
+                login={_.find(props.users, {userID: m.from}).username}
+                message={m.message}
+                me={m.from === props.me}
+            />
+        )
     })
+
+    const chatname =
+        props.dialog.wid !== 'chat'
+            ? _.find(props.users, {userID: props.dialog.wid}).username
+            : 'Общий чат'
     return (
         <>
-            <div className={s.chat}>
-                <div className={s.header}>
-                    <img src={Avatar} className={s.avatar} alt='avatar' />
-                    <div className={s.about}>
-                        <div className={s.companion}>{'PASHA1NEO'}</div>
-                        <div className={s.total}>Много сообщений</div>
+            <Connection connection={props.connect}>
+                <div className={s.chat}>
+                    <div className={s.header}>
+                        <img src={Avatar} className={s.avatar} alt='avatar' />
+                        <div className={s.about}>
+                            <div className={s.companion}>{chatname}</div>
+                            <div className={s.total}>{props.dialog.messages.length}</div>
+                        </div>
                     </div>
+                    <div className={s.history} id={'history'}>
+                        {messagesElements}
+                        <div ref={history} />
+                    </div>
+                    <form onSubmit={props.handleSubmit} className={s.form}>
+                        <Field
+                            component={'textarea'}
+                            className={s.textarea}
+                            type={'text'}
+                            name={'message'}
+                            placeholder={'Сообщение'}
+                            onKeyUp={(e) => formSubmite(e)}
+                        />
+                        <button className={s.send}>Отправить</button>
+                    </form>
                 </div>
-                <div className={s.history} id={'history'}>
-                    <div>{messagesElements}</div>
-                    <div ref={history} />
-                </div>
-                <form onSubmit={handleSubmit} className={s.form}>
-                    <Field
-                        component={'textarea'}
-                        className={s.textarea}
-                        type={'text'}
-                        name={'message'}
-                        placeholder={'Сообщение'}
-                        onKeyUp={(e) => formSubmite(e)}
-                    />
-                    <button className={s.send}>Отправить</button>
-                </form>
-            </div>
-            {/* <Connection connection={props.connection}>
-            </Connection> */}
+            </Connection>
         </>
     )
 }

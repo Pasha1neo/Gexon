@@ -1,29 +1,22 @@
 .chat {
+    display: flex;
+    flex-direction: column;
     width: 500px;
     background: #74b9ff;
-    border-radius: 5px;
+    border-radius: 0 20px 20px 0;
+    height: 85vh;
 }
 .header {
-    padding: 20px;
+    display: flex;
+    padding: 15px;
     border-bottom: 2px solid white;
-}
-.header:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: ' ';
-    clear: both;
-    height: 0;
 }
 .avatar {
     height: 50px;
     border-radius: 50%;
-    float: left;
 }
 .about {
-    float: left;
-    padding-left: 10px;
-    margin-top: 6px;
+    margin-left: 30px;
 }
 .companion {
     font-weight: bold;
@@ -35,25 +28,38 @@
 .history {
     padding: 30px 30px 20px;
     border-bottom: 2px solid white;
+    background-color: #5595ff;
     overflow-y: scroll;
-    height: 575px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.history::-webkit-scrollbar {
+    width: 5px;
+    height: 7px;
 }
 .form {
-    padding: 30px;
+    height: 80px;
+    display: flex;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 .textarea {
+    height: 50px;
+    resize: vertical;
     outline: none;
-    width: 100%;
+    display: block;
     border: none;
     font: 14px/22px 'Lato', Arial, sans-serif;
-    margin-bottom: 10px;
     border-radius: 5px;
 }
 .textarea::-webkit-resizer {
     display: none;
 }
 .send {
-    float: right;
+    margin-top: 10px;
+    margin-left: auto;
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -62,8 +68,4 @@
 }
 .send:hover {
     color: black;
-}
-.history::-webkit-scrollbar {
-    width: 5px;
-    height: 7px;
 }

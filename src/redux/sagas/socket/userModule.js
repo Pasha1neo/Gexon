@@ -1,5 +1,5 @@
 import {eventChannel} from '@redux-saga/core'
-import {take, put, call, fork, takeEvery, select} from 'redux-saga/effects'
+import {take, put, call, fork, takeEvery, select, race} from 'redux-saga/effects'
 import _ from 'lodash'
 
 function getUsersData(state) {
@@ -8,13 +8,13 @@ function getUsersData(state) {
 
 export function* userModule(socket) {
     yield call(watcherGetUsers, socket)
-    yield fork(userConnect, socket)
-    yield fork(userDisconnect, socket)
+    yield fork(userStatus, socket)
 }
 
 function* watcherGetUsers(socket) {
     const data = yield call(workerGetUsers, socket)
     const payload = yield take(data)
+    yield put({type: 'USER:SET:THIS', payload: _.find(payload, {userID: socket.userID})})
     yield put({type: 'USERS:DATA:GET', payload})
     yield socket.off('users')
 }
@@ -25,62 +25,39 @@ function* workerGetUsers(socket) {
     })
 }
 
-function* userConnect(socket) {
-    const data = yield call(getUserConnect, socket)
-    while (true) {
-        const user = yield take(data)
-        const result = yield call(checkDublicate, user)
-        yield put(result)
-    }
-}
-//название сокета может быть неправильным
-function* getUserConnect(socket) {
+function* getUserStatus(socket) {
     return new eventChannel((emitter) => {
         socket.on('USER:CONNECTED', (user) => emitter(user))
-        return () => {}
-    })
-}
-function* checkDublicate(user) {
-    const usersData = yield select(getUsersData)
-    const result = _.find(usersData, {key: user.Key})
-    if (result) {
-        const payload = usersData.map((itemUser) => {
-            if (itemUser.key === user.key) {
-                return user
-            } else {
-                return itemUser
-            }
-        })
-        return {
-            type: 'USER:SET:STATUS',
-            payload,
-        }
-    } else {
-        return {
-            type: 'USER:CONNECT',
-            payload: user,
-        }
-    }
-}
-
-function* userDisconnect(socket) {
-    const data = yield call(getUserDisconnect, socket)
-    while (true) {
-        const userID = yield take(data)
-        const usersData = yield select(getUsersData)
-        const payload = usersData.map((user) =>
-            user.key === userID ? {...user, ...(user.value.connected = false)} : user
-        )
-        yield put({
-            type: 'USER:SET:STATUS',
-            payload,
-        })
-    }
-}
-//название сокета может быть неправильным
-function* getUserDisconnect(socket) {
-    return new eventChannel((emitter) => {
         socket.on('USER:DISCONNECTED', (user) => emitter(user))
         return () => {}
     })
+}
+
+function* userStatus(socket) {
+    const data = yield call(getUserStatus, socket)
+    while (true) {
+        const user = yield take(data)
+        const result = yield call(checkUsers, user)
+        yield put(result)
+    }
+}
+function* checkUsers(user) {
+    const usersData = yield select(getUsersData)
+    const result = _.find(usersData, {userID: user.userID})
+    if (result) {
+        const payload = usersData.map((u) => {
+            if (user.userID === u.userID) {
+                return {...u, connected: !u.connected}
+            }
+            return u
+        })
+        return {
+            type: 'USER:SET:CONNECT',
+            payload,
+        }
+    }
+    return {
+        type: 'USER:CONNECT',
+        payload: user,
+    }
 }

@@ -1,9 +1,10 @@
 import _ from 'lodash'
 let initialState = {
     connect: true,
-    usersData: [],
-    dialogsData: [],
+    usersData: null,
+    dialogsData: null,
     wid: 'chat',
+    user: null,
 }
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -17,10 +18,10 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
                 usersData: [...state.usersData, action.payload],
             }
-        case 'USER:SET:STATUS':
+        case 'USER:SET:CONNECT':
             return {
                 ...state,
-                usersData: action.usersData,
+                usersData: action.payload,
             }
         case 'MESSAGE:GET:DATA':
             return {
@@ -43,17 +44,22 @@ const chatReducer = (state = initialState, action) => {
                 dialogsData: action.payload,
             }
         }
-        case 'CONNECTIONTRUE':
+        case 'CHAT:CONNECT':
             return {
                 ...state,
                 connect: true,
             }
-        case 'CONNECTIONFALSE':
+        case 'CHAT:DISCONNECT':
             return {
                 ...state,
                 connect: false,
             }
-
+        case 'USER:SET:THIS': {
+            return {
+                ...state,
+                user: action.payload,
+            }
+        }
         default:
             return state
     }

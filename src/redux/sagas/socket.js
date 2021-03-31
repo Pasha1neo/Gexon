@@ -20,7 +20,7 @@ function* SocketConnect(socket, {payload}) {
     socket.auth = {sessionID, username: payload}
     yield socket.connect()
     yield call(getSession, socket)
-    // yield fork(connection, socket)
+    yield fork(connection, socket)
     yield fork(userModule, socket)
     yield fork(messageModule, socket)
 }
@@ -31,30 +31,16 @@ function* getSession(socket) {
         socket.userID = userID
     })
 }
+function* chatConnection(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('connect', () => emitter({type: 'CHAT:CONNECT'}))
+        socket.on('disconnect', () => emitter({type: 'CHAT:DISCONNECT'}))
+        return () => {}
+    })
+}
 function* connection(socket) {
-    const [connectsOn, connectsOFF] = yield all([call(connectOn, socket), call(connectOff, socket)])
+    const connection = yield call(chatConnection, socket)
     while (true) {
-        yield put(yield take(connectsOn))
-        yield put(yield take(connectsOFF))
+        yield put(yield take(connection))
     }
-}
-function* connectOn(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('connect', () => {
-            emitter({
-                type: 'CONNECTIONTRUE',
-            })
-        })
-        return () => {}
-    })
-}
-function* connectOff(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('disconnect', () => {
-            emitter({
-                type: 'CONNECTIONFALSE',
-            })
-        })
-        return () => {}
-    })
 }

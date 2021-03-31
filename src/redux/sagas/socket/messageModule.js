@@ -8,6 +8,7 @@ export function* messageModule(socket) {
     yield call(watcherGetMessagesData, socket)
     yield fork(watcherGetNewMessage, socket)
     yield takeEvery('MESSAGE:SEND', sendMessage, socket)
+    yield takeEvery('MESSAGE:READ', messageRead, socket)
 }
 function* watcherGetMessagesData(socket) {
     const data = yield call(getMessagesData, socket)
@@ -47,4 +48,7 @@ function* newMessage(wid, message) {
 
 function* sendMessage(socket, {data}) {
     socket.emit('SEND:MESSAGE', data)
+}
+function* messageRead(socket, {mid}) {
+    socket.emit('MESSAGE:READ', mid)
 }
