@@ -45,3 +45,22 @@
     margin-left: 5px;
     color: #ffffff;
 }
+.change {
+    fill: red;
+    width: 15px;
+    margin-top: 5px;
+    height: 15px;
+}
+.change:hover {
+    cursor: pointer;
+}
+.textChange {
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    padding-left: 10px;
+    width: 120px;
+}
+.read {
+    color: #828282;
+}

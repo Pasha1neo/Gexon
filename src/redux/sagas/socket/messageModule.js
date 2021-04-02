@@ -7,7 +7,10 @@ function getDialogsData(state) {
 export function* messageModule(socket) {
     yield call(watcherGetMessagesData, socket)
     yield fork(watcherGetNewMessage, socket)
+    yield fork(watcherGetChangedMessage, socket)
+    yield fork(watcherGetReadedMessage, socket)
     yield takeEvery('MESSAGE:SEND', sendMessage, socket)
+    yield takeEvery('MESSAGE:CHANGE', messageChane, socket)
     yield takeEvery('MESSAGE:READ', messageRead, socket)
 }
 function* watcherGetMessagesData(socket) {
@@ -45,10 +48,54 @@ function* newMessage(wid, message) {
     }
     yield put({type: 'MESSAGE:GET', payload: dialogsData})
 }
-
 function* sendMessage(socket, {data}) {
     socket.emit('SEND:MESSAGE', data)
 }
-function* messageRead(socket, {mid}) {
-    socket.emit('MESSAGE:READ', mid)
+function* messageChane(socket, {wid, mid, message}) {
+    socket.emit('MESSAGE:CHANGE', wid, mid, message)
+}
+function* getChangedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('MESSAGE:CHANGED', (data) => emitter(data))
+        return () => {}
+    })
+}
+function* watcherGetChangedMessage(socket) {
+    const data = yield call(getChangedMessage, socket)
+    while (true) {
+        const {wid, mid, message} = yield take(data)
+        yield call(changeMessage, wid, mid, message)
+    }
+}
+function* changeMessage(wid, mid, message) {
+    const dialogsData = yield select(getDialogsData)
+    const dialog = _.find(dialogsData, {wid})
+    if (dialog) {
+        _.find(dialog.messages, {mid}).message = message
+        yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
+    }
+}
+function* messageRead(socket, {wid, mid}) {
+    socket.emit('MESSAGE:READ', wid, mid)
+}
+function* getReadedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('MESSAGE:READED', (data) => emitter(data))
+        return () => {}
+    })
+}
+function* watcherGetReadedMessage(socket) {
+    const data = yield call(getReadedMessage, socket)
+    while (true) {
+        const {wid, mid} = yield take(data)
+        yield call(readedMessage, wid, mid)
+    }
+}
+function* readedMessage(wid, mid) {
+    const dialogsData = yield select(getDialogsData)
+    const dialog = _.find(dialogsData, {wid})
+    if (dialog) {
+        _.find(dialog.messages, {mid}).read = true
+        yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
+    }
 }

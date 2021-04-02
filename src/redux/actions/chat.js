@@ -6,7 +6,14 @@ export const sendMessage = (data) => ({
     type: 'MESSAGE:SEND',
     data,
 })
-export const readMessage = (mid) => ({
+export const changeMessage = (wid, mid, message) => ({
+    type: 'MESSAGE:CHANGE',
+    wid,
+    mid,
+    message,
+})
+export const readMessage = (wid, mid) => ({
     type: 'MESSAGE:READ',
+    wid,
     mid,
 })

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 let initialState = {
     connect: true,
     usersData: null,

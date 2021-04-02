@@ -1,18 +1,14 @@
 import s from './chat.module.css'
 import {Field} from 'redux-form'
-import Message from './message/Message'
+import MessageContainer from './message/Message'
 import Avatar from '../../../assets/img/avatar.png'
 import Connection from '../../util/connection/connection'
 import {reduxForm, reset} from 'redux-form'
-import React, {useEffect, useRef, useState} from 'react'
+import React from 'react'
 import _ from 'lodash'
+import {Redirect} from 'react-router'
 
 const Chat = (props) => {
-    const history = useRef(null)
-
-    useEffect(() => {
-        history.current.scrollIntoView({behavior: 'smooth'})
-    }, [props.dialog.messages])
     function formSubmite(e) {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
@@ -20,21 +16,23 @@ const Chat = (props) => {
             return false
         }
     }
-    const messagesElements = props.dialog.messages.map((m) => {
-        return (
-            <Message
-                key={m.mid}
-                login={_.find(props.users, {userID: m.from}).username}
-                message={m.message}
-                me={m.from === props.me}
-            />
-        )
-    })
-
-    const chatname =
-        props.dialog.wid !== 'chat'
-            ? _.find(props.users, {userID: props.dialog.wid}).username
-            : 'Общий чат'
+    function change(mid, message) {
+        props.changeMessage(props.dialog.wid, mid, message)
+    }
+    function readed(mid) {
+        props.readMessage(props.dialog.wid, mid)
+    }
+    const chatname = () => {
+        if (props.dialog.wid !== 'chat') {
+            const x = _.find(props.users, {userID: props.dialog.wid})
+            if (x) {
+                return x.username
+            }
+            return <Redirect to={'/chat'} />
+        } else {
+            return 'Общий чат'
+        }
+    }
     return (
         <>
             <Connection connection={props.connect}>
@@ -42,13 +40,18 @@ const Chat = (props) => {
                     <div className={s.header}>
                         <img src={Avatar} className={s.avatar} alt='avatar' />
                         <div className={s.about}>
-                            <div className={s.companion}>{chatname}</div>
+                            <div className={s.companion}>{chatname()}</div>
                             <div className={s.total}>{props.dialog.messages.length}</div>
                         </div>
                     </div>
                     <div className={s.history} id={'history'}>
-                        {messagesElements}
-                        <div ref={history} />
+                        <MessageContainer
+                            messages={props.dialog.messages}
+                            change={change}
+                            readed={readed}
+                            users={props.users}
+                            me={props.me}
+                        />
                     </div>
                     <form onSubmit={props.handleSubmit} className={s.form}>
                         <Field
