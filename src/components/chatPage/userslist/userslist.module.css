@@ -5,38 +5,10 @@
 }
 .header {
     background-color: #0f87ff;
-    margin-bottom: 10px;
     padding: 10px;
     border-bottom: 2px solid white;
 }
-.user {
-    height: 45px;
-    background-color: #0081df;
+.content {
     display: flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    margin: 10px;
-    border-radius: 10px;
-}
-.avatar {
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    margin-left: 10px;
-}
-.userContent {
-    display: flex;
-    height: 100%;
-    align-items: center;
-}
-.constat {
-    margin-left: 10px;
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    background-color: crimson;
-}
-.constat.online {
-    background-color: chartreuse;
+    flex-direction: column;
 }

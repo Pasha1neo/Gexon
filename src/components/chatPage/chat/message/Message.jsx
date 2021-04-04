@@ -5,7 +5,7 @@ import Pen from '../../../../assets/img/pen.svg'
 import {InView} from 'react-intersection-observer'
 import _ from 'lodash'
 
-const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, readed}) => {
+const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, readed, withMe}) => {
     const [edit, setEdit] = useState(false)
     const [messagee, setMessage] = useState(message)
 
@@ -48,7 +48,9 @@ const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, r
                 ) : (
                     <div className={s.text}>{message}</div>
                 )}
-                {me && <div className={s.read}>{read ? 'прочитано' : 'непрочитано'}</div>}
+                {me && !withMe && (
+                    <div className={s.read}>{read ? 'прочитано' : 'непрочитано'}</div>
+                )}
             </div>
             {me && (
                 <div
@@ -62,7 +64,7 @@ const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, r
     )
 }
 
-const MessageContainer = ({messages, users, me, change, readed}) => {
+const MessageContainer = ({messages, users, me, change, readed, withMe}) => {
     const messagesMap = messages.map((m) => {
         if (m.read) {
             return (
@@ -76,6 +78,7 @@ const MessageContainer = ({messages, users, me, change, readed}) => {
                     login={_.find(users, {userID: m.from}).username}
                     change={change}
                     readed={readed}
+                    withMe={withMe}
                 />
             )
         }

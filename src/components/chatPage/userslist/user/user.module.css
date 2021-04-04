@@ -1,0 +1,75 @@
+.user {
+    height: 60px;
+    background-color: #0081df;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+.active {
+    background-color: #0495ff;
+}
+.avatar {
+    border: 2px solid #e23838;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.online {
+    border-color: #01b80b;
+}
+.connect {
+    margin-left: 10px;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: crimson;
+}
+.content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+.messageContainer {
+    display: flex;
+    flex-direction: column;
+}
+.name {
+    height: 17px;
+    margin-top: 10px;
+}
+.name:first-letter {
+    text-transform: uppercase;
+}
+.message {
+    margin-top: 7px;
+    display: flex;
+    font-size: 13px;
+    max-width: 141px;
+}
+.msg {
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.readContainer {
+    align-items: center;
+    margin-left: auto;
+    margin-right: 8px;
+    width: 30px;
+    display: flex;
+}
+.unread {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    width: 18px;
+}
+.read {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ffffff;
+}

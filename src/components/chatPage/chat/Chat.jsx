@@ -51,6 +51,7 @@ const Chat = (props) => {
                             readed={readed}
                             users={props.users}
                             me={props.me}
+                            withMe={props.dialog.wid === props.me}
                         />
                     </div>
                     <form onSubmit={props.handleSubmit} className={s.form}>

@@ -17,7 +17,7 @@ const ChatPage = (props) => {
     }, [props.location.pathname])
     return (
         <div className={s.chatBody}>
-            <UsersList users={props.users} />
+            <UsersList users={props.users} dialogsData={props.dialogsData} me={props.me} />
             <ChatHandler
                 users={props.users}
                 connect={props.connect}
