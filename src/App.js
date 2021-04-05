@@ -8,6 +8,7 @@ import {BrowserRouter, Route, withRouter} from 'react-router-dom'
 import store from './redux/store'
 import {compose} from 'redux'
 import {initApp} from './redux/actions/auth'
+import Profile from './components/profilePage/ProfileContainer'
 
 const App = ({initApp, appReady, chatReady}) => {
     useEffect(() => {
@@ -20,6 +21,7 @@ const App = ({initApp, appReady, chatReady}) => {
         <div className='App'>
             <Header />
             <Route exact path='/' render={() => <>Главная страница</>} />
+            <Route path='/profile/:id?' render={() => <Profile />} />
             {chatReady && <Route path='/chat/:id?' render={() => <ChatPage />} />}
         </div>
     )

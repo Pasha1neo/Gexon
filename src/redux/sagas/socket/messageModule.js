@@ -104,7 +104,6 @@ function* readedMessage(wid, mid) {
 function* messageDelete(socket, {wid, mid}) {
     socket.emit('MESSAGE:DELETE', wid, mid)
 }
-
 function* getDeletedMessage(socket) {
     return new eventChannel((emitter) => {
         socket.on('MESSAGE:DELETED', (data) => emitter(data))
