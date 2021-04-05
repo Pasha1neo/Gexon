@@ -1,7 +1,13 @@
 import s from './chatPage.module.css'
 import {connect} from 'react-redux'
 import {compose} from 'redux'
-import {sendMessage, selectChat, readMessage, changeMessage} from '../../redux/actions/chat'
+import {
+    sendMessage,
+    selectChat,
+    readMessage,
+    changeMessage,
+    deleteMessage,
+} from '../../redux/actions/chat'
 import UsersList from './userslist/UsersList'
 import ChatHandler from './chat/Chat'
 import {withAuthRedurect} from '../util/redirect/authRedirect'
@@ -25,6 +31,7 @@ const ChatPage = (props) => {
                 sendMessage={props.sendMessage}
                 readMessage={props.readMessage}
                 changeMessage={props.changeMessage}
+                deleteMessage={props.deleteMessage}
                 me={props.me}
             />
         </div>
@@ -42,6 +49,6 @@ const mapStateToProps = (state) => ({
 })
 export default compose(
     withAuthRedurect,
-    connect(mapStateToProps, {sendMessage, selectChat, readMessage, changeMessage}),
+    connect(mapStateToProps, {sendMessage, selectChat, readMessage, changeMessage, deleteMessage}),
     withRouter
 )(ChatPage)

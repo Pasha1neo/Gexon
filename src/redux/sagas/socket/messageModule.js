@@ -9,9 +9,11 @@ export function* messageModule(socket) {
     yield fork(watcherGetNewMessage, socket)
     yield fork(watcherGetChangedMessage, socket)
     yield fork(watcherGetReadedMessage, socket)
+    yield fork(watcherDeletedMessage, socket)
     yield takeEvery('MESSAGE:SEND', sendMessage, socket)
     yield takeEvery('MESSAGE:CHANGE', messageChane, socket)
     yield takeEvery('MESSAGE:READ', messageRead, socket)
+    yield takeEvery('MESSAGE:DELETE', messageDelete, socket)
 }
 function* watcherGetMessagesData(socket) {
     const data = yield call(getMessagesData, socket)
@@ -96,6 +98,31 @@ function* readedMessage(wid, mid) {
     const dialog = _.find(dialogsData, {wid})
     if (dialog) {
         _.find(dialog.messages, {mid}).read = true
+        yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
+    }
+}
+function* messageDelete(socket, {wid, mid}) {
+    socket.emit('MESSAGE:DELETE', wid, mid)
+}
+
+function* getDeletedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('MESSAGE:DELETED', (data) => emitter(data))
+        return () => {}
+    })
+}
+function* watcherDeletedMessage(socket) {
+    const data = yield call(getDeletedMessage, socket)
+    while (true) {
+        const {wid, mid} = yield take(data)
+        yield call(deleteMessage, wid, mid)
+    }
+}
+function* deleteMessage(wid, mid) {
+    const dialogsData = yield select(getDialogsData)
+    const dialog = _.find(dialogsData, {wid})
+    if (dialog) {
+        _.pullAllBy(dialog.messages, [{mid}], 'mid')
         yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
     }
 }

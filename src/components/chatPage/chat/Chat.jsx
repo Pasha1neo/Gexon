@@ -22,6 +22,9 @@ const Chat = (props) => {
     function readed(mid) {
         props.readMessage(props.dialog.wid, mid)
     }
+    function delMessage(mid) {
+        props.deleteMessage(props.dialog.wid, mid)
+    }
     const chatname = () => {
         if (props.dialog.wid !== 'chat') {
             const x = _.find(props.users, {userID: props.dialog.wid})
@@ -49,6 +52,7 @@ const Chat = (props) => {
                             messages={props.dialog.messages}
                             change={change}
                             readed={readed}
+                            delMessage={delMessage}
                             users={props.users}
                             me={props.me}
                             withMe={props.dialog.wid === props.me}

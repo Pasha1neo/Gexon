@@ -2,10 +2,24 @@ import s from './message.module.css'
 import {useState} from 'react'
 import Avatar from '../../../../assets/img/avatar.png'
 import Pen from '../../../../assets/img/pen.svg'
+import Del from '../../../../assets/img/del.png'
 import {InView} from 'react-intersection-observer'
 import _ from 'lodash'
 
-const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, readed, withMe}) => {
+const Message = ({
+    login,
+    message,
+    me,
+    time,
+    read,
+    change,
+    mid,
+    inView,
+    MsgRef,
+    readed,
+    withMe,
+    delMessage,
+}) => {
     const [edit, setEdit] = useState(false)
     const [messagee, setMessage] = useState(message)
 
@@ -53,22 +67,35 @@ const Message = ({login, message, me, time, read, change, mid, inView, MsgRef, r
                 )}
             </div>
             {me && (
-                <div
-                    onClick={() => {
-                        setEdit(true)
-                    }}>
-                    <img src={Pen} className={s.change} alt='change' />
+                <div className={s.functions}>
+                    <img
+                        src={Pen}
+                        className={s.change}
+                        alt='change'
+                        onClick={() => {
+                            setEdit(true)
+                        }}
+                    />
+                    <img
+                        src={Del}
+                        className={s.change}
+                        alt='change'
+                        onClick={() => {
+                            delMessage(mid)
+                        }}
+                    />
                 </div>
             )}
         </div>
     )
 }
 
-const MessageContainer = ({messages, users, me, change, readed, withMe}) => {
+const MessageContainer = ({messages, users, me, change, readed, withMe, delMessage}) => {
     const messagesMap = messages.map((m) => {
         if (m.read) {
             return (
                 <Message
+                    delMessage={delMessage}
                     key={m.mid}
                     mid={m.mid}
                     message={m.message}
@@ -87,6 +114,7 @@ const MessageContainer = ({messages, users, me, change, readed, withMe}) => {
                 {({inView, ref}) => {
                     return (
                         <Message
+                            delMessage={delMessage}
                             mid={m.mid}
                             message={m.message}
                             time={m.time}

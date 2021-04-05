@@ -17,3 +17,8 @@ export const readMessage = (wid, mid) => ({
     wid,
     mid,
 })
+export const deleteMessage = (wid, mid) => ({
+    type: 'MESSAGE:DELETE',
+    wid,
+    mid,
+})
