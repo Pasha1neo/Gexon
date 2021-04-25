@@ -6,11 +6,12 @@ import store from './redux/store'
 import {initApp} from './redux/actions/auth'
 import {theme} from './theme'
 import {ThemeProvider} from '@material-ui/styles'
-import Header from './components/header/Header'
+import Header from './components/header/header'
 import Preloader from './components/util/preloader/Preloader'
 import ChatContainer from './components/chat/chatContainer'
 import {Container, CssBaseline} from '@material-ui/core'
 import {useStyles} from './style'
+import Profile from './components/user/profile/profile'
 
 function Application({initApp, appReady, chatReady}) {
     const classes = useStyles()
@@ -27,7 +28,8 @@ function Application({initApp, appReady, chatReady}) {
                 <Header />
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
-                    <Container maxWidth='lg' className={classes.container}>
+                    <Container className={classes.container}>
+                        <Route path='/profile/:id?' render={() => <Profile />} />
                         {chatReady && <Route path='/chat/:id?' render={() => <ChatContainer />} />}
                     </Container>
                 </main>

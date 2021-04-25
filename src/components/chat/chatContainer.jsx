@@ -8,35 +8,45 @@ import {
     deleteMessage,
 } from '../../redux/actions/chat'
 import {withAuthRedurect} from '../util/redirect/authRedirect'
-import {useEffect} from 'react'
-import {withRouter} from 'react-router'
+import {useEffect, useState} from 'react'
+import {Redirect, withRouter} from 'react-router'
 import _ from 'lodash'
-import {Hidden, makeStyles, Paper} from '@material-ui/core'
-import UsersList from './userslist/userslist'
+import {makeStyles, Paper} from '@material-ui/core'
+import UserList from './userslist/userslist'
 import Chat from './chat/chat'
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        flexGrow: 1,
         height: '100%',
-        maxHeight: '100%',
     },
 }))
 
 const ChatContainer = (props) => {
     const classes = useStyles()
+    const [isOpen, setMobile] = useState(false)
+
     useEffect(() => {
         const {pathname} = props.location
         const dialogId = pathname.split('/').pop()
         props.selectChat(dialogId)
     }, [props.location])
 
+    if (!_.find(props.users, {userID: props.with}) && props.with !== 'chat') {
+        return <Redirect to={'/chat'} />
+    }
+
     return (
         <Paper className={classes.root}>
-            <Hidden only={['xs', 'sm']}>
-                <UsersList users={props.users} dialogsData={props.dialogsData} me={props.me} />
-            </Hidden>
+            <UserList
+                isOpen={isOpen}
+                mobileClose={() => {
+                    setMobile(false)
+                }}
+                users={props.users}
+                dialogsData={props.dialogsData}
+                me={props.me}
+            />
             <Chat
                 users={props.users}
                 connect={props.connect}
@@ -46,6 +56,10 @@ const ChatContainer = (props) => {
                 changeMessage={props.changeMessage}
                 deleteMessage={props.deleteMessage}
                 me={props.me}
+                isOpen={isOpen}
+                mobileOpen={() => {
+                    setMobile(true)
+                }}
             />
         </Paper>
     )
@@ -62,6 +76,6 @@ const mapStateToProps = (state) => ({
 })
 export default compose(
     withAuthRedurect,
-    connect(mapStateToProps, {sendMessage, selectChat, readMessage, changeMessage, deleteMessage}),
-    withRouter
+    withRouter,
+    connect(mapStateToProps, {sendMessage, selectChat, readMessage, changeMessage, deleteMessage})
 )(ChatContainer)

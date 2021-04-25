@@ -1,4 +1,4 @@
-import {AppBar, Box, Button, Toolbar, Typography} from '@material-ui/core'
+import {AppBar, Box, Button, Hidden, Toolbar, Typography} from '@material-ui/core'
 import {NavLink} from 'react-router-dom'
 import SignContainer from '../signcontainer/signContainer'
 import {useStyles} from './header.style'
@@ -6,12 +6,14 @@ import {useStyles} from './header.style'
 function Header() {
     const classes = useStyles()
     return (
-        <AppBar position='fixed'>
+        <AppBar>
             <Toolbar className={classes.toolbar}>
-                <Typography noWrap component='h1' color='inherit' variant='h6'>
-                    Material Design
-                </Typography>
-                <Box fullWidth className={classes.navLinks}>
+                <Hidden only={['xs']}>
+                    <Typography noWrap component='h1' color='inherit' variant='h6'>
+                        Material Design
+                    </Typography>
+                </Hidden>
+                <Box className={classes.navLinks}>
                     <Button
                         color='inherit'
                         component={NavLink}

@@ -15,12 +15,15 @@ import {
 import {useStyles} from './message.style'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
+import DoneAllIcon from '@material-ui/icons/DoneAll'
 
 const Message = (props) => {
     const classes = useStyles()
-    const {login, message, me, time, change, mid, inView, readed, delMessage} = props
+    const {name, mid, text, time, read, my, deleted, change, viewRef} = props
+
     const [edit, setEdit] = useState(false)
-    const [messagee, setMessage] = useState(message)
+    const [messagee, setMessage] = useState(text)
+
     function textChange(e) {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
@@ -31,12 +34,8 @@ const Message = (props) => {
     const setTextMessage = (e) => {
         setMessage(e.currentTarget.value)
     }
-    if (inView && !me) {
-        readed(mid)
-    }
-
     return (
-        <div className={classes.root}>
+        <div className={classes.root} ref={viewRef}>
             <ListItem divider>
                 <ListItemAvatar>
                     <Avatar src={AvatarImage} alt='Avatar' />
@@ -45,7 +44,7 @@ const Message = (props) => {
                     className={classes.messageText}
                     primary={
                         <Box className={classes.header}>
-                            <Typography variant='body1'>{login}</Typography>
+                            <Typography variant='body1'>{name}</Typography>
                             <Typography variant='caption' className={classes.time}>
                                 {time.hm}
                             </Typography>
@@ -57,8 +56,8 @@ const Message = (props) => {
                                 multiline
                                 fullWidth
                                 margin='dense'
-                                defaultValue={message}
-                                message={message}
+                                defaultValue={text}
+                                message={text}
                                 helperText='Измените сообщение'
                                 variant='outlined'
                                 onChange={(e) => setTextMessage(e)}
@@ -69,72 +68,70 @@ const Message = (props) => {
                                 variant='body2'
                                 className={classes.text}
                                 color='textPrimary'>
-                                {message}
+                                {text}
                             </Typography>
                         )
                     }
                 />
                 <Box className={classes.other}>
+                    {read && (
+                        <IconButton
+                            className={classes.otherButton}
+                            onClick={() =>
+                                alert('Здесь будет показано время прочитанного сообщения')
+                            }
+                            size='small'>
+                            <DoneAllIcon fontSize='small' />
+                        </IconButton>
+                    )}
                     <IconButton
                         className={classes.otherButton}
-                        onClick={() => setEdit(true)}
-                        size='small'>
-                        <CreateOutlinedIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                        className={classes.otherButton}
-                        onClick={() => delMessage(mid)}
+                        onClick={() => deleted(mid)}
                         size='small'>
                         <DeleteOutlineOutlinedIcon fontSize='small' />
                     </IconButton>
+                    {my && (
+                        <IconButton
+                            className={classes.otherButton}
+                            onClick={() => setEdit(true)}
+                            size='small'>
+                            <CreateOutlinedIcon fontSize='small' />
+                        </IconButton>
+                    )}
                 </Box>
             </ListItem>
         </div>
     )
 }
 
-const MessageContainer = ({messages, users, me, change, readed, withMe, delMessage}) => {
-    const messagesMap = messages.map((m) => {
-        if (m.read) {
-            return (
-                <Message
-                    delMessage={delMessage}
-                    key={m.mid}
-                    mid={m.mid}
-                    message={m.message}
-                    time={m.time}
-                    read={m.read}
-                    me={m.from === me}
-                    login={_.find(users, {userID: m.from}).username}
-                    change={change}
-                    readed={readed}
-                    withMe={withMe}
-                />
-            )
-        }
+const MessageContainer = (props) => {
+    const required = {
+        deleted: props.delMessage,
+        change: props.change,
+        readed: props.readed,
+        me: props.me,
+    }
+    const messagesMap = props.messages.map((m) => {
         return (
             <InView key={m.mid}>
                 {({inView, ref}) => {
-                    return (
-                        <Message
-                            delMessage={delMessage}
-                            mid={m.mid}
-                            message={m.message}
-                            time={m.time}
-                            read={m.read}
-                            me={m.from === me}
-                            login={_.find(users, {userID: m.from}).username}
-                            change={change}
-                            readed={readed}
-                            inView={inView}
-                            MsgRef={ref}
-                        />
-                    )
+                    const message = {
+                        name: _.find(props.users, {userID: m.from}).username,
+                        mid: m.mid,
+                        text: m.message,
+                        time: m.time,
+                        read: m.read && !props.withMe,
+                        my: m.from === props.me,
+                        viewRef: !m.read ? ref : null,
+                    }
+                    if (inView && m.from !== props.me) {
+                        props.readed(m.mid)
+                    }
+                    return <Message {...required} {...message} />
                 }}
             </InView>
         )
     })
     return <>{messagesMap}</>
 }
-
 export default MessageContainer

@@ -5,7 +5,7 @@ import {userModule} from './socket/userModule'
 
 const io = require('socket.io-client')
 export function* socket() {
-    const socket = io('http://localhost:5000', {autoConnect: false})
+    const socket = io('http://192.168.0.103:5000', {autoConnect: false})
     yield takeEvery('SOCKET:OFF', SocketDisconnect, socket)
     yield takeEvery('SOCKET:ON', SocketConnect, socket)
 }
