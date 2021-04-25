@@ -1,52 +1,43 @@
-import {AppBar, Button, Container, Toolbar, Typography} from '@material-ui/core'
+import {AppBar, Box, Button, Toolbar, Typography} from '@material-ui/core'
 import {NavLink} from 'react-router-dom'
+import SignContainer from '../signcontainer/signContainer'
 import {useStyles} from './header.style'
 
 function Header() {
-    const s = useStyles()
+    const classes = useStyles()
     return (
-        <header className={s.header}>
-            <AppBar position='static' color='primary'>
-                <Toolbar>
-                    <Typography variant='h6' className={s.title}>
-                        Material Design
-                    </Typography>
-                    <Container className={s.links}>
-                        <Button
-                            component={NavLink}
-                            exact
-                            to='/'
-                            color='inherit'
-                            className={s.link}
-                            activeClassName={s.active}>
-                            Главная
-                        </Button>
-                        <Button
-                            component={NavLink}
-                            to='/chat'
-                            className={s.link}
-                            color='inherit'
-                            activeClassName={s.active}>
-                            Чат
-                        </Button>
-                        <Button
-                            component={NavLink}
-                            to='/profile'
-                            color='inherit'
-                            className={s.link}
-                            activeClassName={s.active}>
-                            Профиль
-                        </Button>
-                    </Container>
-                    <Button color='inherit' className={s.menuButton}>
-                        Login
+        <AppBar position='fixed'>
+            <Toolbar className={classes.toolbar}>
+                <Typography noWrap component='h1' color='inherit' variant='h6'>
+                    Material Design
+                </Typography>
+                <Box fullWidth className={classes.navLinks}>
+                    <Button
+                        color='inherit'
+                        component={NavLink}
+                        exact
+                        to='/'
+                        activeClassName={classes.active}>
+                        Главная
                     </Button>
-                    <Button color='inherit' className={s.menuButton}>
-                        SignUp
+                    <Button
+                        color='inherit'
+                        component={NavLink}
+                        to='/chat'
+                        activeClassName={classes.active}>
+                        Чат
                     </Button>
-                </Toolbar>
-            </AppBar>
-        </header>
+                    <Button
+                        color='inherit'
+                        component={NavLink}
+                        to='/profile'
+                        activeClassName={classes.active}>
+                        Профиль
+                    </Button>
+                </Box>
+                <SignContainer />
+            </Toolbar>
+        </AppBar>
     )
 }
 export default Header

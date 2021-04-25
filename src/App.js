@@ -1,24 +1,54 @@
+import React, {useEffect} from 'react'
+import {BrowserRouter, Route, withRouter} from 'react-router-dom'
+import {connect, Provider} from 'react-redux'
+import {compose} from 'redux'
+import store from './redux/store'
+import {initApp} from './redux/actions/auth'
 import {theme} from './theme'
 import {ThemeProvider} from '@material-ui/styles'
-import React from 'react'
 import Header from './components/header/Header'
-import {BrowserRouter, Route} from 'react-router-dom'
+import Preloader from './components/util/preloader/Preloader'
+import ChatContainer from './components/chat/chatContainer'
+import {Container, CssBaseline} from '@material-ui/core'
+import {useStyles} from './style'
 
-function Application() {
+function Application({initApp, appReady, chatReady}) {
+    const classes = useStyles()
+    useEffect(() => {
+        initApp()
+    }, [initApp])
+    if (!appReady) {
+        return <Preloader />
+    }
     return (
-        <div>
+        <div className={classes.root}>
             <ThemeProvider theme={theme}>
+                <CssBaseline />
                 <Header />
-                <Route exact path='/' render={() => <>Главная страница</>} />
+                <main className={classes.content}>
+                    <div className={classes.appBarSpacer} />
+                    <Container maxWidth='lg' className={classes.container}>
+                        {chatReady && <Route path='/chat/:id?' render={() => <ChatContainer />} />}
+                    </Container>
+                </main>
             </ThemeProvider>
         </div>
     )
 }
 
+const mapStateToProps = (state) => ({
+    appReady: state.app.appReady,
+    chatReady: state.app.chatReady,
+})
+
+const AppContainer = compose(withRouter, connect(mapStateToProps, {initApp}))(Application)
+
 const App = () => {
     return (
         <BrowserRouter>
-            <Application />
+            <Provider store={store}>
+                <AppContainer />
+            </Provider>
         </BrowserRouter>
     )
 }
