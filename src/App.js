@@ -1,44 +1,25 @@
-import './App.css'
-import React, {useEffect} from 'react'
-import {connect, Provider} from 'react-redux'
-import ChatPage from './components/chatPage/ChatPage'
+import {theme} from './theme'
+import {ThemeProvider} from '@material-ui/styles'
+import React from 'react'
 import Header from './components/header/Header'
-import Preloader from './components/util/preloader/Preloader'
-import {BrowserRouter, Route, withRouter} from 'react-router-dom'
-import store from './redux/store'
-import {compose} from 'redux'
-import {initApp} from './redux/actions/auth'
-import Profile from './components/profilePage/ProfileContainer'
+import {BrowserRouter, Route} from 'react-router-dom'
 
-const App = ({initApp, appReady, chatReady}) => {
-    useEffect(() => {
-        initApp()
-    }, [])
-    if (!appReady) {
-        return <Preloader />
-    }
+function Application() {
     return (
-        <div className='App'>
-            <Header />
-            <Route exact path='/' render={() => <>Главная страница</>} />
-            <Route path='/profile/:id?' render={() => <Profile />} />
-            {chatReady && <Route path='/chat/:id?' render={() => <ChatPage />} />}
+        <div>
+            <ThemeProvider theme={theme}>
+                <Header />
+                <Route exact path='/' render={() => <>Главная страница</>} />
+            </ThemeProvider>
         </div>
     )
 }
-const mapStateToProps = (state) => ({
-    appReady: state.app.appReady,
-    chatReady: state.app.chatReady,
-})
 
-const AppContainer = compose(withRouter, connect(mapStateToProps, {initApp}))(App)
-const Pasha1neoApp = () => {
+const App = () => {
     return (
         <BrowserRouter>
-            <Provider store={store}>
-                <AppContainer />
-            </Provider>
+            <Application />
         </BrowserRouter>
     )
 }
-export default Pasha1neoApp
+export default App
