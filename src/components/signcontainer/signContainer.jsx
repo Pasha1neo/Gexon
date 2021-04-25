@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 const mapDispatchToProps = {login, logout, registration}
 const mapStateToProps = (state) => ({
     loginName: state.app.login,
+    avatar: state.app.avatar,
     isAuth: state.app.isAuth,
     initApp: state.app.initialized,
 })

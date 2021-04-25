@@ -3,6 +3,7 @@ let initialState = {
     userId: null,
     email: null,
     isAuth: false,
+    avatar: null,
     appReady: false,
     chatReady: false,
 }
@@ -27,6 +28,11 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 chatReady: true,
+            }
+        case 'USER:SET:AVATAR':
+            return {
+                ...state,
+                avatar: action.payload,
             }
         default:
             return state

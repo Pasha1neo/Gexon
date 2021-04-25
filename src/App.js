@@ -11,7 +11,7 @@ import Preloader from './components/util/preloader/Preloader'
 import ChatContainer from './components/chat/chatContainer'
 import {Container, CssBaseline} from '@material-ui/core'
 import {useStyles} from './style'
-import Profile from './components/user/profile/profile'
+import {Profile} from './components/user'
 
 function Application({initApp, appReady, chatReady}) {
     const classes = useStyles()

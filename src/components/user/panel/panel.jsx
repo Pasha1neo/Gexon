@@ -1,7 +1,6 @@
-import {Button, IconButton, Hidden, Avatar} from '@material-ui/core'
+import {Button, IconButton, Container, Box, Hidden, Typography, Avatar} from '@material-ui/core'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import {NavLink} from 'react-router-dom'
-import avatarImage from '../../../assets/img/avatar.png'
 import {useStyles} from './panel.style'
 
 const Panel = (props) => {
@@ -21,7 +20,7 @@ const Panel = (props) => {
                 onClick={() => {
                     alert('Ещё не готово')
                 }}>
-                <Avatar className={classes.avatar} alt={`${props.login}-avatar`} src={avatarImage}>
+                <Avatar className={classes.avatar} alt={`${props.login}-avatar`} src={props.avatar}>
                     {props.login.slice(0, 1).toUpperCase()}
                 </Avatar>
             </IconButton>

@@ -1,10 +1,13 @@
 import {useState} from 'react'
 import Form from './form'
+import Login from '../../assets/img/login.png'
 import {Button} from '@material-ui/core'
+import {useStyles} from './form.style'
 import {UserPanel} from '../user'
 
 const Sign = (props) => {
     const [sign, setSign] = useState(false)
+    const classes = useStyles()
     const open = () => {
         setSign(true)
     }
@@ -15,7 +18,7 @@ const Sign = (props) => {
     return (
         <>
             {props.isAuth ? (
-                <UserPanel login={props.loginName} logout={props.logout} />
+                <UserPanel avatar={props.avatar} login={props.loginName} logout={props.logout} />
             ) : (
                 <Button
                     size='large'

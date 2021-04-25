@@ -18,10 +18,17 @@ function* auth() {
             yield setToken(token)
             yield put({
                 type: 'USER:DATA:SET',
-                payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
+                payload: {
+                    login: user.login,
+                    userId: user.id,
+                    email: user.email,
+                    isAuth: true,
+                    avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
+                },
             })
             yield put({type: 'APP:INIT:END'})
             yield put({type: 'SOCKET:ON', payload: user.login})
+            yield put({type: 'PROFILE:ON', payload: user.id})
         } else if (resultcode === 101) {
             yield put({type: 'APP:INIT:END'})
             removeToken()
@@ -51,9 +58,16 @@ function* login({login, password, rememberMe}) {
         setToken(token)
         yield put({
             type: 'USER:DATA:SET',
-            payload: {login: user.login, userId: user.id, email: user.email, isAuth: true},
+            payload: {
+                login: user.login,
+                userId: user.id,
+                email: user.email,
+                isAuth: true,
+                avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
+            },
         })
         yield put({type: 'SOCKET:ON', payload: user.login})
+        yield put({type: 'PROFILE:ON', payload: user.id})
     }
 }
 

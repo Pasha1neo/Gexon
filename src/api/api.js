@@ -17,3 +17,20 @@ export const SignAPI = {
         return response.data
     },
 }
+export const PostAPI = {
+    async addPost(data) {
+        return await instance.post('post/add', {...data})
+    },
+    async getPosts(payload) {
+        return await instance.post('post', {id: payload})
+    },
+}
+export const FileAPI = {
+    async uploadAvatar(avatar, token) {
+        const formData = new FormData()
+        formData.append('file', avatar)
+        return await instance.post(`file/avatar`, formData, {
+            headers: {Authorization: `Bearer ${token}`},
+        })
+    },
+}

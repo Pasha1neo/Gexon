@@ -1,10 +1,11 @@
 import {useState} from 'react'
 import AvatarImage from '../../../../assets/img/avatar.png'
-import {InView} from 'react-intersection-observer'
+import {InView, useInView} from 'react-intersection-observer'
 import _ from 'lodash'
 import {
     Avatar,
     Box,
+    Grow,
     IconButton,
     ListItem,
     ListItemAvatar,
@@ -19,7 +20,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll'
 
 const Message = (props) => {
     const classes = useStyles()
-    const {name, mid, text, time, read, my, deleted, change, viewRef} = props
+    const {name, mid, text, time, read, my, me, deleted, change, withMe, viewRef} = props
 
     const [edit, setEdit] = useState(false)
     const [messagee, setMessage] = useState(text)
