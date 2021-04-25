@@ -1,9 +1,9 @@
 import s from './chat.module.css'
 import {Field} from 'redux-form'
+import {reduxForm, reset} from 'redux-form'
 import MessageContainer from './message/Message'
 import Avatar from '../../../assets/img/avatar.png'
 import Connection from '../../util/connection/connection'
-import {reduxForm, reset} from 'redux-form'
 import React from 'react'
 import _ from 'lodash'
 import {Redirect} from 'react-router'
@@ -13,7 +13,7 @@ const Chat = (props) => {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault()
             props.handleSubmit()
-            return false
+            return
         }
     }
     function change(mid, message) {
