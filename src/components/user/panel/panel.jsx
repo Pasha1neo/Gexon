@@ -13,15 +13,18 @@ const Panel = (props) => {
                     color='inherit'
                     activeClassName={classes.active}
                     to='/profile'>
-                    {props.login}
+                    {props.nickname}
                 </Button>
             </Hidden>
             <IconButton
                 onClick={() => {
                     alert('Ещё не готово')
                 }}>
-                <Avatar className={classes.avatar} alt={`${props.login}-avatar`} src={props.avatar}>
-                    {props.login.slice(0, 1).toUpperCase()}
+                <Avatar
+                    className={classes.avatar}
+                    alt={`${props.nickname}-avatar`}
+                    src={props.avatar}>
+                    {props.nickname.slice(0, 1).toUpperCase()}
                 </Avatar>
             </IconButton>
             <Hidden only={['xs', 'sm']}>

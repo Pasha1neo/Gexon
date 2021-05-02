@@ -1,5 +1,6 @@
 let initialState = {
     login: null,
+    nickname: null,
     userId: null,
     email: null,
     isAuth: false,
@@ -33,6 +34,11 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 avatar: action.payload,
+            }
+        case 'USER:SET:NICKNAME':
+            return {
+                ...state,
+                nickname: action.nickname,
             }
         default:
             return state

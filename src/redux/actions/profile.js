@@ -6,7 +6,11 @@ export const deletePost = (id) => ({
     type: 'POST:DELETE',
     id,
 })
-export const setAvatar = (avatar) => ({
+export const setAvatar = (newAvatar) => ({
     type: 'USER:UPLOAD:AVATAR',
-    avatar,
+    newAvatar,
+})
+export const setNickname = (newNickname) => ({
+    type: 'USER:CHANGE:NICKNAME',
+    newNickname,
 })

@@ -1,4 +1,6 @@
-import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined'
+import {useState} from 'react'
+import {useStyles} from './form.style'
+import {Field, reduxForm} from 'redux-form'
 import {
     Button,
     Dialog,
@@ -13,9 +15,7 @@ import {
     FormControlLabel,
     Toolbar,
 } from '@material-ui/core'
-import {useState} from 'react'
-import {useStyles} from './form.style'
-import {Field, reduxForm} from 'redux-form'
+import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined'
 
 const FormField = ({label, input, ...custom}) => <TextField label={label} {...input} {...custom} />
 

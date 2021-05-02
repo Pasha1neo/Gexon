@@ -1,36 +1,47 @@
 import * as axios from 'axios'
+
+const TOKEN = {
+    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+}
+
 const instance = axios.create({
-    baseURL: `http://192.168.0.103:5000/api/`,
+    baseURL: `http://192.168.0.100:5000/api/`,
 })
+
 export const SignAPI = {
     async signup(login, email, password) {
         return await instance.post('auth/signup', {login, email, password})
     },
+
     async singin(login, password, rememberMe) {
         const response = await instance.post('auth/signin', {login, password, rememberMe})
         return response.data
     },
-    async auth(token) {
-        const response = await instance.get('auth', {
-            headers: {Authorization: `Bearer ${token}`},
-        })
+
+    async auth() {
+        const response = await instance.get('auth', TOKEN)
         return response.data
     },
 }
-export const PostAPI = {
-    async addPost(data) {
-        return await instance.post('post/add', {...data})
+export const profileAPI = {
+    async setNickname(nickname) {
+        const response = await instance.post('profile/nickname', {nickname}, TOKEN)
+        return response.data
     },
-    async getPosts(payload) {
-        return await instance.post('post', {id: payload})
-    },
-}
-export const FileAPI = {
-    async uploadAvatar(avatar, token) {
+    async uploadAvatar(avatar) {
         const formData = new FormData()
         formData.append('file', avatar)
-        return await instance.post(`file/avatar`, formData, {
-            headers: {Authorization: `Bearer ${token}`},
-        })
+        const response = await instance.post(`profile/avatar`, formData, TOKEN)
+        return response.data
+    },
+
+    async addPost(data) {
+        const response = await instance.post('profile/create', {...data}, TOKEN)
+        return response.data
+    },
+
+    async getPosts(payload) {
+        const response = await instance.post('profile', {id: payload}, TOKEN)
+        return response.data
     },
 }

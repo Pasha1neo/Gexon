@@ -1,26 +1,28 @@
 import {call, put, takeEvery} from '@redux-saga/core/effects'
 import {SignAPI} from '../../api/api'
-export const getToken = () => localStorage.getItem('token')
+
 export const setToken = (token) => localStorage.setItem('token', token)
 export const removeToken = () => localStorage.removeItem('token')
+
 export function* authentification() {
     yield takeEvery('APP:INIT:START', auth)
     yield takeEvery('SIGN:UP', registration)
     yield takeEvery('LOGIN', login)
     yield takeEvery('LOG:OUT', logout)
 }
+
 function* auth() {
     try {
         yield put({type: 'APP:INIT:PROCESS'})
-        const tokens = getToken()
-        const {user, token, resultcode, message} = yield call(SignAPI.auth, tokens)
+        const {user, token, resultcode, message} = yield call(SignAPI.auth)
         if (resultcode === 200) {
             yield setToken(token)
             yield put({
                 type: 'USER:DATA:SET',
                 payload: {
-                    login: user.login,
                     userId: user.id,
+                    login: user.login,
+                    nickname: user?.nickname,
                     email: user.email,
                     isAuth: true,
                     avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
@@ -28,7 +30,7 @@ function* auth() {
             })
             yield put({type: 'APP:INIT:END'})
             yield put({type: 'SOCKET:ON', payload: user.login})
-            yield put({type: 'PROFILE:ON', payload: user.id})
+            yield put({type: 'PROFILE:ON', userId: user.id})
         } else if (resultcode === 101) {
             yield put({type: 'APP:INIT:END'})
             removeToken()
@@ -42,6 +44,7 @@ function* auth() {
         console.log('Ошибка в app саге')
     }
 }
+
 function* registration({login, email, password, password_2}) {
     if (password !== password_2) {
         alert('пароли не совпадают')
@@ -52,6 +55,7 @@ function* registration({login, email, password, password_2}) {
         }
     }
 }
+
 function* login({login, password, rememberMe}) {
     const {resultcode, token, user} = yield call(SignAPI.singin, login, password, rememberMe)
     if (resultcode === 200) {
@@ -59,15 +63,16 @@ function* login({login, password, rememberMe}) {
         yield put({
             type: 'USER:DATA:SET',
             payload: {
-                login: user.login,
                 userId: user.id,
+                login: user.login,
+                nickname: user?.nickname,
                 email: user.email,
                 isAuth: true,
                 avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
             },
         })
         yield put({type: 'SOCKET:ON', payload: user.login})
-        yield put({type: 'PROFILE:ON', payload: user.id})
+        yield put({type: 'PROFILE:ON', userId: user.id})
     }
 }
 
@@ -76,6 +81,6 @@ function* logout() {
     removeToken()
     yield put({
         type: 'USER:DATA:SET',
-        payload: {login: null, userId: null, email: null, isAuth: false},
+        payload: null,
     })
 }

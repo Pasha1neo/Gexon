@@ -1,28 +1,28 @@
-import {call, put, select, takeEvery} from '@redux-saga/core/effects'
+import {call, put, takeEvery} from '@redux-saga/core/effects'
+import {profileAPI} from '../../api/api'
 
-import {PostAPI, FileAPI} from '../../api/api'
-export const getToken = () => localStorage.getItem('token')
 export function* profile() {
     yield takeEvery('PROFILE:ON', getPosts)
     yield takeEvery('POST:ADD', postAdd)
+    yield takeEvery('USER:CHANGE:NICKNAME', setNickname)
     yield takeEvery('USER:UPLOAD:AVATAR', uploadAvatar)
 }
 
-function* postAdd({data}) {
-    yield call(PostAPI.addPost, data)
-    yield put({type: 'PROFILE:ADD:POST', payload: {postText: data.text, authorName: data.name}})
+function* uploadAvatar({newAvatar}) {
+    const {avatar} = yield call(profileAPI.uploadAvatar, newAvatar)
+    yield put({type: 'USER:SET:AVATAR', payload: `http://localhost:5000/${avatar}`})
 }
 
-function* getPosts({payload}) {
-    const {
-        data: {resultcode, posts},
-    } = yield call(PostAPI.getPosts, payload)
-    if (resultcode === 200) {
-        yield put({type: 'PROFILE:SET:POSTS', payload: posts})
-    }
+function* postAdd({data}) {
+    const {post} = yield call(profileAPI.addPost, data)
+    yield put({type: 'PROFILE:ADD:POST', payload: post})
 }
-function* uploadAvatar({avatar}) {
-    const token = yield getToken()
-    const {data} = yield call(FileAPI.uploadAvatar, avatar, token)
-    yield put({type: 'USER:SET:AVATAR', payload: `http://localhost:5000/${data.payload}`})
+
+function* getPosts({userId}) {
+    const {posts} = yield call(profileAPI.getPosts, userId)
+    yield put({type: 'PROFILE:SET:POSTS', payload: posts})
+}
+function* setNickname({newNickname}) {
+    const {nickname} = yield call(profileAPI.setNickname, newNickname)
+    yield put({type: 'USER:SET:NICKNAME', nickname})
 }

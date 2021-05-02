@@ -1,23 +1,43 @@
+import {useState} from 'react'
 import {connect} from 'react-redux'
 import {compose} from 'redux'
-import {addPost, setAvatar} from '../../../redux/actions/profile'
+import {addPost, setAvatar, setNickname} from '../../../redux/actions/profile'
+import EditProfile from './editProfile'
 import Profile from './profile'
+import AvatarImage from '../../../assets/img/avatar.png'
 
 const ProfileContainer = (props) => {
-    return (
-        <Profile
-            addPost={props.addPost}
-            login={props.login}
-            avatar={props.avatar}
-            posts={props.posts}
-            setAvatar={props.setAvatar}
-        />
-    )
+    const [editProfile, setEditProfile] = useState(false)
+    if (editProfile) {
+        return (
+            <EditProfile
+                avatar={props.avatar}
+                setAvatar={props.setAvatar}
+                setEditProfile={setEditProfile}
+                setNickname={props.setNickname}
+                nickname={props.nickname}
+            />
+        )
+    } else {
+        return (
+            <Profile
+                addPost={props.addPost}
+                nickname={props.nickname}
+                avatar={props.avatar}
+                posts={props.posts}
+                id={props.id}
+                setEditProfile={setEditProfile}
+            />
+        )
+    }
 }
 
 const mapStateToProps = (state) => ({
-    login: state.app.login,
-    avatar: state.app.avatar,
-    posts: state.profile.posts,
+    nickname: state.app?.nickname || state.app.login,
+    id: state.app.userId,
+    avatar: state.app?.avatar || AvatarImage,
+    posts: state.profile?.posts,
 })
-export default compose(connect(mapStateToProps, {addPost, setAvatar}))(ProfileContainer)
+export default compose(connect(mapStateToProps, {addPost, setAvatar, setNickname}))(
+    ProfileContainer
+)
