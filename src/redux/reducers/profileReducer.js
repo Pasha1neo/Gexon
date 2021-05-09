@@ -1,5 +1,5 @@
 let initialState = {
-    posts: [],
+    posts: null,
 }
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {

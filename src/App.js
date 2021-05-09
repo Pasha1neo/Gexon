@@ -12,6 +12,7 @@ import ChatContainer from './components/chat/chatContainer'
 import {Container, CssBaseline} from '@material-ui/core'
 import {useStyles} from './style'
 import {Profile} from './components/user'
+import Users from './components/users/usersContainer'
 
 function Application({initApp, appReady, chatReady}) {
     const classes = useStyles()
@@ -30,6 +31,7 @@ function Application({initApp, appReady, chatReady}) {
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
                         <Route path='/profile/:id?' render={() => <Profile />} />
+                        <Route path='/users/:id?' render={() => <Users />} />
                         {chatReady && <Route path='/chat/:id?' render={() => <ChatContainer />} />}
                     </Container>
                 </main>

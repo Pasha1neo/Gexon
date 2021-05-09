@@ -9,14 +9,16 @@ export function* authentification() {
     yield takeEvery('SIGN:UP', registration)
     yield takeEvery('LOGIN', login)
     yield takeEvery('LOG:OUT', logout)
+    yield takeEvery('APP:TOKEN:REFRESH', refreshToken)
 }
-
+function* refreshToken() {}
 function* auth() {
     try {
         yield put({type: 'APP:INIT:PROCESS'})
-        const {user, token, resultcode, message} = yield call(SignAPI.auth)
+        const data = yield call(SignAPI.auth)
+        if (!data) return yield put({type: 'APP:INIT:END'})
+        const {resultcode, user, message} = data
         if (resultcode === 200) {
-            yield setToken(token)
             yield put({
                 type: 'USER:DATA:SET',
                 payload: {
@@ -31,17 +33,15 @@ function* auth() {
             yield put({type: 'APP:INIT:END'})
             yield put({type: 'SOCKET:ON', payload: user.login})
             yield put({type: 'PROFILE:ON', userId: user.id})
-        } else if (resultcode === 101) {
+        }
+        if (resultcode === 101) {
             yield put({type: 'APP:INIT:END'})
             removeToken()
-        } else if (resultcode === 100) {
-            console.log(message)
         }
     } catch (error) {
-        //сделать здесь оффлайн режим
+        console.log(error)
         yield put({type: 'APP:INIT:END'})
         removeToken()
-        console.log('Ошибка в app саге')
     }
 }
 
@@ -57,23 +57,22 @@ function* registration({login, email, password, password_2}) {
 }
 
 function* login({login, password, rememberMe}) {
-    const {resultcode, token, user} = yield call(SignAPI.singin, login, password, rememberMe)
-    if (resultcode === 200) {
-        setToken(token)
-        yield put({
-            type: 'USER:DATA:SET',
-            payload: {
-                userId: user.id,
-                login: user.login,
-                nickname: user?.nickname,
-                email: user.email,
-                isAuth: true,
-                avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
-            },
-        })
-        yield put({type: 'SOCKET:ON', payload: user.login})
-        yield put({type: 'PROFILE:ON', userId: user.id})
-    }
+    const {token, user} = yield call(SignAPI.singin, login, password, rememberMe)
+    setToken(token || null)
+    yield put({
+        type: 'USER:DATA:SET',
+        payload: {
+            userId: user.id,
+            login: user.login,
+            nickname: user.nickname,
+            email: user.email,
+            isAuth: true,
+            posts: user.posts,
+            avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
+        },
+    })
+    yield put({type: 'SOCKET:ON', payload: user.login})
+    yield put({type: 'PROFILE:ON', userId: user.id})
 }
 
 function* logout() {
@@ -81,6 +80,15 @@ function* logout() {
     removeToken()
     yield put({
         type: 'USER:DATA:SET',
-        payload: null,
+        payload: {
+            login: null,
+            nickname: null,
+            userId: null,
+            email: null,
+            isAuth: false,
+            avatar: null,
+            appReady: true,
+            chatReady: false,
+        },
     })
 }

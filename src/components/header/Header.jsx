@@ -36,6 +36,13 @@ function Header() {
                         activeClassName={classes.active}>
                         Профиль
                     </Button>
+                    <Button
+                        color='inherit'
+                        component={NavLink}
+                        to='/users'
+                        activeClassName={classes.active}>
+                        Пользователи
+                    </Button>
                 </Box>
                 <SignContainer />
             </Toolbar>

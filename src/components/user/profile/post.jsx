@@ -39,10 +39,11 @@ const Post = ({content, author, fid, pid, data, time}) => {
         </Grid>
     )
 }
+
 const Posts = (props) => {
     return (
         <Grid container spacing={2} direction='column-reverse'>
-            {props.posts.map(
+            {props.posts?.map(
                 ({postText, authorName, id, content, author, pid, fid, data, time}, key) => {
                     return (
                         <Post
@@ -60,4 +61,5 @@ const Posts = (props) => {
         </Grid>
     )
 }
+
 export default Posts

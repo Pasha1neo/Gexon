@@ -10,31 +10,18 @@ import {
     IconButton,
     Toolbar,
 } from '@material-ui/core'
-import {Field, reduxForm, reset} from 'redux-form'
 import SendIcon from '@material-ui/icons/Send'
 import Message from './message/message'
 import AvatarImage from '../../../assets/img/avatar.png'
 import Connection from '../../util/connection/connection'
-import React, {useState} from 'react'
+import React from 'react'
 import _ from 'lodash'
-import {Redirect} from 'react-router'
 import {useStyles} from './chat.style'
 import MenuIcon from '@material-ui/icons/Menu'
-
-const ChatField = ({label, input, ...custom}) => {
-    return <TextField label={label} {...input} {...custom} />
-}
+import {Form, Field} from 'react-final-form'
 
 const Chat = (props) => {
     const classes = useStyles()
-
-    function formSubmite(e) {
-        if (e.keyCode === 13 && !e.shiftKey) {
-            e.preventDefault()
-            props.handleSubmit()
-            return
-        }
-    }
     function change(mid, message) {
         props.changeMessage(props.dialog.wid, mid, message)
     }
@@ -79,49 +66,57 @@ const Chat = (props) => {
                 />
             </List>
             <Divider />
-            <form onSubmit={props.handleSubmit} className={classes.footer}>
-                <Field
-                    className={classes.textField}
-                    component={ChatField}
-                    label='Введите сообщение'
-                    name='message'
-                    color='primary'
-                    multiline
-                    fullWidth
-                    variant='outlined'
-                    onKeyUp={(e) => formSubmite(e)}
-                />
-                <Hidden only={['xl', 'lg', 'md']}>
-                    <IconButton type='submit' color='inherit' className={classes.iconButton}>
-                        <SendIcon fontSize='large' />
-                    </IconButton>
-                </Hidden>
-                <Hidden only={['xs', 'sm']}>
-                    <Button
-                        variant='outlined'
-                        type='submit'
-                        endIcon={<SendIcon fontSize='small' />}
-                        className={classes.button}>
-                        Отправить
-                    </Button>
-                </Hidden>
-            </form>
+            <Form
+                onSubmit={({message}) => {
+                    props.sendMessage({
+                        tid: props.dialog.wid,
+                        msg: message,
+                    })
+                }}>
+                {({handleSubmit, form}) => (
+                    <form onSubmit={props.handleSubmit} className={classes.footer}>
+                        <Field name='message'>
+                            {(props) => (
+                                <TextField
+                                    onKeyUp={(e) => {
+                                        if (e.keyCode === 13 && !e.shiftKey) {
+                                            e.preventDefault()
+                                            handleSubmit()
+                                            form.reset()
+                                        }
+                                    }}
+                                    {...props.input}
+                                    color='primary'
+                                    multiline
+                                    fullWidth
+                                    variant='outlined'
+                                    className={classes.textField}
+                                    label='Введите сообщение'
+                                />
+                            )}
+                        </Field>
+                        <Hidden only={['xl', 'lg', 'md']}>
+                            <IconButton
+                                type='submit'
+                                color='inherit'
+                                className={classes.iconButton}>
+                                <SendIcon fontSize='large' />
+                            </IconButton>
+                        </Hidden>
+                        <Hidden only={['xs', 'sm']}>
+                            <Button
+                                variant='outlined'
+                                type='submit'
+                                endIcon={<SendIcon fontSize='small' />}
+                                className={classes.button}>
+                                Отправить
+                            </Button>
+                        </Hidden>
+                    </form>
+                )}
+            </Form>
         </div>
     )
 }
 
-const ChatReduxForm = reduxForm({
-    form: 'chatForm',
-})(Chat)
-
-const ChatHandler = ({sendMessage, ...props}) => {
-    const onSubmit = (formValues, dispatch) => {
-        sendMessage({
-            tid: props.dialog.wid,
-            msg: formValues.message,
-        })
-        dispatch(reset('chatForm'))
-    }
-    return <ChatReduxForm {...props} onSubmit={onSubmit} />
-}
-export default ChatHandler
+export default Chat
