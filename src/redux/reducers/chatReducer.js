@@ -1,64 +1,30 @@
 let initialState = {
-    connect: true,
-    usersData: null,
-    dialogsData: null,
-    wid: 'chat',
-    user: null,
+    users: null,
+    dialogs: null,
+    wid: null,
 }
 const chatReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'USERS:DATA:GET':
+        case 'SET:DATA:USERS':
             return {
                 ...state,
-                usersData: action.payload,
+                users: action.payload,
             }
-        case 'USER:CONNECT':
+        case 'SET:DATA:DIALOGS':
             return {
                 ...state,
-                usersData: [...state.usersData, action.payload],
+                dialogs: action.payload,
             }
-        case 'USER:SET:CONNECT':
-            return {
-                ...state,
-                usersData: action.payload,
-            }
-        case 'MESSAGE:GET:DATA':
-            return {
-                ...state,
-                dialogsData: action.payload,
-            }
-        case 'DIALOG:SELECT:END':
+        case 'SET:DIALOG:WID':
             return {
                 ...state,
                 wid: action.payload,
             }
-        case 'DIALOG:CREATE':
+        case 'SET:DIALOG':
             return {
                 ...state,
-                dialogsData: [...state.dialogsData, action.payload],
+                dialogs: [...state.dialogs, action.payload],
             }
-        case 'MESSAGE:GET': {
-            return {
-                ...state,
-                dialogsData: action.payload,
-            }
-        }
-        case 'CHAT:CONNECT':
-            return {
-                ...state,
-                connect: true,
-            }
-        case 'CHAT:DISCONNECT':
-            return {
-                ...state,
-                connect: false,
-            }
-        case 'USER:SET:THIS': {
-            return {
-                ...state,
-                user: action.payload,
-            }
-        }
         default:
             return state
     }

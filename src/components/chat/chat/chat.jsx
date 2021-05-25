@@ -26,7 +26,7 @@ const Chat = (props) => {
         props.changeMessage(props.dialog.wid, mid, message)
     }
     function readed(mid) {
-        props.readMessage(props.dialog.wid, mid)
+        // props.readMessage(props.dialog.wid, mid)
     }
     function delMessage(mid) {
         if (props.me !== props.dialog.wid) {
@@ -34,10 +34,6 @@ const Chat = (props) => {
         }
         props.deleteMessage(props.dialog.wid, mid)
     }
-    const DialogTitle =
-        (props.dialog.wid !== 'chat' &&
-            _.find(props.users, {userID: props.dialog.wid})?.username) ||
-        'Общий чат'
 
     return (
         <div className={classes.root}>
@@ -50,19 +46,16 @@ const Chat = (props) => {
                 <Box className={classes.dialogContainer}>
                     <Avatar className={classes.avatar} alt='avatar' src={AvatarImage} />
                     <Typography variant='h6' className={classes.companion}>
-                        {DialogTitle}
+                        имя диалога
                     </Typography>
                 </Box>
             </Toolbar>
             <List className={classes.history}>
                 <Message
-                    messages={props.dialog.messages}
+                    messages={props.dialog?.messages}
                     change={change}
                     readed={readed}
                     delMessage={delMessage}
-                    users={props.users}
-                    me={props.me}
-                    withMe={props.dialog.wid === props.me}
                 />
             </List>
             <Divider />

@@ -14,14 +14,18 @@ const Sign = (props) => {
 
     return (
         <>
-            {props.isAuth ? (
-                <UserPanel avatar={props.avatar} nickname={props.nickname} logout={props.logout} />
+            {props.authStatus ? (
+                <UserPanel
+                    avatar={props.avatar}
+                    nickname={props.nickname}
+                    signOut={props.signOut}
+                />
             ) : (
                 <Button size='large' onClick={open} color='inherit'>
                     Войти
                 </Button>
             )}
-            <Form close={close} open={sign} login={props.login} registration={props.registration} />
+            <Form close={close} open={sign} signIn={props.signIn} signUp={props.signUp} />
         </>
     )
 }

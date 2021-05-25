@@ -6,29 +6,19 @@ function getUsersData(state) {
     return [...state.chat.usersData]
 }
 
-export function* userModule(socket) {
-    yield call(watcherGetUsers, socket)
-    yield fork(userStatus, socket)
+export default function* user(socket) {
+    yield call(getUsers, socket)
+    // // yield fork(userStatus, socket)
 }
 
-function* watcherGetUsers(socket) {
-    const data = yield call(workerGetUsers, socket)
+function* getUsers(socket) {
+    const data = yield call(usersData, socket)
     const payload = yield take(data)
-    yield put({type: 'USER:SET:THIS', payload: _.find(payload, {userID: socket.userID})})
-    yield put({type: 'USERS:DATA:GET', payload})
-    yield socket.off('users')
+    yield put({type: 'USER:DATA:SET', payload: {users: payload}})
 }
-function workerGetUsers(socket) {
+function usersData(socket) {
     return new eventChannel((emitter) => {
-        socket.emit('GET:USERS', (data) => emitter(data))
-        return () => {}
-    })
-}
-
-function getUserStatus(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('USER:CONNECTED', (user) => emitter(user))
-        socket.on('USER:DISCONNECTED', (user) => emitter(user))
+        socket.emit('GET:DATA:USERS', (data) => emitter(data))
         return () => {}
     })
 }
@@ -40,6 +30,13 @@ function* userStatus(socket) {
         const result = yield call(checkUsers, user)
         yield put(result)
     }
+}
+function getUserStatus(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('USER:CONNECTED', (user) => emitter(user))
+        socket.on('USER:DISCONNECTED', (user) => emitter(user))
+        return () => {}
+    })
 }
 function* checkUsers(user) {
     const usersData = yield select(getUsersData)

@@ -21,7 +21,6 @@ import DoneAllIcon from '@material-ui/icons/DoneAll'
 const Message = (props) => {
     const classes = useStyles()
     const {name, mid, text, time, read, my, me, deleted, change, withMe, viewRef} = props
-
     const [edit, setEdit] = useState(false)
     const [messagee, setMessage] = useState(text)
 
@@ -47,7 +46,7 @@ const Message = (props) => {
                         <Box className={classes.header}>
                             <Typography variant='body1'>{name}</Typography>
                             <Typography variant='caption' className={classes.time}>
-                                {time.hm}
+                                {time}
                             </Typography>
                         </Box>
                     }
@@ -110,28 +109,37 @@ const MessageContainer = (props) => {
         deleted: props.delMessage,
         change: props.change,
         readed: props.readed,
-        me: props.me,
     }
-    const messagesMap = props.messages.map((m) => {
-        return (
-            <InView key={m.mid}>
-                {({inView, ref}) => {
-                    const message = {
-                        name: _.find(props.users, {userID: m.from}).username,
-                        mid: m.mid,
-                        text: m.message,
-                        time: m.time,
-                        read: m.read && !props.withMe,
-                        my: m.from === props.me,
-                        viewRef: !m.read ? ref : null,
-                    }
-                    if (inView && m.from !== props.me) {
-                        props.readed(m.mid)
-                    }
-                    return <Message {...required} {...message} />
-                }}
-            </InView>
-        )
+
+    const messagesMap = props?.messages?.map((m) => {
+        const message = {
+            key: m._id,
+            mid: m._id,
+            name: m.fid.nickname || m.fid.login,
+            text: m.text,
+            time: m.time,
+            read: m.read,
+        }
+        return <Message {...message} />
+        // return (
+        //     <InView key={m.mid}>
+        //         {({inView, ref}) => {
+        //             const message = {
+        //                 name: _.find(props.users, {userID: m.from}).username,
+        //                 mid: m.mid,
+        //                 text: m.message,
+        //                 time: m.time,
+        //                 read: m.read && !props.withMe,
+        //                 my: m.from === props.me,
+        //                 viewRef: !m.read ? ref : null,
+        //             }
+        //             if (inView && m.from !== props.me) {
+        //                 props.readed(m.mid)
+        //             }
+        //             return <Message {...required} {...message} />
+        //         }}
+        //     </InView>
+        // )
     })
     return <>{messagesMap}</>
 }

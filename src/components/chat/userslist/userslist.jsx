@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {
+    Avatar,
     Badge,
     Box,
     Dialog,
@@ -17,6 +18,7 @@ import FaceIcon from '@material-ui/icons/Face'
 import {useStyles} from './userList.style'
 import {NavLink} from 'react-router-dom'
 import CloseIcon from '@material-ui/icons/Close'
+import AvatarImage from '../../../assets/img/avatar.png'
 
 const UsersList = (props) => {
     const classes = useStyles()
@@ -39,21 +41,36 @@ const UsersList = (props) => {
             <Divider />
             <List className={classes.userList}>
                 {props.users.map((user) => {
-                    const CurrentUser = _.find(props.dialogsData, {wid: user.userID})
-                    const count = _.filter(CurrentUser?.messages, {read: false, from: user.userID})
-                        ?.length
-                    const LM = _.last(CurrentUser?.messages)
-                    const name = LM?.from === props.me && 'Вы: '
-                    const unread = LM?.from === props.me && !LM?.read
+                    const nickname = user?.nickname || user.login
+                    const dialog = _.find(props.dialogs, {wid: user._id})
+                    const m = {
+                        name: null,
+                        text: null,
+                        read: null,
+                        unread: null,
+                    }
+                    const last = _.last(dialog?.messages) || null
+                    if (last) {
+                        const {fid, read, text, data, time, _id} = last
+                        m.name = fid._id === props.userId ? 'Вы: ' : fid.nickname || fid.login
+                        m.text = text
+                        m.read = read
+                        const unread = _.countBy(dialog.messages, {
+                            read: false,
+                            fid: {_id: dialog.wid === props.userId || dialog.wid},
+                        })
+                        m.unread = unread?.true
+                    }
+
                     return (
                         <ListItem
                             divider
                             component={NavLink}
                             activeClassName={classes.active}
-                            to={`/chat/${user.userID}`}
+                            to={`/chat/${user._id}`}
                             button
                             onClick={() => props.isOpen && props.mobileClose()}
-                            key={user.userID}>
+                            key={user._id}>
                             <ListItemIcon>
                                 <Badge
                                     className={classes.unread}
@@ -63,21 +80,28 @@ const UsersList = (props) => {
                                     }}
                                     overlap='circle'
                                     variant='dot'
-                                    invisible={!unread}>
-                                    <Badge color='secondary' badgeContent={count}>
-                                        <FaceIcon
-                                            color='error'
-                                            className={user.connected && classes.online}
-                                            fontSize='large'
-                                        />
+                                    invisible={m.read}>
+                                    <Badge color='secondary' badgeContent={m.unread}>
+                                        <Avatar
+                                            className={
+                                                user.onlineStatus ? classes.online : classes.avatar
+                                            }
+                                            alt={`${nickname}-avatar`}
+                                            src={
+                                                user?.avatar
+                                                    ? `http://localhost:5000/${user.avatar}`
+                                                    : AvatarImage
+                                            }>
+                                            {nickname.slice(0, 1).toUpperCase()}
+                                        </Avatar>
                                     </Badge>
                                 </Badge>
                             </ListItemIcon>
                             <div className={classes.box}>
-                                <ListItemText primary={user.username} />
+                                <ListItemText primary={nickname} />
                                 <Typography noWrap>
-                                    {name}
-                                    {LM?.message}
+                                    {m.name}
+                                    {m.text}
                                 </Typography>
                             </div>
                         </ListItem>

@@ -1,44 +1,29 @@
 let initialState = {
-    login: null,
-    nickname: null,
-    userId: null,
-    email: null,
-    isAuth: false,
-    avatar: null,
-    appReady: false,
-    chatReady: false,
+    appStatus: false,
+    authStatus: false,
+    chatStatus: false,
 }
 const appReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'APP:INIT:PROCESS':
+        case 'APP:END:LAUNCH':
             return {
                 ...state,
-                appReady: false,
+                appStatus: true,
             }
-        case 'APP:INIT:END':
+        case 'APP:AUTH:SUCESS':
             return {
                 ...state,
-                appReady: true,
+                authStatus: true,
             }
-        case 'USER:DATA:SET':
+        case 'APP:CHAT:ON':
             return {
                 ...state,
-                ...action.payload,
+                chatStatus: true,
             }
-        case 'CHATREADY':
+        case 'APP:CHAT:OFF':
             return {
                 ...state,
-                chatReady: true,
-            }
-        case 'USER:SET:AVATAR':
-            return {
-                ...state,
-                avatar: action.payload,
-            }
-        case 'USER:SET:NICKNAME':
-            return {
-                ...state,
-                nickname: action.nickname,
+                chatStatus: false,
             }
         default:
             return state

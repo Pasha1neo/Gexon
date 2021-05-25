@@ -11,23 +11,23 @@ import {
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
-const Post = ({content, author, fid, pid, data, time}) => {
+const Post = ({text, fid, pid, data, time}) => {
     return (
         <Grid item xs={12}>
             <Card>
                 <CardHeader
-                    avatar={<Avatar>P</Avatar>}
+                    avatar={<Avatar>P</Avatar>} //Тоже через lodash сделать аватарки по id пользователя и так будет каеф
                     action={
                         <IconButton>
                             <MoreVertIcon />
                         </IconButton>
                     }
-                    title={author}
+                    title={'Имя можно сделать например через lodash'}
                     subheader={data && `${data} ${time}`}
                 />
                 <CardContent>
                     <Typography variant='body2' color='textSecondary' component='p'>
-                        {content}
+                        {text}
                     </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
@@ -43,21 +43,9 @@ const Post = ({content, author, fid, pid, data, time}) => {
 const Posts = (props) => {
     return (
         <Grid container spacing={2} direction='column-reverse'>
-            {props.posts?.map(
-                ({postText, authorName, id, content, author, pid, fid, data, time}, key) => {
-                    return (
-                        <Post
-                            key={pid || key}
-                            content={content || postText}
-                            author={author || authorName}
-                            pid={pid || id}
-                            fid={fid || null}
-                            data={data}
-                            time={time}
-                        />
-                    )
-                }
-            )}
+            {props.posts?.map(({text, fid, _id, data, time}) => {
+                return <Post key={_id} text={text} pid={_id} fid={fid} data={data} time={time} />
+            })}
         </Grid>
     )
 }

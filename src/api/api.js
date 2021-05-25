@@ -6,7 +6,7 @@ const TOKEN = (() => {
     return false
 })()
 const instance = axios.create({
-    baseURL: `http://localhost:5000/api/`,
+    baseURL: `http://localhost:5000/`,
     withCredentials: true,
 })
 const refreshAuthLogic = async (failedRequest) => {
@@ -17,49 +17,44 @@ const refreshAuthLogic = async (failedRequest) => {
 }
 createAuthRefreshInterceptor(instance, refreshAuthLogic)
 
-export const SignAPI = {
-    async signup(login, email, password) {
-        return await instance.post('sign/signup', {login, email, password})
+//-------------------------------------------------------
+
+export const signApi = {
+    async up(login, email, password) {
+        const {data} = await instance.post('sign/up', {login, email, password})
+        return data
     },
 
     async singin(login, password, rememberMe) {
-        const response = await instance.post('sign/signin', {login, password, rememberMe})
-        return response.data
+        const {data} = await instance.post('sign/in', {login, password, rememberMe})
+        return data
     },
 
     async auth() {
-        if (TOKEN) {
-            const response = await instance.get('sign', TOKEN)
-            return response.data
-        }
-        return false
+        if (!TOKEN) return false
+        const {data} = await instance.get('sign', TOKEN)
+        return data
     },
 }
+
 export const profileAPI = {
-    async setNickname(nickname) {
-        const response = await instance.post('profile/nickname', {nickname}, TOKEN)
-        return response.datap
+    async addPost(text) {
+        const {data} = await instance.post('profile/create', {text}, TOKEN)
+        return data
     },
+    async setNickname(nickname) {
+        const {data} = await instance.post('profile/nickname', {nickname}, TOKEN)
+        return data
+    },
+
     async uploadAvatar(avatar) {
         const formData = new FormData()
         formData.append('file', avatar)
-        const response = await instance.post(`profile/avatar`, formData, TOKEN)
-        return response.data
+        const {data} = await instance.post(`profile/avatar`, formData, TOKEN)
+        return data
     },
-
-    async addPost(data) {
-        const response = await instance.post('profile/create', {...data}, TOKEN)
-        return response.data
-    },
-
-    async getPosts(payload) {
-        const response = await instance.post('profile', {id: payload}, TOKEN)
-        return response.data
-    },
-    async getUsers(payload) {
-        const response = await instance.get('users')
-        return response.data
+    async getUsers() {
+        const {data} = await instance.get('users')
+        return data
     },
 }
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

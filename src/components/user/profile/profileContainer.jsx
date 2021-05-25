@@ -4,7 +4,6 @@ import {compose} from 'redux'
 import {addPost, setAvatar, setNickname} from '../../../redux/actions/profile'
 import EditProfile from './editProfile'
 import Profile from './profile'
-import AvatarImage from '../../../assets/img/avatar.png'
 
 const ProfileContainer = (props) => {
     const [editProfile, setEditProfile] = useState(false)
@@ -12,31 +11,31 @@ const ProfileContainer = (props) => {
         return (
             <EditProfile
                 avatar={props.avatar}
+                nickname={props.nickname}
                 setAvatar={props.setAvatar}
                 setEditProfile={setEditProfile}
                 setNickname={props.setNickname}
-                nickname={props.nickname}
             />
         )
     } else {
         return (
             <Profile
-                addPost={props.addPost}
+                id={props.id}
                 nickname={props.nickname}
                 avatar={props.avatar}
                 posts={props.posts}
-                id={props.id}
                 setEditProfile={setEditProfile}
+                addPost={props.addPost}
             />
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    nickname: state.app?.nickname || state.app.login,
-    id: state.app.userId,
-    avatar: state.app?.avatar || AvatarImage,
-    posts: state.profile?.posts,
+    nickname: state.user.nickname || state.user.login,
+    id: state.user.userId,
+    avatar: state.user.avatar,
+    posts: state.user.posts,
 })
 export default compose(connect(mapStateToProps, {addPost, setAvatar, setNickname}))(
     ProfileContainer

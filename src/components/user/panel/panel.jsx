@@ -2,7 +2,7 @@ import {Button, IconButton, Container, Box, Hidden, Typography, Avatar} from '@m
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import {NavLink} from 'react-router-dom'
 import {useStyles} from './panel.style'
-
+import AVATAR from '../../../assets/img/avatar.png'
 const Panel = (props) => {
     const classes = useStyles()
     return (
@@ -23,7 +23,7 @@ const Panel = (props) => {
                 <Avatar
                     className={classes.avatar}
                     alt={`${props.nickname}-avatar`}
-                    src={props.avatar}>
+                    src={props.avatar ? `http://localhost:5000/${props.avatar}` : AVATAR}>
                     {props.nickname.slice(0, 1).toUpperCase()}
                 </Avatar>
             </IconButton>

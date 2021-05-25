@@ -3,7 +3,7 @@ import TuneIcon from '@material-ui/icons/Tune'
 import useStyles from './style'
 import PostForm from './postForm'
 import Posts from './post'
-
+import AVATAR from '../../../assets/img/avatar.png'
 const Profile = (props) => {
     const classes = useStyles()
     return (
@@ -12,7 +12,13 @@ const Profile = (props) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2} className={classes.userPanel}>
                         <Grid item xs={4}>
-                            <img className={classes.image} src={props.avatar} alt='avatar' />
+                            <img
+                                className={classes.image}
+                                src={
+                                    props.avatar ? `http://localhost:5000/${props.avatar}` : AVATAR
+                                }
+                                alt='avatar'
+                            />
                         </Grid>
                         <Grid item>
                             <Typography className={classes.nickname} variant='h4'>

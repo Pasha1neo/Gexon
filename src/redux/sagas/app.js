@@ -1,94 +1,63 @@
 import {call, put, takeEvery} from '@redux-saga/core/effects'
-import {SignAPI} from '../../api/api'
+import {signApi} from '../../api/api'
 
 export const setToken = (token) => localStorage.setItem('token', token)
 export const removeToken = () => localStorage.removeItem('token')
 
 export function* authentification() {
-    yield takeEvery('APP:INIT:START', auth)
-    yield takeEvery('SIGN:UP', registration)
-    yield takeEvery('LOGIN', login)
-    yield takeEvery('LOG:OUT', logout)
-    yield takeEvery('APP:TOKEN:REFRESH', refreshToken)
+    yield takeEvery('APP:START:LAUNCH', appLaunch)
+    yield takeEvery('SIGN:UP', signUp)
+    yield takeEvery('SIGN:IN', signIn)
+    yield takeEvery('SIGN:OUT', signOut)
 }
-function* refreshToken() {}
+
+function* appLaunch() {
+    const authStatus = yield call(auth)
+    if (!authStatus) removeToken()
+    yield put({type: 'APP:END:LAUNCH'})
+    yield put({type: 'APP:CHAT:LAUNCH'})
+}
+
 function* auth() {
     try {
-        yield put({type: 'APP:INIT:PROCESS'})
-        const data = yield call(SignAPI.auth)
-        if (!data) return yield put({type: 'APP:INIT:END'})
-        const {resultcode, user, message} = data
-        if (resultcode === 200) {
-            yield put({
-                type: 'USER:DATA:SET',
-                payload: {
-                    userId: user.id,
-                    login: user.login,
-                    nickname: user?.nickname,
-                    email: user.email,
-                    isAuth: true,
-                    avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
-                },
-            })
-            yield put({type: 'APP:INIT:END'})
-            yield put({type: 'SOCKET:ON', payload: user.login})
-            yield put({type: 'PROFILE:ON', userId: user.id})
-        }
-        if (resultcode === 101) {
-            yield put({type: 'APP:INIT:END'})
-            removeToken()
-        }
+        const data = yield call(signApi.auth)
+        const {user} = data
+        if (!user) return false
+        yield put({
+            type: 'USER:DATA:SET',
+            payload: user,
+        })
+        yield put({type: 'APP:AUTH:SUCESS'})
+        return true
     } catch (error) {
         console.log(error)
-        yield put({type: 'APP:INIT:END'})
-        removeToken()
+        return false
     }
 }
 
-function* registration({login, email, password, password_2}) {
-    if (password !== password_2) {
-        alert('пароли не совпадают')
-    } else {
-        const response = yield call(SignAPI.signup, login, email, password)
-        if (response.data.resultcode === 200) {
-            alert('успешная регистрация')
-        }
+function* signUp({login, email, password, password_2}) {
+    if (password !== password_2) return alert('Пароли не совпали')
+    const status = yield call(signApi.up, login, email, password)
+    if (status) alert('Успешно')
+}
+
+function* signIn({login, password, rememberMe}) {
+    const {token, user} = yield call(signApi.singin, login, password, rememberMe)
+    if (user) {
+        setToken(token || null)
+        yield put({
+            type: 'USER:DATA:SET',
+            payload: user,
+        })
+        yield put({type: 'APP:AUTH:SUCESS'})
     }
 }
 
-function* login({login, password, rememberMe}) {
-    const {token, user} = yield call(SignAPI.singin, login, password, rememberMe)
-    setToken(token || null)
-    yield put({
-        type: 'USER:DATA:SET',
-        payload: {
-            userId: user.id,
-            login: user.login,
-            nickname: user.nickname,
-            email: user.email,
-            isAuth: true,
-            posts: user.posts,
-            avatar: user.avatar ? `http://localhost:5000/${user.avatar}` : null,
-        },
-    })
-    yield put({type: 'SOCKET:ON', payload: user.login})
-    yield put({type: 'PROFILE:ON', userId: user.id})
-}
-
-function* logout() {
+function* signOut() {
     yield put({type: 'SOCKET:OFF'})
     removeToken()
     yield put({
-        type: 'USER:DATA:SET',
-        payload: {
-            login: null,
-            nickname: null,
-            userId: null,
-            email: null,
-            isAuth: false,
-            avatar: null,
-            appReady: true,
-            chatReady: false,
-        },
+        type: 'APP:LOGOUT',
+        payload: {},
     })
 }

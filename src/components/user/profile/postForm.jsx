@@ -5,7 +5,7 @@ const PostForm = ({addPost, nickname, id}) => {
     return (
         <Form
             onSubmit={({text}) => {
-                addPost({author: nickname, content: text, fid: id})
+                addPost(text)
             }}>
             {({handleSubmit, form}) => (
                 <form onSubmit={handleSubmit}>

@@ -55,9 +55,9 @@ function SignForm(props) {
             <Form
                 onSubmit={({loginName, email, password, password_2, checkbox}) => {
                     if (sign === 0) {
-                        props.login(loginName, password, checkbox)
+                        props.signIn(loginName, password, checkbox)
                     } else {
-                        props.registration(loginName, email, password, password_2, checkbox)
+                        props.signUp(loginName, email, password, password_2, checkbox)
                     }
                     props.close()
                 }}>

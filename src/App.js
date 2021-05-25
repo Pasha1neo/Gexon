@@ -2,26 +2,24 @@ import React, {useEffect} from 'react'
 import {BrowserRouter, Route, withRouter} from 'react-router-dom'
 import {connect, Provider} from 'react-redux'
 import {compose} from 'redux'
-import store from './redux/store'
-import {initApp} from './redux/actions/auth'
-import {theme} from './theme'
 import {ThemeProvider} from '@material-ui/styles'
+import {Container, CssBaseline} from '@material-ui/core'
+
+import store from './redux/store'
+import {appLaunch} from './redux/actions/app'
+import {theme} from './theme'
+import {useStyles} from './style'
+
 import Header from './components/header/header'
 import Preloader from './components/util/preloader/Preloader'
-import ChatContainer from './components/chat/chatContainer'
-import {Container, CssBaseline} from '@material-ui/core'
-import {useStyles} from './style'
 import {Profile} from './components/user'
+import ChatContainer from './components/chat/chatContainer'
 import Users from './components/users/usersContainer'
 
-function Application({initApp, appReady, chatReady}) {
+function Application({appLaunch, appStatus, chatStatus}) {
     const classes = useStyles()
-    useEffect(() => {
-        initApp()
-    }, [initApp])
-    if (!appReady) {
-        return <Preloader />
-    }
+    useEffect(() => appLaunch(), [])
+    if (!appStatus) return <Preloader /> //переработать
     return (
         <div className={classes.root}>
             <ThemeProvider theme={theme}>
@@ -31,8 +29,8 @@ function Application({initApp, appReady, chatReady}) {
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
                         <Route path='/profile/:id?' render={() => <Profile />} />
-                        <Route path='/users/:id?' render={() => <Users />} />
-                        {chatReady && <Route path='/chat/:id?' render={() => <ChatContainer />} />}
+                        <Route path='/chat/:id?' render={() => chatStatus && <ChatContainer />} />
+                        {/* <Route path='/users/:id?' render={() => <Users />} /> */}
                     </Container>
                 </main>
             </ThemeProvider>
@@ -41,11 +39,11 @@ function Application({initApp, appReady, chatReady}) {
 }
 
 const mapStateToProps = (state) => ({
-    appReady: state.app.appReady,
-    chatReady: state.app.chatReady,
+    appStatus: state.app.appStatus,
+    chatStatus: state.app.chatStatus,
 })
 
-const AppContainer = compose(withRouter, connect(mapStateToProps, {initApp}))(Application)
+const AppContainer = compose(withRouter, connect(mapStateToProps, {appLaunch}))(Application)
 
 const App = () => {
     return (

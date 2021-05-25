@@ -1,16 +1,16 @@
-export const addPost = (data) => ({
-    type: 'POST:ADD',
-    data,
+export const addPost = (text) => ({
+    type: 'USER:CREATE:POST',
+    text,
 })
-export const deletePost = (id) => ({
-    type: 'POST:DELETE',
-    id,
+export const setNickname = (newNickname) => ({
+    type: 'USER:CHANGE:NICKNAME',
+    newNickname,
 })
 export const setAvatar = (newAvatar) => ({
     type: 'USER:UPLOAD:AVATAR',
     newAvatar,
 })
-export const setNickname = (newNickname) => ({
-    type: 'USER:CHANGE:NICKNAME',
-    newNickname,
+export const deletePost = (pid) => ({
+    type: 'USER:DELETE:POST',
+    pid,
 })

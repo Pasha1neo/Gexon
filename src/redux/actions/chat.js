@@ -1,9 +1,9 @@
-export const selectChat = (id) => ({
-    type: 'DIALOG:SELECT:START',
-    id,
+export const selectDialog = (wid) => ({
+    type: 'CHAT:PICK:DIALOG',
+    wid,
 })
 export const sendMessage = (data) => ({
-    type: 'MESSAGE:SEND',
+    type: 'CHAT:MESSAGE:SEND',
     data,
 })
 export const changeMessage = (wid, mid, message) => ({

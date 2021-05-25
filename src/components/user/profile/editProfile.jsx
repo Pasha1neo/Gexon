@@ -4,11 +4,13 @@ import PublishOutlinedIcon from '@material-ui/icons/PublishOutlined'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import useStyles from './style'
 import {useState} from 'react'
-
+import AVATAR from '../../../assets/img/avatar.png'
 const EditProfile = (props) => {
     const classes = useStyles()
     const [nickname, setName] = useState(props.nickname)
-    const [avatar, setAvatar] = useState(props.avatar)
+    const [avatar, setAvatar] = useState(
+        props.avatar ? `http://localhost:5000/${props.avatar}` : AVATAR
+    )
     const [properties, setProperties] = useState(null)
     const [avatarFile, setFile] = useState(null)
     const setStateName = (e) => {
