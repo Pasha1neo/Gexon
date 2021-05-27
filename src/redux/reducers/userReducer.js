@@ -46,6 +46,9 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 dialogs: action.payload,
             }
+        case 'APP:DATA:NULL': {
+            return initialState
+        }
         default:
             return state
     }

@@ -1,11 +1,10 @@
 import {useState} from 'react'
 import AvatarImage from '../../../../assets/img/avatar.png'
-import {InView, useInView} from 'react-intersection-observer'
+import {InView} from 'react-intersection-observer'
 import _ from 'lodash'
 import {
     Avatar,
     Box,
-    Grow,
     IconButton,
     ListItem,
     ListItemAvatar,
@@ -14,13 +13,14 @@ import {
     Typography,
 } from '@material-ui/core'
 import {useStyles} from './message.style'
+import DoneIcon from '@material-ui/icons/Done'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import DoneAllIcon from '@material-ui/icons/DoneAll'
 
 const Message = (props) => {
     const classes = useStyles()
-    const {name, mid, text, time, read, my, me, deleted, change, withMe, viewRef} = props
+    const {deleted, change, mid, name, text, time, read, my, avatar} = props
     const [edit, setEdit] = useState(false)
     const [messagee, setMessage] = useState(text)
 
@@ -35,10 +35,10 @@ const Message = (props) => {
         setMessage(e.currentTarget.value)
     }
     return (
-        <div className={classes.root} ref={viewRef}>
+        <div className={classes.root}>
             <ListItem divider>
                 <ListItemAvatar>
-                    <Avatar src={AvatarImage} alt='Avatar' />
+                    <Avatar src={avatar} alt='Avatar' />
                 </ListItemAvatar>
                 <ListItemText
                     className={classes.messageText}
@@ -50,6 +50,12 @@ const Message = (props) => {
                             </Typography>
                         </Box>
                     }
+                    secondaryTypographyProps={{
+                        component: 'span',
+                        variant: 'body2',
+                        className: classes.text,
+                        color: 'textPrimary',
+                    }} //передаёт вторичному компоненту свойства
                     secondary={
                         edit ? (
                             <TextField
@@ -57,24 +63,18 @@ const Message = (props) => {
                                 fullWidth
                                 margin='dense'
                                 defaultValue={text}
-                                message={text}
                                 helperText='Измените сообщение'
                                 variant='outlined'
                                 onChange={(e) => setTextMessage(e)}
                                 onKeyUp={(e) => textChange(e)}
                             />
                         ) : (
-                            <Typography
-                                variant='body2'
-                                className={classes.text}
-                                color='textPrimary'>
-                                {text}
-                            </Typography>
+                            text
                         )
                     }
                 />
                 <Box className={classes.other}>
-                    {read && (
+                    {read && my && (
                         <IconButton
                             className={classes.otherButton}
                             onClick={() =>
@@ -86,16 +86,25 @@ const Message = (props) => {
                     )}
                     <IconButton
                         className={classes.otherButton}
-                        onClick={() => deleted(mid)}
+                        onClick={() => deleted(mid, my)}
                         size='small'>
                         <DeleteOutlineOutlinedIcon fontSize='small' />
                     </IconButton>
                     {my && (
                         <IconButton
                             className={classes.otherButton}
-                            onClick={() => setEdit(true)}
+                            onClick={() => {
+                                if (edit) {
+                                    if (messagee !== text) change(mid, messagee)
+                                }
+                                setEdit(!edit)
+                            }}
                             size='small'>
-                            <CreateOutlinedIcon fontSize='small' />
+                            {edit ? (
+                                <DoneIcon fontSize='small' />
+                            ) : (
+                                <CreateOutlinedIcon fontSize='small' />
+                            )}
                         </IconButton>
                     )}
                 </Box>
@@ -105,41 +114,39 @@ const Message = (props) => {
 }
 
 const MessageContainer = (props) => {
-    const required = {
+    const methods = {
         deleted: props.delMessage,
         change: props.change,
-        readed: props.readed,
     }
-
     const messagesMap = props?.messages?.map((m) => {
         const message = {
-            key: m._id,
             mid: m._id,
             name: m.fid.nickname || m.fid.login,
             text: m.text,
             time: m.time,
             read: m.read,
+            my: m.fid._id === props.userId,
+            avatar: m.fid.avatar
+                ? `http://${window.location.hostname}:5000/${m.fid.avatar}`
+                : AvatarImage,
         }
-        return <Message {...message} />
-        // return (
-        //     <InView key={m.mid}>
-        //         {({inView, ref}) => {
-        //             const message = {
-        //                 name: _.find(props.users, {userID: m.from}).username,
-        //                 mid: m.mid,
-        //                 text: m.message,
-        //                 time: m.time,
-        //                 read: m.read && !props.withMe,
-        //                 my: m.from === props.me,
-        //                 viewRef: !m.read ? ref : null,
-        //             }
-        //             if (inView && m.from !== props.me) {
-        //                 props.readed(m.mid)
-        //             }
-        //             return <Message {...required} {...message} />
-        //         }}
-        //     </InView>
-        // )
+        if (m.fid._id !== props.userId) {
+            if (!m.read) {
+                return (
+                    <InView
+                        key={m._id}
+                        as='div'
+                        onChange={(inView) => {
+                            if (inView) {
+                                props.readed(m._id)
+                            }
+                        }}>
+                        <Message {...message} {...methods} />
+                    </InView>
+                )
+            }
+        }
+        return <Message key={m._id} {...message} {...methods} />
     })
     return <>{messagesMap}</>
 }

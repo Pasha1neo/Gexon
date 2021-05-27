@@ -1,4 +1,4 @@
-import {call, put, takeEvery} from '@redux-saga/core/effects'
+import {call, cancelled, put, takeEvery} from '@redux-saga/core/effects'
 import {profileAPI} from '../../api/api'
 
 export function* profile() {
@@ -12,13 +12,11 @@ function* postAdd({text}) {
     if (post) yield put({type: 'USER:ADD:POST', payload: post})
     //сделать тип ошибки что ли
 }
-
 function* setNickname({newNickname}) {
     const nickname = yield call(profileAPI.setNickname, newNickname)
     if (nickname) yield put({type: 'USER:SET:NICKNAME', payload: nickname})
     //сделать тип ошибки что ли
 }
-
 function* uploadAvatar({newAvatar}) {
     const avatar = yield call(profileAPI.uploadAvatar, newAvatar)
     if (avatar) yield put({type: 'USER:SET:AVATAR', payload: avatar})

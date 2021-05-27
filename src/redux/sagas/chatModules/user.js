@@ -2,13 +2,13 @@ import {eventChannel} from '@redux-saga/core'
 import {take, put, call, fork, select} from 'redux-saga/effects'
 import _ from 'lodash'
 
-function getUsersData(state) {
-    return [...state.chat.usersData]
+function users(state) {
+    return [...state.user.users]
 }
 
 export default function* user(socket) {
     yield call(getUsers, socket)
-    // // yield fork(userStatus, socket)
+    yield fork(watchUserStatus, socket)
 }
 
 function* getUsers(socket) {
@@ -23,38 +23,26 @@ function usersData(socket) {
     })
 }
 
-function* userStatus(socket) {
-    const data = yield call(getUserStatus, socket)
+function* watchUserStatus(socket) {
+    const data = yield call(userStatus, socket)
     while (true) {
         const user = yield take(data)
-        const result = yield call(checkUsers, user)
-        yield put(result)
+        yield call(setStatus, user)
     }
 }
-function getUserStatus(socket) {
+function userStatus(socket) {
     return new eventChannel((emitter) => {
         socket.on('USER:CONNECTED', (user) => emitter(user))
         socket.on('USER:DISCONNECTED', (user) => emitter(user))
         return () => {}
     })
 }
-function* checkUsers(user) {
-    const usersData = yield select(getUsersData)
-    const result = _.find(usersData, {userID: user.userID})
-    if (result) {
-        const payload = usersData.map((u) => {
-            if (user.userID === u.userID) {
-                return {...u, connected: !u.connected}
-            }
-            return u
-        })
-        return {
-            type: 'USER:SET:CONNECT',
-            payload,
-        }
-    }
-    return {
-        type: 'USER:CONNECT',
-        payload: user,
-    }
+function* setStatus(data) {
+    const usersData = yield select(users)
+    const user = _.find(usersData, {_id: data._id})
+    user.onlineStatus = data.onlineStatus
+    if (data?.login) user.login = data.login
+    if (data?.nickname) user.nickname = data.nickname
+    if (data?.avatar) user.avatar = data.avatar
+    yield put({type: 'USER:DATA:SET', payload: {users: usersData}})
 }

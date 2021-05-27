@@ -31,13 +31,13 @@ const Panel = (props) => {
                 <Button
                     color='inherit'
                     className={classes.button}
-                    onClick={props.logout}
+                    onClick={props.signOut}
                     endIcon={<ExitToAppIcon />}>
                     Выйти
                 </Button>
             </Hidden>
             <Hidden only={['xl', 'lg', 'md']}>
-                <IconButton onClick={props.logout} color='inherit' className={classes.iconButton}>
+                <IconButton onClick={props.signOut} color='inherit' className={classes.iconButton}>
                     <ExitToAppIcon fontSize='large' />
                 </IconButton>
             </Hidden>

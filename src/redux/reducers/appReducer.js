@@ -5,7 +5,7 @@ let initialState = {
 }
 const appReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'APP:END:LAUNCH':
+        case 'APP:TURN:ON':
             return {
                 ...state,
                 appStatus: true,
@@ -15,6 +15,12 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 authStatus: true,
             }
+        case 'APP:AUTH:FALSE': {
+            return {
+                ...state,
+                authStatus: false,
+            }
+        }
         case 'APP:CHAT:ON':
             return {
                 ...state,

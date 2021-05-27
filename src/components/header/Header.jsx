@@ -14,14 +14,17 @@ function Header() {
                     </Typography>
                 </Hidden>
                 <Box className={classes.navLinks}>
-                    <Button
-                        color='inherit'
-                        component={NavLink}
-                        exact
-                        to='/'
-                        activeClassName={classes.active}>
-                        Главная
-                    </Button>
+                    <Hidden only={['xs']}>
+                        <Button
+                            color='inherit'
+                            component={NavLink}
+                            exact
+                            to='/'
+                            activeClassName={classes.active}>
+                            Главная
+                        </Button>
+                    </Hidden>
+
                     <Button
                         color='inherit'
                         component={NavLink}
@@ -36,13 +39,15 @@ function Header() {
                         activeClassName={classes.active}>
                         Профиль
                     </Button>
-                    <Button
-                        color='inherit'
-                        component={NavLink}
-                        to='/users'
-                        activeClassName={classes.active}>
-                        Пользователи
-                    </Button>
+                    <Hidden only={['xs']}>
+                        <Button
+                            color='inherit'
+                            component={NavLink}
+                            to='/users'
+                            activeClassName={classes.active}>
+                            Пользователи
+                        </Button>
+                    </Hidden>
                 </Box>
                 <SignContainer />
             </Toolbar>

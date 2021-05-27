@@ -6,19 +6,21 @@ export const sendMessage = (data) => ({
     type: 'CHAT:MESSAGE:SEND',
     data,
 })
-export const changeMessage = (wid, mid, message) => ({
-    type: 'MESSAGE:CHANGE',
-    wid,
-    mid,
-    message,
-})
 export const readMessage = (wid, mid) => ({
-    type: 'MESSAGE:READ',
+    type: 'CHAT:MESSAGE:READ',
     wid,
     mid,
 })
+
+export const changeMessage = (wid, mid, text) => ({
+    type: 'CHAT:MESSAGE:CHANGE',
+    wid,
+    mid,
+    text,
+})
+
 export const deleteMessage = (wid, mid) => ({
-    type: 'MESSAGE:DELETE',
+    type: 'CHAT:MESSAGE:DELETE',
     wid,
     mid,
 })

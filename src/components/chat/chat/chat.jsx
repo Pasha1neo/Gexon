@@ -22,19 +22,27 @@ import {Form, Field} from 'react-final-form'
 
 const Chat = (props) => {
     const classes = useStyles()
-    function change(mid, message) {
-        props.changeMessage(props.dialog.wid, mid, message)
+    function change(mid, text) {
+        props.changeMessage(props.dialog.wid, mid, text)
     }
     function readed(mid) {
-        // props.readMessage(props.dialog.wid, mid)
+        props.readMessage(props.dialog.wid, mid)
     }
-    function delMessage(mid) {
-        if (props.me !== props.dialog.wid) {
-            window.confirm('Удалить сообщение у себя?')
+    function delMessage(mid, my) {
+        if (!my) {
+            window.confirm('Удалить? (только у себя)')
         }
         props.deleteMessage(props.dialog.wid, mid)
     }
-
+    const dialog = (() => {
+        const nickname = props?.withUser?.nickname
+        const login = props?.withUser?.login
+        const avatar = props?.withUser?.avatar
+        return {
+            name: nickname || login,
+            avatar: avatar ? `http://${window.location.hostname}:5000/${avatar}` : AvatarImage,
+        }
+    })()
     return (
         <div className={classes.root}>
             <Toolbar className={classes.bar}>
@@ -44,14 +52,16 @@ const Chat = (props) => {
                     </IconButton>
                 </Hidden>
                 <Box className={classes.dialogContainer}>
-                    <Avatar className={classes.avatar} alt='avatar' src={AvatarImage} />
+                    <Avatar className={classes.avatar} alt='avatar' src={dialog?.avatar} />
                     <Typography variant='h6' className={classes.companion}>
-                        имя диалога
+                        {dialog?.name}
                     </Typography>
                 </Box>
             </Toolbar>
             <List className={classes.history}>
                 <Message
+                    wid={props.dialog?.wid}
+                    userId={props.userId}
                     messages={props.dialog?.messages}
                     change={change}
                     readed={readed}
@@ -90,7 +100,10 @@ const Chat = (props) => {
                         </Field>
                         <Hidden only={['xl', 'lg', 'md']}>
                             <IconButton
-                                type='submit'
+                                onClick={() => {
+                                    handleSubmit()
+                                    form.reset()
+                                }}
                                 color='inherit'
                                 className={classes.iconButton}>
                                 <SendIcon fontSize='large' />
@@ -98,8 +111,12 @@ const Chat = (props) => {
                         </Hidden>
                         <Hidden only={['xs', 'sm']}>
                             <Button
+                                onClick={() => {
+                                    handleSubmit()
+                                    form.reset()
+                                }}
                                 variant='outlined'
-                                type='submit'
+                                type='button'
                                 endIcon={<SendIcon fontSize='small' />}
                                 className={classes.button}>
                                 Отправить

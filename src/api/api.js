@@ -6,10 +6,14 @@ const TOKEN = (() => {
     return false
 })()
 const instance = axios.create({
-    baseURL: `http://localhost:5000/`,
+    baseURL: `http://${window.location.hostname}:5000/`,
     withCredentials: true,
 })
 const refreshAuthLogic = async (failedRequest) => {
+    if (failedRequest.response.config.url === 'sign/in') {
+        console.log(`Обрабатывать ошибку запроса в API `)
+        return new Promise((resolve, reject) => resolve(false))
+    }
     const token = await instance.get('sign/refresh')
     localStorage.setItem('token', token.data.token)
     failedRequest.response.config.headers['Authorization'] = 'Bearer ' + token.data.token
@@ -25,7 +29,7 @@ export const signApi = {
         return data
     },
 
-    async singin(login, password, rememberMe) {
+    async in(login, password, rememberMe) {
         const {data} = await instance.post('sign/in', {login, password, rememberMe})
         return data
     },
@@ -33,6 +37,10 @@ export const signApi = {
     async auth() {
         if (!TOKEN) return false
         const {data} = await instance.get('sign', TOKEN)
+        return data
+    },
+    async out() {
+        const {data} = await instance.get('sign/out')
         return data
     },
 }

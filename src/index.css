@@ -2,5 +2,5 @@
     text-align: center;
 }
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 28px rgba(0, 148, 50, 1) inset !important;
+    -webkit-box-shadow: 0 0 0 30px rgba(0, 148, 50, 1) inset !important;
 }

@@ -7,9 +7,8 @@ import {
     changeMessage,
     deleteMessage,
 } from '../../redux/actions/chat'
-import {withAuthRedurect} from '../util/redirect/authRedirect'
 import {useEffect, useState} from 'react'
-import {Redirect, withRouter} from 'react-router'
+import {withRouter} from 'react-router'
 import _ from 'lodash'
 import {makeStyles, Paper} from '@material-ui/core'
 import UserList from './userslist/userslist'
@@ -29,26 +28,31 @@ const ChatContainer = (props) => {
 
     useEffect(() => {
         const {pathname} = props.location
-        const wid = pathname.split('/chat/').pop()
-        props.selectDialog(wid)
+        const wid = pathname.split('/').pop()
+        if (wid === 'chat') {
+            props.selectDialog(props.userId)
+        } else {
+            props.selectDialog(wid)
+        }
     }, [props.location])
 
     return (
         <Paper className={classes.root}>
             <UserList
                 userId={props.userId}
-                isOpen={isOpen}
                 users={props.users || []}
                 dialogs={props.dialogs || []}
+                isOpen={isOpen}
                 mobileClose={() => setMobile(false)}
             />
             <Chat
-                users={props.users}
+                userId={props.userId}
+                withUser={_.find(props.users, {_id: props.wid})}
                 dialog={_.find(props.dialogs, {wid: props.wid})}
                 sendMessage={props.sendMessage}
-                // readMessage={props.readMessage}
-                // changeMessage={props.changeMessage}
-                // deleteMessage={props.deleteMessage}
+                readMessage={props.readMessage}
+                changeMessage={props.changeMessage}
+                deleteMessage={props.deleteMessage}
                 isOpen={isOpen}
                 mobileOpen={() => setMobile(true)}
             />

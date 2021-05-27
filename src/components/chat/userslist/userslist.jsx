@@ -19,9 +19,81 @@ import {useStyles} from './userList.style'
 import {NavLink} from 'react-router-dom'
 import CloseIcon from '@material-ui/icons/Close'
 import AvatarImage from '../../../assets/img/avatar.png'
+import {useMemo} from 'react'
 
 const UsersList = (props) => {
     const classes = useStyles()
+    const users = useMemo(() => {
+        return props.users.map((user) => {
+            const nickname = user?.nickname || user.login
+            const dialog = _.find(props.dialogs, {wid: user._id})
+            const m = {
+                name: null,
+                text: null,
+                read: true,
+                unread: null,
+                time: null,
+                data: null, // сделать дату и время
+            }
+            const last = _.last(dialog?.messages) || null
+            if (last) {
+                const {fid, read, text, data, time, _id} = last
+                m.name = fid._id === props.userId ? 'Вы' : fid.nickname || fid.login
+                m.text = text
+                if (dialog.wid !== props.userId) m.read = read
+                m.unread = (() => {
+                    return _.countBy(dialog.messages, {
+                        read: false,
+                        fid: {_id: dialog.wid === props.userId || dialog.wid},
+                    })
+                })()?.true
+                m.time = time
+                m.data = data
+            }
+
+            return (
+                <ListItem
+                    divider
+                    component={NavLink}
+                    activeClassName={classes.active}
+                    to={`/chat/${user._id}`}
+                    button
+                    onClick={() => props.isOpen && props.mobileClose()}
+                    key={user._id}>
+                    <ListItemIcon>
+                        <Badge
+                            className={classes.unread}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            overlap='circle'
+                            variant='dot'
+                            invisible={m.read}>
+                            <Badge color='secondary' badgeContent={m.unread}>
+                                <Avatar
+                                    className={user.onlineStatus ? classes.online : classes.avatar}
+                                    alt={`${nickname}-avatar`}
+                                    src={
+                                        user?.avatar
+                                            ? `http://${window.location.hostname}:5000/${user.avatar}`
+                                            : AvatarImage
+                                    }>
+                                    {nickname.slice(0, 1).toUpperCase()}
+                                </Avatar>
+                            </Badge>
+                        </Badge>
+                    </ListItemIcon>
+                    <div className={classes.box}>
+                        <ListItemText primary={nickname} />
+                        <Typography noWrap>
+                            {m.name}: {m.text}
+                        </Typography>
+                    </div>
+                </ListItem>
+            )
+        })
+    }, [props.users, props.dialogs])
 
     return (
         <div className={classes.root}>
@@ -39,75 +111,7 @@ const UsersList = (props) => {
                 </Typography>
             </Toolbar>
             <Divider />
-            <List className={classes.userList}>
-                {props.users.map((user) => {
-                    const nickname = user?.nickname || user.login
-                    const dialog = _.find(props.dialogs, {wid: user._id})
-                    const m = {
-                        name: null,
-                        text: null,
-                        read: null,
-                        unread: null,
-                    }
-                    const last = _.last(dialog?.messages) || null
-                    if (last) {
-                        const {fid, read, text, data, time, _id} = last
-                        m.name = fid._id === props.userId ? 'Вы: ' : fid.nickname || fid.login
-                        m.text = text
-                        m.read = read
-                        const unread = _.countBy(dialog.messages, {
-                            read: false,
-                            fid: {_id: dialog.wid === props.userId || dialog.wid},
-                        })
-                        m.unread = unread?.true
-                    }
-
-                    return (
-                        <ListItem
-                            divider
-                            component={NavLink}
-                            activeClassName={classes.active}
-                            to={`/chat/${user._id}`}
-                            button
-                            onClick={() => props.isOpen && props.mobileClose()}
-                            key={user._id}>
-                            <ListItemIcon>
-                                <Badge
-                                    className={classes.unread}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    }}
-                                    overlap='circle'
-                                    variant='dot'
-                                    invisible={m.read}>
-                                    <Badge color='secondary' badgeContent={m.unread}>
-                                        <Avatar
-                                            className={
-                                                user.onlineStatus ? classes.online : classes.avatar
-                                            }
-                                            alt={`${nickname}-avatar`}
-                                            src={
-                                                user?.avatar
-                                                    ? `http://localhost:5000/${user.avatar}`
-                                                    : AvatarImage
-                                            }>
-                                            {nickname.slice(0, 1).toUpperCase()}
-                                        </Avatar>
-                                    </Badge>
-                                </Badge>
-                            </ListItemIcon>
-                            <div className={classes.box}>
-                                <ListItemText primary={nickname} />
-                                <Typography noWrap>
-                                    {m.name}
-                                    {m.text}
-                                </Typography>
-                            </div>
-                        </ListItem>
-                    )
-                })}
-            </List>
+            <List className={classes.userList}>{users}</List>
         </div>
     )
 }

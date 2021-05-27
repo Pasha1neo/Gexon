@@ -15,7 +15,9 @@ const Profile = (props) => {
                             <img
                                 className={classes.image}
                                 src={
-                                    props.avatar ? `http://localhost:5000/${props.avatar}` : AVATAR
+                                    props.avatar
+                                        ? `http://${window.location.hostname}:5000/${props.avatar}`
+                                        : AVATAR
                                 }
                                 alt='avatar'
                             />

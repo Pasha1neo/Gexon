@@ -6,50 +6,19 @@ function getDialogs(state) {
 }
 export default function* message(socket) {
     yield takeEvery('CHAT:MESSAGE:SEND', workerSendMessage, socket)
+    yield takeEvery('CHAT:MESSAGE:READ', workerReadMessage, socket)
+    yield takeEvery('CHAT:MESSAGE:CHANGE', workerChangeMessage, socket)
+    yield takeEvery('CHAT:MESSAGE:DELETE', workerDeleteMessage, socket)
+    yield takeEvery('CHAT:PICK:DIALOG', pickDialog) // СДЕЛАТЬ ОТСЛЕЖИВАНИЕ WID ПО ДРУГОМУ ЧЕРЕЗ САГУ !!!
     yield call(getDialogsData, socket)
+    yield fork(watchChangedMessage, socket)
     yield fork(watchMessage, socket)
+    yield fork(watcReadMessage, socket)
+    yield fork(watchDeletedMessage, socket)
     yield put({type: 'APP:CHAT:ON'})
 }
-function* addMessageInDialog({message, dialog: {_id, wid}}) {
-    console.log(message)
-    const dialogs = yield select(getDialogs)
-    let dialog = _.find(dialogs, {wid})
-    if (!dialog) dialog = {_id, wid, messages: []}
-    if (dialog._id === null) dialog._id = _id
-    dialog.messages.push(message)
-    yield put({type: 'CHAT:UPDATE:DIALOGS', payload: dialogs})
-}
-function* workerSendMessage(socket, {data}) {
-    const res = yield call(sendMessage, socket, data)
-    while (true) {
-        const message = yield take(res)
-        yield call(addMessageInDialog, message)
-    }
-}
-function sendMessage(socket, data) {
-    return new eventChannel((emitter) => {
-        socket.emit('SEND:MESSAGE', data, (res) => {
-            emitter(res)
-        })
-        return () => {}
-    })
-}
 
-function* watchMessage(socket) {
-    const data = yield call(getNewMessage, socket)
-    while (true) {
-        const res = yield take(data)
-        yield call(addMessageInDialog, res)
-    }
-}
-function getNewMessage(socket) {
-    return new eventChannel((emitter) => {
-        socket.on('NEW:MESSAGE', (data) => {
-            emitter(data)
-        })
-        return () => {}
-    })
-}
+//-----------------------------------------------------------------------
 
 function* getDialogsData(socket) {
     const data = yield call(dialogsData, socket)
@@ -62,76 +31,168 @@ function dialogsData(socket) {
         return () => {}
     })
 }
+function* pickDialog({wid}) {
+    const dialogs = yield select(getDialogs)
+    const dialog = _.find(dialogs, {wid}) || null
+    if (!dialog) {
+        dialogs.push({_id: null, wid, messages: []})
+        yield put({
+            type: 'CHAT:CREATE:DIALOG',
+            payload: dialogs,
+        })
+    }
+    yield put({type: 'CHAT:SELECT:DIALOG', payload: wid})
+} // проверка диалогов
 
-// function messageChane(socket, {wid, mid, message}) {
-//     socket.emit('MESSAGE:CHANGE', wid, mid, message)
-// }
-// function getChangedMessage(socket) {
-//     return new eventChannel((emitter) => {
-//         socket.on('MESSAGE:CHANGED', (data) => emitter(data))
-//         return () => {}
-//     })
-// }
-// function* watcherGetChangedMessage(socket) {
-//     const data = yield call(getChangedMessage, socket)
-//     while (true) {
-//         const {wid, mid, message} = yield take(data)
-//         yield call(changeMessage, wid, mid, message)
-//     }
-// }
-// function* changeMessage(wid, mid, message) {
-//     const dialogsData = yield select(getDialogsData)
-//     const dialog = _.find(dialogsData, {wid})
-//     if (dialog) {
-//         _.find(dialog.messages, {mid}).message = message
-//         yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
-//     }
-// }
-// function messageRead(socket, {wid, mid}) {
-//     socket.emit('MESSAGE:READ', wid, mid)
-// }
-// function getReadedMessage(socket) {
-//     return new eventChannel((emitter) => {
-//         socket.on('MESSAGE:READED', (data) => emitter(data))
-//         return () => {}
-//     })
-// }
-// function* watcherGetReadedMessage(socket) {
-//     const data = yield call(getReadedMessage, socket)
-//     while (true) {
-//         const {wid, mid} = yield take(data)
-//         yield call(readedMessage, wid, mid)
-//     }
-// }
-// function* readedMessage(wid, mid) {
-//     const dialogsData = yield select(getDialogsData)
-//     const dialog = _.find(dialogsData, {wid})
-//     if (dialog) {
-//         _.find(dialog.messages, {mid}).read = true
-//         yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
-//     }
-// }
-// function messageDelete(socket, {wid, mid}) {
-//     socket.emit('MESSAGE:DELETE', wid, mid)
-// }
-// function getDeletedMessage(socket) {
-//     return new eventChannel((emitter) => {
-//         socket.on('MESSAGE:DELETED', (data) => emitter(data))
-//         return () => {}
-//     })
-// }
-// function* watcherDeletedMessage(socket) {
-//     const data = yield call(getDeletedMessage, socket)
-//     while (true) {
-//         const {wid, mid} = yield take(data)
-//         yield call(deleteMessage, wid, mid)
-//     }
-// }
-// function* deleteMessage(wid, mid) {
-//     const dialogsData = yield select(getDialogsData)
-//     const dialog = _.find(dialogsData, {wid})
-//     if (dialog) {
-//         _.pullAllBy(dialog.messages, [{mid}], 'mid')
-//         yield put({type: 'MESSAGE:GET:DATA', payload: dialogsData})
-//     }
-// }
+//-----------------------------------------------------------------------
+
+function* addMessageInDialog({message, dialog: {_id, wid}}) {
+    const dialogs = yield select(getDialogs)
+    let dialog = _.find(dialogs, {wid})
+    if (!dialog) dialog = {_id, wid, messages: []}
+    if (dialog._id === null) dialog._id = _id
+    dialog.messages.push(message)
+    yield put({type: 'CHAT:UPDATE:DIALOGS', payload: dialogs})
+} //добавить сообщение
+function* updateMessage({wid, mid, text}) {
+    const dialogs = yield select(getDialogs)
+    _.find(_.find(dialogs, {wid}).messages, {_id: mid}).text = text
+    yield put({type: 'CHAT:UPDATE:DIALOGS', payload: dialogs})
+} // изменить сообщение
+function* messageReaded({wid, mid}) {
+    const dialogs = yield select(getDialogs)
+    _.find(_.find(dialogs, {wid}).messages, {_id: mid}).read = true
+    yield put({type: 'CHAT:UPDATE:DIALOGS', payload: dialogs})
+} // прочитать сообщение
+function* messageSetDelete({wid, mid}) {
+    const dialogs = yield select(getDialogs)
+    _.remove(_.find(dialogs, {wid}).messages, {_id: mid})
+    yield put({type: 'CHAT:UPDATE:DIALOGS', payload: dialogs})
+} // удалить сообщение
+//-----------------------------------------------------------------------
+
+function getNewMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('NEW:MESSAGE', (data) => {
+            emitter(data)
+        })
+        return () => {}
+    })
+}
+function sendMessage(socket, data) {
+    return new eventChannel((emitter) => {
+        socket.emit('SEND:MESSAGE', data, (res) => {
+            emitter(res)
+        })
+        return () => {}
+    })
+}
+function* watchMessage(socket) {
+    const data = yield call(getNewMessage, socket)
+    while (true) {
+        const res = yield take(data)
+        yield call(addMessageInDialog, res)
+    }
+}
+function* workerSendMessage(socket, {data}) {
+    const res = yield call(sendMessage, socket, data)
+    while (true) {
+        const message = yield take(res)
+        yield call(addMessageInDialog, message)
+    }
+}
+
+// --------------------------------------------------------------------
+
+function getChangedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('MESSAGE:CHANGED', (res) => emitter(res))
+        return () => {}
+    })
+}
+function changeMessage(socket, data) {
+    return new eventChannel((emitter) => {
+        socket.emit('MESSAGE:CHANGE', data, (res) => {
+            emitter(res)
+        })
+        return () => {}
+    })
+}
+function* watchChangedMessage(socket) {
+    const res = yield call(getChangedMessage, socket)
+    while (true) {
+        const data = yield take(res)
+        yield call(updateMessage, data)
+    }
+}
+function* workerChangeMessage(socket, {wid, mid, text}) {
+    const res = yield call(changeMessage, socket, {wid, mid, text})
+    while (true) {
+        const data = yield take(res)
+        yield call(updateMessage, data)
+    }
+}
+
+// --------------------------------------------------------------------
+
+function getReadedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('READED:MESSAGE', (data) => {
+            emitter(data)
+        })
+        return () => {}
+    })
+}
+function readMessage(socket, data) {
+    return new eventChannel((emitter) => {
+        socket.emit('READ:MESSAGE', data, (res) => {
+            emitter(res)
+        })
+        return () => {}
+    })
+}
+function* watcReadMessage(socket) {
+    const data = yield call(getReadedMessage, socket)
+    while (true) {
+        const res = yield take(data)
+        yield call(messageReaded, res)
+    }
+}
+function* workerReadMessage(socket, {wid, mid}) {
+    const res = yield call(readMessage, socket, {wid, mid})
+    while (true) {
+        const data = yield take(res)
+        yield call(messageReaded, data)
+    }
+}
+
+// --------------------------------------------------------------------
+
+function getDeletedMessage(socket) {
+    return new eventChannel((emitter) => {
+        socket.on('MESSAGE:DELETED', (res) => emitter(res))
+        return () => {}
+    })
+}
+function deleteMessage(socket, data) {
+    return new eventChannel((emitter) => {
+        socket.emit('MESSAGE:DELETE', data, (res) => {
+            emitter(res)
+        })
+        return () => {}
+    })
+}
+function* watchDeletedMessage(socket) {
+    const res = yield call(getDeletedMessage, socket)
+    while (true) {
+        const data = yield take(res)
+        yield call(messageSetDelete, data)
+    }
+}
+function* workerDeleteMessage(socket, {wid, mid}) {
+    const res = yield call(deleteMessage, socket, {wid, mid})
+    while (true) {
+        const data = yield take(res)
+        yield call(messageSetDelete, data)
+    }
+}
