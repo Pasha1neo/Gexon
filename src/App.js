@@ -23,6 +23,18 @@ function Application({appStatus, chatStatus}) {
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
+                        <Route
+                            path='/profile/:id?'
+                            exact
+                            render={() => (
+                                <div>
+                                    Для справки по быстрому накидал 1 в профиле вы можете изменить
+                                    аватарку и поставить себе никнейм а так же делать посты только
+                                    для себя в чате вы переписываетесь со всесми кем хотите общий
+                                    чат не предусмотрен
+                                </div>
+                            )}
+                        />
                         <Route path='/profile/:id?' render={() => <Profile />} />
                         <Route path='/chat/:id?' render={() => chatStatus && <ChatContainer />} />
                         {/* <Route path='/users/:id?' render={() => <Users />} /> */}
