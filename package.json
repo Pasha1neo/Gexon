@@ -5,9 +5,6 @@
 	"dependencies": {
 		"@material-ui/core": "^4.11.3",
 		"@material-ui/icons": "^4.11.2",
-		"@testing-library/jest-dom": "^5.11.4",
-		"@testing-library/react": "^11.1.0",
-		"@testing-library/user-event": "^12.1.10",
 		"axios": "^0.21.1",
 		"axios-auth-refresh": "^3.1.0",
 		"express": "^4.17.1",
@@ -23,19 +20,18 @@
 		"redux": "^4.0.5",
 		"redux-devtools-extension": "^2.13.9",
 		"redux-saga": "^1.1.3",
-		"redux-thunk": "^2.3.0",
 		"socket.io-client": "^4.0.2"
 	},
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "node server",
+		"rstart": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
 	},
 	"eslintConfig": {
 		"extends": [
-			"react-app",
-			"react-app/jest"
+			"react-app"
 		]
 	},
 	"browserslist": {
