@@ -1,0 +1,11 @@
+---
+application:
+  name: "project-adaptive"
+  project: "project-adaptive"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-project-adaptive"
+  routes:
+  - application_name: "project-adaptive"
+    paths:
+    - "/*"
