@@ -14,5 +14,4 @@ const theme = createMuiTheme({
         black: '#000',
     },
 })
-
 export default theme
