@@ -9,6 +9,7 @@ import store from './redux/store'
 import Header from './component/header/header'
 import Profile from './component/profile/profileContainer'
 import Chat from './component/chat/chatContainer'
+import Home from './component/home/home'
 
 function Application({chatStatus}) {
     const classes = useStyles()
@@ -20,18 +21,7 @@ function Application({chatStatus}) {
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
-                        <Route
-                            path='/'
-                            exact
-                            render={() => (
-                                <div>
-                                    Для справки по быстрому накидал 1 в профиле вы можете изменить
-                                    аватарку и поставить себе никнейм а так же делать посты только
-                                    для себя в чате вы переписываетесь со всесми кем хотите общий
-                                    чат не предусмотрен
-                                </div>
-                            )}
-                        />
+                        <Route path='/' exact render={() => <Home />} />
                         <Route path='/profile/:id?' render={() => <Profile />} />
                         <Route path='/chat/:id?' render={() => chatStatus && <Chat />} />
                     </Container>

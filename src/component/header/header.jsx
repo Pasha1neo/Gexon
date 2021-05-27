@@ -10,7 +10,7 @@ function Header() {
             <Toolbar className={classes.toolbar}>
                 <Hidden only={['xs']}>
                     <Typography noWrap component='h1' color='inherit' variant='h6'>
-                        Material Design
+                        Gexon
                     </Typography>
                 </Hidden>
                 <Box className={classes.navLinks}>
