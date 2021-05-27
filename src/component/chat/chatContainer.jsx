@@ -3,7 +3,6 @@ import {compose} from 'redux'
 import {useEffect, useState} from 'react'
 import {withRouter} from 'react-router'
 import {makeStyles, Paper} from '@material-ui/core'
-import PersonIcon from '@material-ui/icons/Person'
 import _ from 'lodash'
 import UserList from '../userslist/userslist'
 import Chat from './chat'
@@ -64,7 +63,7 @@ const mapStateToProps = (state) => ({
     users: state.user.users,
     dialogs: state.user.dialogs,
     userId: state.user.userId,
-    avatar: state.user.avatar || <PersonIcon />,
+    avatar: state.user.avatar,
     wid: state.user.wid,
 })
 export default compose(

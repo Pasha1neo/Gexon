@@ -19,7 +19,6 @@ import {
     withWidth,
 } from '@material-ui/core'
 import {avatarLink} from '../../config'
-import PersonIcon from '@material-ui/icons/Person'
 
 const UsersList = (props) => {
     const classes = useStyles()
@@ -74,7 +73,7 @@ const UsersList = (props) => {
                                 <Avatar
                                     className={user.onlineStatus ? classes.online : classes.avatar}
                                     alt={`${nickname}-avatar`}
-                                    src={user?.avatar ? avatarLink(user.avatar) : <PersonIcon />}>
+                                    src={avatarLink(user.avatar)}>
                                     {nickname.slice(0, 1).toUpperCase()}
                                 </Avatar>
                             </Badge>

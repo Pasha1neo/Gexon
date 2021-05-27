@@ -3,14 +3,13 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import PublishOutlinedIcon from '@material-ui/icons/PublishOutlined'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import {useState} from 'react'
-import PersonIcon from '@material-ui/icons/Person'
 import useStyles from './style'
 import {avatarLink} from '../../config'
 
 const EditProfile = (props) => {
     const classes = useStyles()
     const [nickname, setName] = useState(props.nickname)
-    const [avatar, setAvatar] = useState(props.avatar ? avatarLink(props.avatar) : <PersonIcon />)
+    const [avatar, setAvatar] = useState(avatarLink(props.avatar))
     const [properties, setProperties] = useState(null)
     const [avatarFile, setFile] = useState(null)
     const setStateName = (e) => {

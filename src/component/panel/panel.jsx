@@ -1,7 +1,6 @@
 import {Button, IconButton, Hidden, Avatar} from '@material-ui/core'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import {NavLink} from 'react-router-dom'
-import PersonIcon from '@material-ui/icons/Person'
 import useStyles from './style'
 import {avatarLink} from '../../config'
 
@@ -25,7 +24,7 @@ const Panel = (props) => {
                 <Avatar
                     className={classes.avatar}
                     alt={`${props.nickname}-avatar`}
-                    src={props.avatar ? avatarLink(props.avatar) : <PersonIcon />}>
+                    src={avatarLink(props.avatar)}>
                     {props.nickname.slice(0, 1).toUpperCase()}
                 </Avatar>
             </IconButton>

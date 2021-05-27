@@ -1,10 +1,9 @@
-import {Container, Grid, IconButton, Typography} from '@material-ui/core'
+import {Container, Grid, IconButton, Typography, Avatar} from '@material-ui/core'
 import TuneIcon from '@material-ui/icons/Tune'
 import useStyles from './style'
 import PostForm from './postForm'
 import Posts from './post'
 import {avatarLink} from '../../config'
-import PersonIcon from '@material-ui/icons/Person'
 
 const Profile = (props) => {
     const classes = useStyles()
@@ -14,9 +13,9 @@ const Profile = (props) => {
                 <Grid item xs={12}>
                     <Grid container spacing={2} className={classes.userPanel}>
                         <Grid item xs={4}>
-                            <img
+                            <Avatar
                                 className={classes.image}
-                                src={props.avatar ? avatarLink(props.avatar) : <PersonIcon />}
+                                src={avatarLink(props.avatar)}
                                 alt='avatar'
                             />
                         </Grid>

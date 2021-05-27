@@ -10,7 +10,6 @@ import {
     IconButton,
     Toolbar,
 } from '@material-ui/core'
-import PersonIcon from '@material-ui/icons/Person'
 import {Form, Field} from 'react-final-form'
 import SendIcon from '@material-ui/icons/Send'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -38,7 +37,7 @@ const Chat = (props) => {
         const avatar = props?.withUser?.avatar
         return {
             name: nickname || login,
-            avatar: avatar ? avatarLink(avatar) : <PersonIcon />,
+            avatar: avatarLink(avatar),
         }
     })()
     return (

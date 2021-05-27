@@ -5,7 +5,6 @@ import DoneIcon from '@material-ui/icons/Done'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import DoneAllIcon from '@material-ui/icons/DoneAll'
-import PersonIcon from '@material-ui/icons/Person'
 import {
     Avatar,
     Box,
@@ -126,7 +125,7 @@ const MessageContainer = (props) => {
             time: m.time,
             read: m.read,
             my: m.fid._id === props.userId,
-            avatar: m.fid.avatar ? avatarLink(m.fid.avatar) : <PersonIcon />,
+            avatar: avatarLink(m.fid.avatar),
         }
         if (m.fid._id !== props.userId) {
             if (!m.read) {

@@ -6,6 +6,13 @@ const useStyles = makeStyles((theme) => ({
     },
     image: {
         width: '100%',
+        [theme.breakpoints.down('sm')]: {
+            height: 240,
+        },
+        [theme.breakpoints.only('xs')]: {
+            height: 140,
+        },
+        height: 380,
     },
     nickname: {
         marginTop: theme.spacing(1),
