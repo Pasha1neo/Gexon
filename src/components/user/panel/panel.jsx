@@ -1,4 +1,4 @@
-import {Button, IconButton, Container, Box, Hidden, Typography, Avatar} from '@material-ui/core'
+import {Button, IconButton, Hidden, Avatar} from '@material-ui/core'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import {NavLink} from 'react-router-dom'
 import {useStyles} from './panel.style'

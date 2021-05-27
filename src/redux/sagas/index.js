@@ -1,4 +1,4 @@
-import {call, cancel, fork, take, takeEvery} from '@redux-saga/core/effects'
+import {cancel, fork, take} from '@redux-saga/core/effects'
 import {app} from './app'
 import {chat} from './chat'
 import {profile} from './profile'

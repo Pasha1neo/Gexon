@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import AvatarImage from '../../../../assets/img/avatar.png'
 import {InView} from 'react-intersection-observer'
-import _ from 'lodash'
 import {
     Avatar,
     Box,

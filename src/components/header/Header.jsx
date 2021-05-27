@@ -1,4 +1,4 @@
-import {AppBar, Box, Button, Container, Hidden, Toolbar, Typography} from '@material-ui/core'
+import {AppBar, Box, Button, Hidden, Toolbar, Typography} from '@material-ui/core'
 import {NavLink} from 'react-router-dom'
 import SignContainer from '../signcontainer/signContainer'
 import {useStyles} from './header.style'

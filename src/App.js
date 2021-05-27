@@ -10,7 +10,6 @@ import Preloader from './components/util/preloader/Preloader'
 import {Profile} from './components/user'
 import Header from './components/header/header'
 import ChatContainer from './components/chat/chatContainer'
-import Users from './components/users/usersContainer'
 
 function Application({appStatus, chatStatus}) {
     const classes = useStyles()
@@ -55,7 +54,7 @@ const AppContainer = compose(
     )
 )(Application)
 
-export default () => {
+const App = () => {
     return (
         <BrowserRouter>
             <Provider store={store}>
@@ -64,3 +63,4 @@ export default () => {
         </BrowserRouter>
     )
 }
+export default App

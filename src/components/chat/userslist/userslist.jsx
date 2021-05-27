@@ -14,7 +14,6 @@ import {
     Typography,
     withWidth,
 } from '@material-ui/core'
-import FaceIcon from '@material-ui/icons/Face'
 import {useStyles} from './userList.style'
 import {NavLink} from 'react-router-dom'
 import CloseIcon from '@material-ui/icons/Close'
@@ -37,7 +36,7 @@ const UsersList = (props) => {
             }
             const last = _.last(dialog?.messages) || null
             if (last) {
-                const {fid, read, text, data, time, _id} = last
+                const {fid, read, text, data, time} = last
                 m.name = fid._id === props.userId ? 'Вы' : fid.nickname || fid.login
                 m.text = text
                 if (dialog.wid !== props.userId) m.read = read
@@ -93,7 +92,7 @@ const UsersList = (props) => {
                 </ListItem>
             )
         })
-    }, [props.users, props.dialogs])
+    }, [props, classes])
 
     return (
         <div className={classes.root}>

@@ -34,7 +34,7 @@ const ChatContainer = (props) => {
         } else {
             props.selectDialog(wid)
         }
-    }, [props.location])
+    }, [props])
 
     return (
         <Paper className={classes.root}>

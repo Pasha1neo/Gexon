@@ -1,4 +1,4 @@
-import {call, cancelled, put, takeEvery} from '@redux-saga/core/effects'
+import {call, put, takeEvery} from '@redux-saga/core/effects'
 import {profileAPI} from '../../api/api'
 
 export function* profile() {
