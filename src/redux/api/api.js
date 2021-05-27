@@ -1,19 +1,25 @@
 import * as axios from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
-const TOKEN = (() => {
+import {BaseURL} from '../../config'
+const TOKEN = () => {
     const token = localStorage.getItem('token')
-    if (token) return {headers: {Authorization: `Bearer ${token}`}}
+
+    if (token !== 'undefined' && token !== null && token !== false) {
+        return {headers: {Authorization: `Bearer ${token}`}}
+    }
+    if (token === 'undefined' || token === false) {
+        localStorage.removeItem('token')
+    }
     return false
-})()
+}
 const instance = axios.create({
-    baseURL: `https://project-adaptive-server.herokuapp.com/`,
-    // baseURL: `http://${window.location.hostname}:5000/`,
+    baseURL: BaseURL(),
     withCredentials: true,
 })
 const refreshAuthLogic = async (failedRequest) => {
     if (failedRequest.response.config.url === 'sign/in') {
         console.log(`Обрабатывать ошибку запроса в API `)
-        return new Promise((resolve, reject) => resolve(false))
+        return false
     }
     const token = await instance.get('sign/refresh')
     localStorage.setItem('token', token.data.token)
@@ -36,8 +42,8 @@ export const signApi = {
     },
 
     async auth() {
-        if (!TOKEN) return false
-        const {data} = await instance.get('sign', TOKEN)
+        if (!TOKEN()) return false
+        const {data} = await instance.get('sign', TOKEN())
         return data
     },
     async out() {
@@ -48,18 +54,18 @@ export const signApi = {
 
 export const profileAPI = {
     async addPost(text) {
-        const {data} = await instance.post('profile/create', {text}, TOKEN)
+        const {data} = await instance.post('profile/create', {text}, TOKEN())
         return data
     },
     async setNickname(nickname) {
-        const {data} = await instance.post('profile/nickname', {nickname}, TOKEN)
+        const {data} = await instance.post('profile/nickname', {nickname}, TOKEN())
         return data
     },
 
     async uploadAvatar(avatar) {
         const formData = new FormData()
         formData.append('file', avatar)
-        const {data} = await instance.post(`profile/avatar`, formData, TOKEN)
+        const {data} = await instance.post(`profile/avatar`, formData, TOKEN())
         return data
     },
     async getUsers() {

@@ -14,11 +14,15 @@ export default function* user(socket) {
 function* getUsers(socket) {
     const data = yield call(usersData, socket)
     const payload = yield take(data)
+
     yield put({type: 'USER:DATA:SET', payload: {users: payload}})
 }
 function usersData(socket) {
     return new eventChannel((emitter) => {
-        socket.emit('GET:DATA:USERS', (data) => emitter(data))
+        socket.emit('GET:DATA:USERS', (data) => {
+            console.log(data)
+            emitter(data)
+        })
         return () => {}
     })
 }
