@@ -5,7 +5,11 @@ import message from './chatModules/message'
 import user from './chatModules/user'
 export function* chat() {
     try {
-        const socket = io(`http://${window.location.hostname}:5000/`, {
+        // const socket = io(`http://${window.location.hostname}:5000/`, {
+        //     autoConnect: false,
+        //     extraHeaders: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+        // })
+        const socket = io(`https://project-adaptive-server.herokuapp.com`, {
             autoConnect: false,
             extraHeaders: {Authorization: `Bearer ${localStorage.getItem('token')}`},
         })

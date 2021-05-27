@@ -76,7 +76,7 @@ const UsersList = (props) => {
                                     alt={`${nickname}-avatar`}
                                     src={
                                         user?.avatar
-                                            ? `http://${window.location.hostname}:5000/${user.avatar}`
+                                            ? `https://project-adaptive-server.herokuapp.com/${user.avatar}`
                                             : AvatarImage
                                     }>
                                     {nickname.slice(0, 1).toUpperCase()}

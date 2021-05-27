@@ -127,7 +127,7 @@ const MessageContainer = (props) => {
             read: m.read,
             my: m.fid._id === props.userId,
             avatar: m.fid.avatar
-                ? `http://${window.location.hostname}:5000/${m.fid.avatar}`
+                ? `https://project-adaptive-server.herokuapp.com/${m.fid.avatar}`
                 : AvatarImage,
         }
         if (m.fid._id !== props.userId) {

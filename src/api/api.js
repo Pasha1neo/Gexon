@@ -6,7 +6,8 @@ const TOKEN = (() => {
     return false
 })()
 const instance = axios.create({
-    baseURL: `http://${window.location.hostname}:5000/`,
+    baseURL: `https://project-adaptive-server.herokuapp.com/`,
+    // baseURL: `http://${window.location.hostname}:5000/`,
     withCredentials: true,
 })
 const refreshAuthLogic = async (failedRequest) => {

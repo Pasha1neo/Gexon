@@ -40,7 +40,9 @@ const Chat = (props) => {
         const avatar = props?.withUser?.avatar
         return {
             name: nickname || login,
-            avatar: avatar ? `http://${window.location.hostname}:5000/${avatar}` : AvatarImage,
+            avatar: avatar
+                ? `https://project-adaptive-server.herokuapp.com/${avatar}`
+                : AvatarImage,
         }
     })()
     return (

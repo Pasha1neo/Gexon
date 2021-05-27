@@ -23,7 +23,11 @@ const Panel = (props) => {
                 <Avatar
                     className={classes.avatar}
                     alt={`${props.nickname}-avatar`}
-                    src={props.avatar ? `http://localhost:5000/${props.avatar}` : AVATAR}>
+                    src={
+                        props.avatar
+                            ? `https://project-adaptive-server.herokuapp.com/${props.avatar}`
+                            : AVATAR
+                    }>
                     {props.nickname.slice(0, 1).toUpperCase()}
                 </Avatar>
             </IconButton>

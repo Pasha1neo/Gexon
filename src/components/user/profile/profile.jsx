@@ -16,7 +16,7 @@ const Profile = (props) => {
                                 className={classes.image}
                                 src={
                                     props.avatar
-                                        ? `http://${window.location.hostname}:5000/${props.avatar}`
+                                        ? `hhttps://project-adaptive-server.herokuapp.com/${props.avatar}`
                                         : AVATAR
                                 }
                                 alt='avatar'

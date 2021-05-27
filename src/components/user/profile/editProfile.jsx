@@ -9,7 +9,7 @@ const EditProfile = (props) => {
     const classes = useStyles()
     const [nickname, setName] = useState(props.nickname)
     const [avatar, setAvatar] = useState(
-        props.avatar ? `http://${window.location.hostname}:5000/${props.avatar}` : AVATAR
+        props.avatar ? `https://project-adaptive-server.herokuapp.com/${props.avatar}` : AVATAR
     )
     const [properties, setProperties] = useState(null)
     const [avatarFile, setFile] = useState(null)

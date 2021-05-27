@@ -36,7 +36,7 @@ const UsersList = (props) => {
                                     {avatar ? (
                                         <img
                                             height='100%'
-                                            src={`http://localhost:5000/${avatar}`}
+                                            src={`https://project-adaptive-server.herokuapp.com/${avatar}`}
                                         />
                                     ) : (
                                         login[0]
