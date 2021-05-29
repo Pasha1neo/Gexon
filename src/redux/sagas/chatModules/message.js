@@ -34,8 +34,7 @@ function dialogsData(socket) {
 }
 function* pickDialog({wid}) {
     const dialogs = yield select(getDialogs)
-    const dialog = _.find(dialogs, {wid}) || null
-    if (!dialog) {
+    if (!_.find(dialogs, {wid}) || false) {
         dialogs.push({_id: null, wid, messages: []})
         yield put({
             type: 'CHAT:CREATE:DIALOG',
