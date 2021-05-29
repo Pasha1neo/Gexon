@@ -3,12 +3,11 @@ import {eventChannel} from '@redux-saga/core'
 import {call, cancel, cancelled, fork, put, take} from '@redux-saga/core/effects'
 import message from './chatModules/message'
 import user from './chatModules/user'
-import {BaseURL} from '../../config'
 
 export function* chat() {
     try {
-        const socket = io('http://localhost:5000', {
-            autoConnect: false,
+        const socket = io(`http://${window.location.hostname}:5000/`, {
+            autoConnect: true,
             extraHeaders: {Authorization: `Bearer ${localStorage.getItem('token')}`},
         })
         const chatLaunch = yield fork(connect, socket)

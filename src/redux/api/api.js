@@ -3,30 +3,30 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import {BaseURL} from '../../config'
 const TOKEN = () => {
     const token = localStorage.getItem('token')
-
-    if (token !== 'undefined' && token !== null && token !== false) {
-        return {headers: {Authorization: `Bearer ${token}`}}
-    }
-    if (token === 'undefined' || token === false) {
+    if (token === 'undefined' || token === false || token === null) {
         localStorage.removeItem('token')
+        return false
     }
-    return false
+    return {headers: {Authorization: `Bearer ${token}`}}
 }
 const instance = axios.create({
     baseURL: BaseURL(),
     withCredentials: true,
 })
-const refreshAuthLogic = async (failedRequest) => {
+const refreshToken = async (failedRequest) => {
     if (failedRequest.response.config.url === 'sign/in') {
-        console.log(`Обрабатывать ошибку запроса в API `)
-        return false
+        return Promise.reject('Неправильные данные для входа')
     }
-    const token = await instance.get('sign/refresh')
-    localStorage.setItem('token', token.data.token)
-    failedRequest.response.config.headers['Authorization'] = 'Bearer ' + token.data.token
+    const {data} = await instance.get('sign/refresh')
+    if (!data) {
+        localStorage.removeItem('token')
+        return Promise.reject('Авторизируйтесь заново')
+    }
+    localStorage.setItem('token', data.token)
+    failedRequest.response.config.headers['Authorization'] = 'Bearer ' + data.token
     return Promise.resolve()
 }
-createAuthRefreshInterceptor(instance, refreshAuthLogic)
+createAuthRefreshInterceptor(instance, refreshToken)
 
 //-------------------------------------------------------
 

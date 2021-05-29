@@ -10,20 +10,23 @@ import {
 } from '@material-ui/core'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import {avatarLink} from '../../config'
 
 const Post = ({text, fid, pid, data, time}) => {
+    const username = fid?.nickname || fid?.login
+    const avatar = avatarLink(fid?.avatar)
     return (
         <Grid item xs={12}>
             <Card>
                 <CardHeader
-                    avatar={<Avatar>P</Avatar>} //Тоже через lodash сделать аватарки по id пользователя и так будет каеф
+                    avatar={<Avatar src={avatar}></Avatar>}
                     action={
                         <IconButton>
                             <MoreVertIcon />
                         </IconButton>
                     }
-                    title={'Имя можно сделать например через lodash'}
-                    subheader={data && `${data} ${time}`}
+                    title={username}
+                    subheader={`${data} ${time}`}
                 />
                 <CardContent>
                     <Typography variant='body2' color='textSecondary' component='p'>

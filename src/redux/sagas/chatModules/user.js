@@ -20,7 +20,6 @@ function* getUsers(socket) {
 function usersData(socket) {
     return new eventChannel((emitter) => {
         socket.emit('GET:DATA:USERS', (data) => {
-            console.log(data)
             emitter(data)
         })
         return () => {}

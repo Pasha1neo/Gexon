@@ -10,6 +10,7 @@ import Header from './component/header/header'
 import Profile from './component/profile/profileContainer'
 import Chat from './component/chat/chatContainer'
 import Home from './component/home/home'
+import Users from './component/users/users'
 
 function Application({chatStatus}) {
     const classes = useStyles()
@@ -22,6 +23,7 @@ function Application({chatStatus}) {
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
                         <Route path='/' exact render={() => <Home />} />
+                        <Route path='/users' exact render={() => <Users />} />
                         <Route path='/profile/:id?' render={() => <Profile />} />
                         <Route path='/chat/:id?' render={() => chatStatus && <Chat />} />
                     </Container>
