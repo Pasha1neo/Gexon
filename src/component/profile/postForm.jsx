@@ -1,7 +1,7 @@
 import {Form, Field} from 'react-final-form'
 import {Button, Grid, TextField} from '@material-ui/core'
 
-const PostForm = ({addPost, nickname, id}) => {
+const PostForm = ({addPost, nickname, userId}) => {
     return (
         <Form
             onSubmit={({text}) => {

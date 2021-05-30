@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, withRouter} from 'react-router-dom'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {connect, Provider} from 'react-redux'
 import {compose} from 'redux'
 import {ThemeProvider} from '@material-ui/styles'
@@ -12,20 +12,20 @@ import Chat from './component/chat/chatContainer'
 import Home from './component/home/home'
 import Users from './component/users/users'
 
-function Application({chatStatus}) {
+function Application({chatStatus, userId}) {
     const classes = useStyles()
     return (
         <div className={classes.root}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <Header />
+                <Header userId={userId} />
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
                     <Container className={classes.container}>
                         <Route path='/' exact render={() => <Home />} />
                         <Route path='/users' exact render={() => <Users />} />
-                        <Route path='/profile/:id?' render={() => <Profile />} />
-                        <Route path='/chat/:id?' render={() => chatStatus && <Chat />} />
+                        <Route path='/profile/:userId?' render={() => <Profile />} />
+                        <Route path='/chat/:userId?' render={() => chatStatus && <Chat />} />
                     </Container>
                 </main>
             </ThemeProvider>
@@ -33,11 +33,11 @@ function Application({chatStatus}) {
     )
 }
 const AppContainer = compose(
-    withRouter,
     connect(
         (state) => ({
             appStatus: state.app.appStatus,
             chatStatus: state.app.chatStatus,
+            userId: state.user.userId,
         }),
         {}
     )
@@ -45,11 +45,11 @@ const AppContainer = compose(
 
 function App() {
     return (
-        <BrowserRouter>
-            <Provider store={store}>
+        <Provider store={store}>
+            <Router>
                 <AppContainer />
-            </Provider>
-        </BrowserRouter>
+            </Router>
+        </Provider>
     )
 }
 export default App

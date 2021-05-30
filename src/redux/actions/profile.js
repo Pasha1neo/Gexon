@@ -1,7 +1,13 @@
 export const addPost = (text) => ({
-    type: 'USER:CREATE:POST',
+    type: 'PROFILE:CREATE:POST',
     text,
 })
+
+export const getProfile = (userId) => ({
+    type: 'PROFILE:GET:USER',
+    userId,
+})
+
 export const setNickname = (newNickname) => ({
     type: 'USER:CHANGE:NICKNAME',
     newNickname,

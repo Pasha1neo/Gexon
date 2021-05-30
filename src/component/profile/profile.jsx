@@ -32,7 +32,11 @@ const Profile = (props) => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <PostForm addPost={props.addPost} id={props.id} nickname={props.nickname} />
+                    <PostForm
+                        addPost={props.addPost}
+                        userId={props.userId}
+                        nickname={props.nickname}
+                    />
                 </Grid>
                 <Grid item>
                     <Typography variant='h5'>Посты</Typography>

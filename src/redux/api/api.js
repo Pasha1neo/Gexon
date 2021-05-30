@@ -68,8 +68,8 @@ export const profileAPI = {
         const {data} = await instance.post(`profile/avatar`, formData, TOKEN())
         return data
     },
-    async getUsers() {
-        const {data} = await instance.get('users')
+    async getProfile(userId) {
+        const {data} = await instance.get(`profile/${userId}`)
         return data
     },
 }

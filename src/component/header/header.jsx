@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom'
 import SignContainer from '../signcontainer/signContainer'
 import useStyles from './style'
 
-function Header() {
+function Header({userId}) {
     const classes = useStyles()
     return (
         <AppBar>
@@ -35,7 +35,7 @@ function Header() {
                     <Button
                         color='inherit'
                         component={NavLink}
-                        to='/profile'
+                        to={`/profile/${userId}`}
                         activeClassName={classes.active}>
                         Профиль
                     </Button>

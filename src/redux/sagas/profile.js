@@ -2,9 +2,10 @@ import {call, put, takeEvery} from '@redux-saga/core/effects'
 import {profileAPI} from '../api/api'
 
 export function* profile() {
-    yield takeEvery('USER:CREATE:POST', postAdd)
     yield takeEvery('USER:CHANGE:NICKNAME', setNickname)
     yield takeEvery('USER:UPLOAD:AVATAR', uploadAvatar)
+    yield takeEvery('PROFILE:CREATE:POST', postAdd)
+    yield takeEvery('PROFILE:GET:USER', getProfile)
 }
 
 function* postAdd({text}) {
@@ -21,4 +22,9 @@ function* uploadAvatar({newAvatar}) {
     const avatar = yield call(profileAPI.uploadAvatar, newAvatar)
     if (avatar) yield put({type: 'USER:SET:AVATAR', payload: avatar})
     //сделать тип ошибки что ли
+}
+function* getProfile({userId}) {
+    const data = yield call(profileAPI.getProfile, userId)
+    if (data) yield put({type: 'PROFILE:DATA:SET', payload: data})
+    // сделать тип ошибки что ли
 }

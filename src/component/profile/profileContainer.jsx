@@ -1,11 +1,17 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {addPost, setAvatar, setNickname} from '../../redux/actions/profile'
+import {addPost, setAvatar, setNickname, getProfile} from '../../redux/actions/profile'
 import EditProfile from './editProfile'
 import Profile from './profile'
 
 const ProfileContainer = (props) => {
+    useEffect(() => {
+        const userId = props.match.params.userId
+        props.getProfile(userId === undefined ? props.myUserId : userId)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.match])
     const [editProfile, setEditProfile] = useState(false)
     if (editProfile) {
         return (
@@ -20,23 +26,27 @@ const ProfileContainer = (props) => {
     } else {
         return (
             <Profile
-                id={props.id}
+                userId={props.userId}
                 nickname={props.nickname}
                 avatar={props.avatar}
                 posts={props.posts}
-                setEditProfile={setEditProfile}
+                authStatus={props.authStatus}
                 addPost={props.addPost}
+                setEditProfile={setEditProfile}
             />
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    nickname: state.user.nickname || state.user.login,
-    id: state.user.userId,
-    avatar: state.user.avatar,
-    posts: state.user.posts,
+    authStatus: state.app.authStatus,
+    nickname: state.profile.nickname || state.profile.login,
+    userId: state.profile.userId,
+    avatar: state.profile.avatar,
+    posts: state.profile.posts,
+    myUserId: state.user.userId,
 })
-export default compose(connect(mapStateToProps, {addPost, setAvatar, setNickname}))(
-    ProfileContainer
-)
+export default compose(
+    withRouter,
+    connect(mapStateToProps, {addPost, setAvatar, setNickname, getProfile})
+)(ProfileContainer)
