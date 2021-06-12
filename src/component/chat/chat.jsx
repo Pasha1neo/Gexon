@@ -78,11 +78,12 @@ const Chat = (props) => {
                         <Field name='message'>
                             {(props) => (
                                 <TextField
-                                    onKeyUp={(e) => {
+                                    onKeyDown={(e) => {
                                         if (e.keyCode === 13 && !e.shiftKey) {
                                             e.preventDefault()
                                             handleSubmit()
                                             form.reset()
+                                            return false
                                         }
                                     }}
                                     {...props.input}

@@ -21,16 +21,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 posts: [...state.posts, action.payload],
             }
-        case 'USER:SET:NICKNAME':
-            return {
-                ...state,
-                nickname: action.payload,
-            }
-        case 'USER:SET:AVATAR':
-            return {
-                ...state,
-                avatar: action.payload,
-            }
         case 'CHAT:CREATE:DIALOG':
             return {
                 ...state,

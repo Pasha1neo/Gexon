@@ -1,6 +1,11 @@
-export const addPost = (text) => ({
+export const addPost = (text, tid) => ({
     type: 'PROFILE:CREATE:POST',
     text,
+    tid,
+})
+export const deletePost = (pid) => ({
+    type: 'USER:DELETE:POST',
+    pid,
 })
 
 export const getProfile = (userId) => ({
@@ -15,8 +20,4 @@ export const setNickname = (newNickname) => ({
 export const setAvatar = (newAvatar) => ({
     type: 'USER:UPLOAD:AVATAR',
     newAvatar,
-})
-export const deletePost = (pid) => ({
-    type: 'USER:DELETE:POST',
-    pid,
 })

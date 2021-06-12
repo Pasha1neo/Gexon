@@ -28,6 +28,7 @@ const Message = (props) => {
             e.preventDefault()
             change(mid, messagee)
             setEdit(false)
+            return false
         }
     }
     const setTextMessage = (e) => {
@@ -65,7 +66,7 @@ const Message = (props) => {
                                 helperText='Измените сообщение'
                                 variant='outlined'
                                 onChange={(e) => setTextMessage(e)}
-                                onKeyUp={(e) => textChange(e)}
+                                onKeyDown={(e) => textChange(e)}
                             />
                         ) : (
                             text

@@ -38,7 +38,7 @@ const UsersList = (props) => {
             if (last) {
                 const {fid, read, text, data, time} = last
                 m.name = fid._id === props.userId ? 'Вы' : fid.nickname || fid.login
-                m.text = text
+                m.text = `: ${text}`
                 if (dialog.wid !== props.userId) m.read = read
                 m.unread = (() => {
                     return _.countBy(dialog.messages, {
@@ -82,7 +82,8 @@ const UsersList = (props) => {
                     <div className={classes.box}>
                         <ListItemText primary={nickname} />
                         <Typography noWrap>
-                            {m.name}: {m.text}
+                            {m.name}
+                            {m.text}
                         </Typography>
                     </div>
                 </ListItem>

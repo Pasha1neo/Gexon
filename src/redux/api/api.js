@@ -53,19 +53,22 @@ export const signApi = {
 }
 
 export const profileAPI = {
-    async addPost(text) {
-        const {data} = await instance.post('profile/create', {text}, TOKEN())
+    async addPost(post) {
+        const {data} = await instance.post('profile/post/create', post, TOKEN())
+        return data
+    },
+    async deletePost(pid) {
+        const {data} = await instance.post('profile/post/delete', pid, TOKEN())
         return data
     },
     async setNickname(nickname) {
         const {data} = await instance.post('profile/nickname', {nickname}, TOKEN())
         return data
     },
-
     async uploadAvatar(avatar) {
         const formData = new FormData()
         formData.append('file', avatar)
-        const {data} = await instance.post(`profile/avatar`, formData, TOKEN())
+        const {data} = await instance.post(`profile/avatar/upload`, formData, TOKEN())
         return data
     },
     async getProfile(userId) {

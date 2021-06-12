@@ -1,7 +1,21 @@
-import {Button, Container, Grid, IconButton, TextField, Typography} from '@material-ui/core'
+import {
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Container,
+    Grid,
+    IconButton,
+    TextField,
+    Typography,
+} from '@material-ui/core'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import PublishOutlinedIcon from '@material-ui/icons/PublishOutlined'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
+import DescriptionIcon from '@material-ui/icons/Description'
 import {useState} from 'react'
 import useStyles from './style'
 import {avatarLink} from '../../config'
@@ -33,68 +47,84 @@ const EditProfile = (props) => {
         const content = e.target.result
         setAvatar(content)
     }
-    const saveChanges = () => {
-        props.setNickname(nickname)
-        props.setAvatar(avatarFile)
-        props.setEditProfile(false)
+    const handleEnter = (e) => {
+        if (e.keyCode === 13 && !e.shiftKey) {
+            e.preventDefault()
+            handleSave()
+            return false
+        }
+    }
+    const handleSave = () => {
+        const data = {
+            name: null,
+            avatar: null,
+        }
+        if (nickname !== props.nickname) data.name = nickname
+        if (avatarFile) data.avatar = avatarFile
+        props.saveChanges(data)
     }
     return (
         <Container className={classes.root}>
-            <Grid container spacing={2} className={classes.userPanel}>
-                <Grid item xs={4}>
-                    <label htmlFor='avatar' className={classes.avatarContainer}>
-                        <img className={classes.image} src={avatar} alt='avatar'></img>
-                        <IconButton
-                            onClick={() => {
-                                alert('Удаление аватарки ещё не доделано XD')
-                            }}
-                            className={classes.delAvatar}>
-                            <DeleteOutlineOutlinedIcon fontSize='large' />
-                        </IconButton>
-                        <IconButton className={classes.uploadAvatar}>
-                            <label htmlFor='avatar'>
-                                <PublishOutlinedIcon fontSize='large' />
-                            </label>
-                        </IconButton>
-                        {properties && (
-                            <div className={classes.properties}>
-                                <Typography>Название - {properties.name}</Typography>
-                                <Typography>Размер - {properties.size}KB</Typography>
-                                <Typography>Тип - {properties.type}</Typography>
-                            </div>
-                        )}
-                    </label>
-                    <input
-                        accept='image/*'
-                        className={classes.fileInput}
-                        id='avatar'
-                        type='file'
-                        onChange={(e) => handleChangeAvatar(e)}
-                    />
-                </Grid>
-                <Grid item xs={6} className={classes.nickname}>
-                    <TextField
-                        className={classes.changeName}
-                        defaultValue={nickname}
-                        helperText='Новое имя'
-                        variant='outlined'
-                        onChange={(e) => setStateName(e)}
-                    />
-                </Grid>
-                <Grid item className={classes.settings}>
-                    <IconButton onClick={() => props.setEditProfile(false)}>
-                        <CloseOutlinedIcon fontSize='large' />
-                    </IconButton>
-                </Grid>
-                <Grid container justify='center'>
-                    <Grid item>
+            <Grid container spacing={1} className={classes.userPanel}>
+                <Grid item xs={12}>
+                    <Card variant='outlined' className={classes.userPanel}>
+                        <Box className={classes.avatarContainer}>
+                            <CardMedia className={classes.media}>
+                                <Box component='label' htmlFor='avatar'>
+                                    <Avatar className={classes.avatar} src={avatar} alt='avatar' />
+                                </Box>
+                            </CardMedia>
+                            <Box>
+                                <IconButton
+                                    onClick={() => alert('Тут будет удаление фото')}
+                                    className={classes.delAvatar}>
+                                    <DeleteOutlineOutlinedIcon />
+                                </IconButton>
+                                <IconButton component='label' htmlFor='avatar'>
+                                    <PublishOutlinedIcon />
+                                </IconButton>
+                                <IconButton onClick={() => alert('Тут будет описание фото')}>
+                                    <DescriptionIcon />
+                                </IconButton>
+                                {properties && (
+                                    <>
+                                        <Typography noWrap>Название - {properties.name}</Typography>
+                                        <Typography>Размер - {properties.size}KB</Typography>
+                                        <Typography>Тип - {properties.type}</Typography>
+                                    </>
+                                )}
+                            </Box>
+                            <input
+                                accept='image/*'
+                                className={classes.fileInput}
+                                id='avatar'
+                                type='file'
+                                onChange={handleChangeAvatar}
+                            />
+                        </Box>
+                        <CardContent className={classes.content}>
+                            <TextField
+                                label='Введите новое имя'
+                                className={classes.changeName}
+                                defaultValue={nickname}
+                                variant='outlined'
+                                onKeyDown={handleEnter}
+                                onChange={(e) => setStateName(e)}
+                            />
+                        </CardContent>
+                        <CardActions className={classes.actions}>
+                            <IconButton onClick={() => props.setEditProfile(false)}>
+                                <CloseOutlinedIcon fontSize='large' />
+                            </IconButton>
+                        </CardActions>
                         <Button
-                            className={classes.saveChanges}
+                            color='primary'
+                            className={classes.saveButton}
                             variant='contained'
-                            onClick={() => saveChanges()}>
+                            onClick={handleSave}>
                             Сохранить
                         </Button>
-                    </Grid>
+                    </Card>
                 </Grid>
             </Grid>
         </Container>

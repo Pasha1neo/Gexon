@@ -12,8 +12,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import {avatarLink} from '../../config'
 
-const Post = ({text, fid, pid, data, time}) => {
-    const username = fid?.nickname || fid?.login
+const Post = ({text, fid, pid, data, time, myNickname, handleOpenMenu}) => {
+    const username = fid?.nickname || fid?.login || myNickname || null
     const avatar = avatarLink(fid?.avatar)
     return (
         <Grid item xs={12}>
@@ -21,7 +21,10 @@ const Post = ({text, fid, pid, data, time}) => {
                 <CardHeader
                     avatar={<Avatar src={avatar}></Avatar>}
                     action={
-                        <IconButton>
+                        <IconButton
+                            onClick={(e) => {
+                                handleOpenMenu(e, pid)
+                            }}>
                             <MoreVertIcon />
                         </IconButton>
                     }
@@ -47,7 +50,19 @@ const Posts = (props) => {
     return (
         <Grid container spacing={2} direction='column-reverse'>
             {props.posts?.map(({text, fid, _id, data, time}) => {
-                return <Post key={_id} text={text} pid={_id} fid={fid} data={data} time={time} />
+                return (
+                    <Post
+                        handleOpenMenu={props.handleOpenMenu}
+                        deletePost={props.deletePost}
+                        myNickname={props.myNickname}
+                        key={_id}
+                        text={text}
+                        pid={_id}
+                        fid={fid}
+                        data={data}
+                        time={time}
+                    />
+                )
             })}
         </Grid>
     )

@@ -19,7 +19,9 @@ const Panel = (props) => {
             </Hidden>
             <IconButton
                 onClick={() => {
-                    alert('Ещё не готово')
+                    alert(
+                        'Сделать Menu для того что бы выдавался список действий пример в Profile-Menu'
+                    )
                 }}>
                 <Avatar
                     className={classes.avatar}

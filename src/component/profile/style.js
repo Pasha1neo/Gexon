@@ -4,15 +4,9 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
-    image: {
-        width: '100%',
-        [theme.breakpoints.down('sm')]: {
-            height: 240,
-        },
-        [theme.breakpoints.only('xs')]: {
-            height: 140,
-        },
-        height: 380,
+    userPanel: {
+        position: 'relative',
+        display: 'flex',
     },
     nickname: {
         marginTop: theme.spacing(1),
@@ -20,49 +14,43 @@ const useStyles = makeStyles((theme) => ({
             fontSize: theme.typography.h5.fontSize,
         },
     },
-    iconButton: {
-        position: 'absolute',
-        right: 0,
+    media: {
+        padding: theme.spacing(1.5),
+        width: 300,
+        height: 300,
+        [theme.breakpoints.down('sm')]: {
+            width: 200,
+            height: 200,
+        },
     },
-    box: {
-        position: 'relative',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    settings: {
-        position: 'absolute',
-        right: 0,
-    },
-    userPanel: {
-        position: 'relative',
-    },
-    fileInput: {
-        display: 'none',
+    avatar: {
+        width: '100%',
+        height: '100%',
     },
     changeName: {
+        '& label': {
+            fontSize: theme.typography.caption.fontSize,
+        },
         '& * input': {
-            fontSize: theme.typography.h4.fontSize,
+            fontSize: theme.typography.h5.fontSize,
             padding: theme.spacing(0.8),
             [theme.breakpoints.down('xs')]: {
                 width: 180,
-                fontSize: theme.typography.h5.fontSize,
+                fontSize: theme.typography.h6.fontSize,
             },
         },
+        '& * span': {
+            width: 92, // Тэг спан не меняет отображение текста поэтому ему задаю только Ширину
+        },
     },
-    avatarContainer: {
-        position: 'relative',
+    actions: {
+        flexGrow: 0,
+        display: 'flex',
+        flexDirection: 'column',
     },
-    delAvatar: {
-        position: 'absolute',
-        right: 0,
-    },
-    uploadAvatar: {
-        left: 0,
-        position: 'absolute',
-    },
+    content: {flexGrow: 1},
     properties: {
-        position: 'absolute',
+        width: '100%',
         bottom: theme.spacing(2.2),
         left: theme.spacing(2.2),
         color: theme.palette.secondary.contrastText,
@@ -71,8 +59,23 @@ const useStyles = makeStyles((theme) => ({
             '& > *': {fontSize: theme.typography.caption.fontSize},
         },
     },
-    saveChanges: {
-        backgroundColor: theme.palette.success.main,
+    avatarContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: theme.spacing(0.5),
     },
+    saveButton: {
+        backgroundColor: theme.palette.success.main,
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+    },
+    button: {
+        fontSize: theme.typography.caption.fontSize,
+        marginBottom: theme.spacing(1),
+    },
+    moreMenuItem: {padding: 4},
+    fileInput: {display: 'none'},
 }))
 export default useStyles
