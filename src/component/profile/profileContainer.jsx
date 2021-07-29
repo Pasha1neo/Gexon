@@ -2,7 +2,9 @@ import {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {addPost, setAvatar, setNickname, getProfile, deletePost} from '../../redux/actions/profile'
+import {addPost, setAvatar, setNickname, deletePost} from '../../redux/actions/profile'
+import {getProfile} from '../../redux/actions/unauthorized'
+import {addFriend, removeFriend} from '../../redux/actions/user'
 import EditProfile from './editProfile'
 import Profile from './profile'
 
@@ -29,15 +31,17 @@ const ProfileContainer = (props) => {
         <Profile
             deletePost={props.deletePost}
             myNickname={props.myNickname}
+            userId={props.userId}
             myUserId={props.myUserId}
             isMe={props.myUserId !== props.userId}
-            userId={props.userId}
             nickname={props.nickname}
             avatar={props.avatar}
             posts={props.posts}
             authStatus={props.authStatus}
             addPost={props.addPost}
             setEditProfile={setEditProfile}
+            addFriend={props.addFriend}
+            removeFriend={props.removeFriend}
         />
     )
 }
@@ -51,7 +55,13 @@ const mapStateToProps = (state) => ({
     myUserId: state.user.userId,
     myNickname: state.user.nickname || state.user.login,
 })
-export default compose(
-    withRouter,
-    connect(mapStateToProps, {addPost, setAvatar, setNickname, getProfile, deletePost})
-)(ProfileContainer)
+const mapDispatchToActions = {
+    addPost,
+    setAvatar,
+    setNickname,
+    getProfile,
+    deletePost,
+    addFriend,
+    removeFriend,
+}
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToActions))(ProfileContainer)

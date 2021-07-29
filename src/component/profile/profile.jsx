@@ -50,7 +50,7 @@ const Profile = (props) => {
                                     alt='avatar'
                                 />
                             </CardMedia>
-                            {props.isMe && (
+                            {props.authStatus && props.isMe && (
                                 <>
                                     <Button
                                         component={Link}
@@ -62,11 +62,14 @@ const Profile = (props) => {
                                         Написать
                                     </Button>
                                     <Button
-                                        onClick={() => alert('Сделать систему друзей')}
                                         className={classes.button}
                                         fullWidth
                                         color='primary'
-                                        variant='contained'>
+                                        variant='contained'
+                                        onClick={() => {
+                                            console.log(props.userId)
+                                            props.addFriend(props.userId)
+                                        }}>
                                         Добавить в друзья
                                     </Button>
                                 </>
@@ -86,18 +89,21 @@ const Profile = (props) => {
                         </CardActions>
                     </Card>
                 </Grid>
-                <Grid item xs={12}>
-                    <PostForm
-                        myUserId={props.myUserId}
-                        addPost={props.addPost}
-                        userId={props.userId}
-                    />
-                </Grid>
+                {props.authStatus && (
+                    <Grid item xs={12}>
+                        <PostForm
+                            myUserId={props.myUserId}
+                            addPost={props.addPost}
+                            userId={props.userId}
+                        />
+                    </Grid>
+                )}
                 <Grid item>
                     <Typography variant='h5'>Посты</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <Posts
+                        authStatus={props.authStatus}
                         handleOpenMenu={handleOpenMenu}
                         deletePost={props.deletePost}
                         myNickname={props.myNickname}

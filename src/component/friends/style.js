@@ -18,9 +18,8 @@ const useStyles = makeStyles((theme) => ({
     box: {
         marginLeft: theme.spacing(2),
         overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
         height: 70, // Благодаря этой высоте всё круто становится
+        marginRight: 'auto',
     },
     large: {
         width: theme.spacing(13),

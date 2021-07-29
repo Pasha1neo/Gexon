@@ -7,12 +7,6 @@ export const deletePost = (pid) => ({
     type: 'USER:DELETE:POST',
     pid,
 })
-
-export const getProfile = (userId) => ({
-    type: 'PROFILE:GET:USER',
-    userId,
-})
-
 export const setNickname = (newNickname) => ({
     type: 'USER:CHANGE:NICKNAME',
     newNickname,

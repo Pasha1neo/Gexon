@@ -7,9 +7,8 @@ function getPosts(state) {
 export function* profile() {
     yield takeEvery('USER:CHANGE:NICKNAME', setNickname)
     yield takeEvery('USER:UPLOAD:AVATAR', uploadAvatar)
-    yield takeEvery('PROFILE:CREATE:POST', postAdd)
     yield takeEvery('USER:DELETE:POST', postDelete)
-    yield takeEvery('PROFILE:GET:USER', getProfile)
+    yield takeEvery('PROFILE:CREATE:POST', postAdd)
 }
 
 function* postAdd({text, tid}) {
@@ -40,9 +39,4 @@ function* uploadAvatar({newAvatar}) {
         yield put({type: 'PROFILE:DATA:SET', payload: {avatar}})
     }
     //сделать тип ошибки что ли
-}
-function* getProfile({userId}) {
-    const data = yield call(profileAPI.getProfile, userId)
-    if (data) yield put({type: 'PROFILE:DATA:SET', payload: data})
-    // сделать тип ошибки что ли
 }

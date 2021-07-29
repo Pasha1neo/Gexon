@@ -6,6 +6,7 @@ let initialState = {
     avatar: null,
     posts: [],
     users: [],
+    friends: [],
     dialogs: [],
     wid: null,
 }

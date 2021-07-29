@@ -15,24 +15,25 @@ import useStyles from './style'
 import {avatarLink} from '../../config'
 import {useEffect} from 'react'
 import {compose} from 'redux'
-import {getUsers} from '../../redux/actions/unauthorized'
+import {getFriends} from '../../redux/actions/user'
 import {Box} from '@material-ui/core'
+import {Button} from '@material-ui/core'
 
-function UsersList(props) {
+function FriendsList(props) {
     const classes = useStyles()
     useEffect(() => {
-        props.getUsers()
+        props.getFriends()
     }, [])
     return (
         <div className={classes.root}>
             <Toolbar bgcolor='primary'>
                 <Typography variant='h5' className={classes.title} noWrap>
-                    Список пользователей:
+                    Список Друзей:
                 </Typography>
             </Toolbar>
             <Divider />
             <List className={classes.userList}>
-                {props.users.map(({_id, login, nickname, avatar}) => {
+                {props.friends.map(({isFriend, fid: {_id, login, nickname, avatar}}) => {
                     return (
                         <ListItem className={classes.listItem} divider key={_id}>
                             <ListItemIcon>
@@ -53,6 +54,10 @@ function UsersList(props) {
                                     </Link>
                                 )}
                             </Box>
+                            <Box>
+                                <Button>Отменить приглашение</Button>
+                                <Typography>{isFriend ? 'Друг' : 'Не друг'}</Typography>
+                            </Box>
                         </ListItem>
                     )
                 })}
@@ -62,7 +67,7 @@ function UsersList(props) {
 }
 
 const mapStateToProps = (state) => ({
-    users: state.app.users,
+    friends: state.user.friends,
     isAuth: state.app.authStatus,
 })
-export default compose(connect(mapStateToProps, {getUsers}))(UsersList)
+export default compose(connect(mapStateToProps, {getFriends}))(FriendsList)

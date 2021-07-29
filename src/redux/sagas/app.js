@@ -5,8 +5,8 @@ export const setToken = (token) => localStorage.setItem('token', token)
 export const removeToken = () => localStorage.removeItem('token')
 
 export function* app() {
-    yield put({type: 'APP:TURN:ON'})
     yield call(auth)
+    yield put({type: 'APP:TURN:ON'})
     yield takeEvery('SIGN:UP', signUp)
     yield takeEvery('SIGN:IN', signIn)
     yield takeEvery('SIGN:OUT', signOut)
@@ -17,16 +17,16 @@ function* auth() {
     if (!user) return removeToken()
     yield put({type: 'USER:DATA:SET', payload: user})
     yield put({type: 'APP:AUTH:SUCESS'})
-    yield put({type: 'APP:STATUS:ON'})
+    yield put({type: 'APP:STATUS:AUTHORIZED'})
 }
 
 function* signIn({login, password, rememberMe}) {
     const {token, user} = yield call(signApi.in, login, password, rememberMe)
-    if (!user || !token) return alert('Ошибка авторизации')
+    if (!user || !token) return window.alert('Ошибка авторизации')
     yield setToken(token)
     yield put({type: 'USER:DATA:SET', payload: user})
     yield put({type: 'APP:AUTH:SUCESS'})
-    yield put({type: 'APP:STATUS:ON'})
+    yield put({type: 'APP:STATUS:AUTHORIZED'})
 }
 
 function* signOut() {

@@ -2,6 +2,7 @@ let initialState = {
     appStatus: false,
     authStatus: false,
     chatStatus: false,
+    users: [],
 }
 const appReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -30,6 +31,11 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 chatStatus: false,
+            }
+        case 'APP:USERS:SET':
+            return {
+                ...state,
+                users: action.payload,
             }
         default:
             return state

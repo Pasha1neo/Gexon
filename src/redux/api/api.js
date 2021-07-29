@@ -75,4 +75,22 @@ export const profileAPI = {
         const {data} = await instance.get(`profile/${userId}`)
         return data
     },
+    async getUsers() {
+        const {data} = await instance.get(`profile/users/get`)
+        return data
+    },
+}
+export const userAPI = {
+    async addAsFriends(fid) {
+        const {data} = await instance.post('user/friend/add', fid, TOKEN())
+        return data
+    },
+    async removeFromFriends(fid) {
+        const {data} = await instance.post('user/friend/remove', fid, TOKEN())
+        return data
+    },
+    async getFriends() {
+        const {data} = await instance.get(`user/friends`, TOKEN())
+        return data
+    },
 }

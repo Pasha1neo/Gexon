@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom'
 import SignContainer from '../signcontainer/signContainer'
 import useStyles from './style'
 
-function Header({userId}) {
+function Header({userId, isAuth}) {
     const classes = useStyles()
     return (
         <AppBar>
@@ -14,40 +14,46 @@ function Header({userId}) {
                     </Typography>
                 </Hidden>
                 <Box className={classes.navLinks}>
-                    <Hidden only={['xs']}>
-                        <Button
-                            color='inherit'
-                            component={NavLink}
-                            exact
-                            to='/'
-                            activeClassName={classes.active}>
-                            Главная
-                        </Button>
-                    </Hidden>
-
                     <Button
                         color='inherit'
                         component={NavLink}
-                        to='/chat'
+                        exact
+                        to='/'
                         activeClassName={classes.active}>
-                        Чат
+                        Главная
                     </Button>
+                    {isAuth && (
+                        <>
+                            <Button
+                                color='inherit'
+                                component={NavLink}
+                                to='/chat'
+                                activeClassName={classes.active}>
+                                Чат
+                            </Button>
+                            <Button
+                                color='inherit'
+                                component={NavLink}
+                                to='/friends'
+                                activeClassName={classes.active}>
+                                Друзья
+                            </Button>
+                            <Button
+                                color='inherit'
+                                component={NavLink}
+                                to={`/profile/${userId}`}
+                                activeClassName={classes.active}>
+                                Профиль
+                            </Button>
+                        </>
+                    )}
                     <Button
                         color='inherit'
                         component={NavLink}
-                        to={`/profile/${userId}`}
+                        to='/users'
                         activeClassName={classes.active}>
-                        Профиль
+                        Пользователи
                     </Button>
-                    <Hidden only={['xs']}>
-                        <Button
-                            color='inherit'
-                            component={NavLink}
-                            to='/users'
-                            activeClassName={classes.active}>
-                            Пользователи
-                        </Button>
-                    </Hidden>
                 </Box>
                 <SignContainer />
             </Toolbar>

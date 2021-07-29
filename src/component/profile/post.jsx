@@ -12,7 +12,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import {avatarLink} from '../../config'
 
-const Post = ({text, fid, pid, data, time, myNickname, handleOpenMenu}) => {
+const Post = ({text, fid, pid, data, time, myNickname, handleOpenMenu, authStatus}) => {
     const username = fid?.nickname || fid?.login || myNickname || null
     const avatar = avatarLink(fid?.avatar)
     return (
@@ -21,12 +21,14 @@ const Post = ({text, fid, pid, data, time, myNickname, handleOpenMenu}) => {
                 <CardHeader
                     avatar={<Avatar src={avatar}></Avatar>}
                     action={
-                        <IconButton
-                            onClick={(e) => {
-                                handleOpenMenu(e, pid)
-                            }}>
-                            <MoreVertIcon />
-                        </IconButton>
+                        authStatus && (
+                            <IconButton
+                                onClick={(e) => {
+                                    handleOpenMenu(e, pid)
+                                }}>
+                                <MoreVertIcon />
+                            </IconButton>
+                        )
                     }
                     title={username}
                     subheader={`${data} ${time}`}
@@ -61,6 +63,7 @@ const Posts = (props) => {
                         fid={fid}
                         data={data}
                         time={time}
+                        authStatus={props.authStatus}
                     />
                 )
             })}
