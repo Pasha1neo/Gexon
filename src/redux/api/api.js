@@ -17,7 +17,7 @@ const refreshToken = async (failedRequest) => {
     if (failedRequest.response.config.url === 'sign/in') {
         return Promise.reject('Неправильные данные для входа')
     }
-    const {data} = await instance.get('sign/refresh')
+    const {data} = false /* await instance.get('sign/refresh')*/
     if (!data) {
         localStorage.removeItem('token')
         return Promise.reject('Авторизируйтесь заново')
@@ -32,18 +32,18 @@ createAuthRefreshInterceptor(instance, refreshToken)
 
 export const signApi = {
     async up(login, email, password) {
-        const {data} = await instance.post('sign/up', {login, email, password})
+        const {data} = await instance.post('auth/signup', {login, email, password})
         return data
     },
 
     async in(login, password, rememberMe) {
-        const {data} = await instance.post('sign/in', {login, password, rememberMe})
+        const {data} = await instance.post('auth/signin', {login, password, rememberMe})
         return data
     },
 
     async auth() {
         if (!TOKEN()) return false
-        const {data} = await instance.get('sign', TOKEN())
+        const {data} = await instance.get('auth', TOKEN())
         return data
     },
     async out() {
@@ -54,15 +54,15 @@ export const signApi = {
 
 export const profileAPI = {
     async addPost(post) {
-        const {data} = await instance.post('profile/post/create', post, TOKEN())
+        const {data} = await instance.post('profile/post', post, TOKEN())
         return data
     },
     async deletePost(pid) {
-        const {data} = await instance.post('profile/post/delete', pid, TOKEN())
+        const {data} = await instance.delete('profile/post', {data: {...pid}, ...TOKEN()})
         return data
     },
     async setNickname(nickname) {
-        const {data} = await instance.post('profile/nickname', {nickname}, TOKEN())
+        const {data} = await instance.patch('profile/nickname', {nickname}, TOKEN())
         return data
     },
     async uploadAvatar(avatar) {
@@ -76,7 +76,7 @@ export const profileAPI = {
         return data
     },
     async getUsers() {
-        const {data} = await instance.get(`profile/users/get`)
+        const {data} = await instance.get(`profile/users`)
         return data
     },
 }

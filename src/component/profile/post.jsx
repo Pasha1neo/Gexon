@@ -51,7 +51,7 @@ const Post = ({text, fid, pid, data, time, myNickname, handleOpenMenu, authStatu
 const Posts = (props) => {
     return (
         <Grid container spacing={2} direction='column-reverse'>
-            {props.posts?.map(({text, fid, _id, data, time}) => {
+            {props.posts?.map(({text, author, _id, createDate, createTime}) => {
                 return (
                     <Post
                         handleOpenMenu={props.handleOpenMenu}
@@ -60,9 +60,9 @@ const Posts = (props) => {
                         key={_id}
                         text={text}
                         pid={_id}
-                        fid={fid}
-                        data={data}
-                        time={time}
+                        fid={author}
+                        data={createDate}
+                        time={createTime}
                         authStatus={props.authStatus}
                     />
                 )

@@ -27,8 +27,8 @@ function* postDelete({pid}) {
 function* setNickname({newNickname}) {
     const nickname = yield call(profileAPI.setNickname, newNickname)
     if (nickname) {
-        yield put({type: 'USER:DATA:SET', payload: {nickname}})
-        yield put({type: 'PROFILE:DATA:SET', payload: {nickname}})
+        yield put({type: 'USER:DATA:SET', payload: nickname})
+        yield put({type: 'PROFILE:DATA:SET', payload: nickname})
     }
     //сделать тип ошибки что ли
 }

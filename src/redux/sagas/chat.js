@@ -6,7 +6,7 @@ import user from './chatModules/user'
 
 export function* chat() {
     try {
-        const socket = io(`http://${window.location.hostname}:5000/`, {
+        const socket = io(`http://${window.location.hostname}:4000/`, {
             autoConnect: true,
             extraHeaders: {Authorization: `Bearer ${localStorage.getItem('token')}`},
         })
