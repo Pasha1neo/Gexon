@@ -8,7 +8,7 @@ export function* chat() {
     try {
         const socket = io(`http://${window.location.hostname}:4000/`, {
             autoConnect: true,
-            extraHeaders: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            extraHeaders: {Authorization: localStorage.getItem('token')},
         })
         const chatLaunch = yield fork(connect, socket)
         while (yield take('CHAT:STATUS:ON')) {
@@ -24,6 +24,9 @@ export function* chat() {
 }
 function* connect(socket) {
     socket.connect()
+    socket.on('CONNECT:ERROR', (data) => {
+        console.log(data)
+    })
     while (true) {
         const chatStatus = yield call(status, socket)
         yield put(yield take(chatStatus))

@@ -69,8 +69,8 @@ const Chat = (props) => {
             <Form
                 onSubmit={({message}) => {
                     props.sendMessage({
-                        tid: props.dialog.wid,
-                        msg: message,
+                        withUserId: props.dialog.wid,
+                        text: message,
                     })
                 }}>
                 {({handleSubmit, form}) => (

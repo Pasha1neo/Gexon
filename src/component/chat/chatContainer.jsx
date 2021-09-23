@@ -28,7 +28,6 @@ const ChatContainer = (props) => {
     useEffect(() => {
         const {pathname} = props.location
         const wid = pathname.split('/').pop()
-        console.log(wid)
         if (wid === 'chat') {
             props.selectDialog(props.userId)
         } else {
