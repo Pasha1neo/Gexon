@@ -34,7 +34,7 @@ const Home: NextPage = () => {
                 </Toolbar>
             </AppBar>
 
-            <main>Мейн</main>
+            <main>Эот тест деплоя при merge</main>
 
             <footer>
                 <BottomNavigation
