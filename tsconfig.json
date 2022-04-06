@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+        // Поддержка JavaScript
+        "allowJs": true,
+        // Модули
+        "resolveJsonModule": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["src/*"],
+            "public/*": ["public/*"],
+            "pages/*": ["pages/*"]
+        },
+        // Проверка типа
+        "noUncheckedIndexedAccess": true, // https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess
+        "noPropertyAccessFromIndexSignature": true, // https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature
+        "allowUnreachableCode": false, // код который никогда не сможет выполнится (недостежимый код)
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "allowSyntheticDefaultImports": true,
+        "preserveConstEnums": true,
+        "noUnusedLocals": true, // обьявленные переменные var let const Должны юзаться
+        "noUnusedParameters": true, // проверка на неиспользуемые пропсы
+        "strictNullChecks": true, // проверка что есть нулевые значения не предусмотренные в типе
+        "noImplicitReturns": false, // Проверять что функция возвращает имено то что надо и имеет return
+        // Другое
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "removeComments": true,
+        "noErrorTruncation": true
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"], // включать в проверку ts
+    "exclude": ["node_modules"] // исключать из проверки ts
+}
